@@ -1,0 +1,47 @@
+version: '3.7'
+
+x-restart-policy: &restart_policy
+  restart: unless-stopped
+
+x-host-config: &host_config
+  environment:
+    - ASPNETCORE_ENVIRONMENT=Development
+    - ASPNETCORE_URLS=http://+:80
+  ports:
+    - "5000:80"
+
+services:
+  host:
+    << : *restart_policy
+    << : *host_config
+    depends_on:
+      - postgres
+    container_name: caffe_menu_bot_host
+    image: caffe_menu_bot/host:latest
+    build:
+      context: .
+      dockerfile: CaffeMenuBot.AppHost/Dockerfile
+    networks:
+      - host_network
+
+  postgres:
+    << : *restart_policy
+    container_name: caffe_menu_bot_postgres
+    image: postgres:12.4
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=caffe_menu_bot
+      - POSTGRES_PASSWORD=5koNorJ7WVqprgESuS
+    command: ["-c", "shared_buffers=512MB", "-c", "max_connections=500"]
+    volumes:
+      - host_volume:/var/lib/postgresql/data
+    networks:
+      - host_network
+
+volumes:
+  host_volume:
+    name: caffe_menu_bot_postgres_volume
+
+networks:
+  host_network:
+    name: caffe_menu_bot_network
