@@ -1,5 +1,5 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5 AS base
-FROM mcr.microsoft.com/dotnet/sdk:5 AS build
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 
 WORKDIR /src
 COPY CaffeMenuBot.AppHost/CaffeMenuBot.AppHost.csproj CaffeMenuBot.AppHost/
