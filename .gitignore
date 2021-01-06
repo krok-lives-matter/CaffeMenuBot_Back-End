@@ -1,0 +1,7 @@
+﻿.vs/
+.idea/
+.vscode/
+bin/
+obj/
+*.user
+*.Production.json
