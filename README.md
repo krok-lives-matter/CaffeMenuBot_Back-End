@@ -7,6 +7,7 @@ This project is powered by ASP.NET Core 5.
 2. Install the [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0) on your PC.
 3. Clone the project repository locally.
 4. Install the [Docker for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows/) on your PC (by pressing the _Get Docker_ button).
+5. Ensure that `SVM mode` / `hypervisor` is enabled in your motherboard's BIOS.
 
 ### How To Run
 To run this project locally, open a terminal (for example, `cmd.exe` or `Git Bash`) and navigate to the project's root directory (where the `docker-compose.yml` file is located).  
