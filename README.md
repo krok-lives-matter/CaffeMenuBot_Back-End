@@ -15,6 +15,10 @@ To run the already built containers, run: `docker-compose up`
 You can also build the containers and run them simultaneously: `docker-compose up --build`  
 If you want the containers to run in the background (even if you close the terminal), append the `-d` argument to the end of a command:
 `docker-compose up -d` or `docker-compose up --build -d`  
+To shut the containers down while they are working in the background, run:
+`docker-compose down`  
+To shut the containers down and destroy all the data stored in a database, run:
+`docker-compose down -v`
 
 As soon as Docker containers are started, you are able to call the API on 5000 port:
 `http://localhost:5000/`.  
