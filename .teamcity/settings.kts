@@ -23,10 +23,14 @@ import jetbrains.buildServer.configs.kotlin.v2018_1.vcs.*
 version = "2020.2"
 
 project {
-    buildType(Up)
     buildType(Down)
+    buildType(Up)
+    buildType(Compile)
+    buildType(Test_P1T2)
+    buildType(Test_P2T2)
+    buildType(Test)
 
-    buildTypesOrder = arrayListOf(Up, Down)
+    buildTypesOrder = arrayListOf(Down, Up, Compile, Test_P1T2, Test_P2T2, Test)
 
     params {
         select (
@@ -35,6 +39,13 @@ project {
             description = "Logging verbosity during build execution. Default is 'Normal'.",
             value = "Normal",
             options = listOf("Minimal" to "Minimal", "Normal" to "Normal", "Quiet" to "Quiet", "Verbose" to "Verbose"),
+            display = ParameterDisplay.NORMAL)
+        select (
+            "env.Configuration",
+            label = "Configuration",
+            description = "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
+            value = "Release",
+            options = listOf("Debug" to "Debug", "Release" to "Release"),
             display = ParameterDisplay.NORMAL)
         checkbox (
             "env.WipeDatabaseData",
@@ -53,6 +64,20 @@ project {
             display = ParameterDisplay.NORMAL)
     }
 }
+object Down : BuildType({
+    name = "Down"
+    type = Type.DEPLOYMENT
+    vcs {
+        root(DslContext.settingsRoot)
+        cleanCheckout = true
+    }
+    steps {
+        exec {
+            path = "build.sh"
+            arguments = "Down --skip"
+        }
+    }
+})
 object Up : BuildType({
     name = "Up"
     type = Type.DEPLOYMENT
@@ -71,10 +96,15 @@ object Up : BuildType({
             triggerRules = "+:**"
         }
     }
+    dependencies {
+        snapshot(Down) {
+            onDependencyFailure = FailureAction.FAIL_TO_START
+            onDependencyCancel = FailureAction.CANCEL
+        }
+    }
 })
-object Down : BuildType({
-    name = "Down"
-    type = Type.DEPLOYMENT
+object Compile : BuildType({
+    name = "Compile"
     vcs {
         root(DslContext.settingsRoot)
         cleanCheckout = true
@@ -82,7 +112,77 @@ object Down : BuildType({
     steps {
         exec {
             path = "build.sh"
-            arguments = "Down --skip"
+            arguments = "Restore Compile --skip"
+        }
+    }
+})
+object Test_P1T2 : BuildType({
+    name = "Test 1/2"
+    vcs {
+        root(DslContext.settingsRoot)
+        cleanCheckout = true
+    }
+    steps {
+        exec {
+            path = "build.sh"
+            arguments = "Test --skip --test-partition 1"
+        }
+    }
+    dependencies {
+        snapshot(Compile) {
+            onDependencyFailure = FailureAction.FAIL_TO_START
+            onDependencyCancel = FailureAction.CANCEL
+        }
+    }
+})
+object Test_P2T2 : BuildType({
+    name = "Test 2/2"
+    vcs {
+        root(DslContext.settingsRoot)
+        cleanCheckout = true
+    }
+    steps {
+        exec {
+            path = "build.sh"
+            arguments = "Test --skip --test-partition 2"
+        }
+    }
+    dependencies {
+        snapshot(Compile) {
+            onDependencyFailure = FailureAction.FAIL_TO_START
+            onDependencyCancel = FailureAction.CANCEL
+        }
+    }
+})
+object Test : BuildType({
+    name = "Test"
+    type = Type.COMPOSITE
+    type = Type.DEPLOYMENT
+    vcs {
+        root(DslContext.settingsRoot)
+        cleanCheckout = true
+        showDependenciesChanges = true
+    }
+    artifactRules = "**/*"
+    triggers {
+        vcs {
+            triggerRules = "+:**"
+        }
+    }
+    dependencies {
+        snapshot(Test_P1T2) {
+            onDependencyFailure = FailureAction.FAIL_TO_START
+            onDependencyCancel = FailureAction.CANCEL
+        }
+        snapshot(Test_P2T2) {
+            onDependencyFailure = FailureAction.FAIL_TO_START
+            onDependencyCancel = FailureAction.CANCEL
+        }
+        artifacts(Test_P1T2) {
+            artifactRules = "**/*"
+        }
+        artifacts(Test_P2T2) {
+            artifactRules = "**/*"
         }
     }
 })
