@@ -9,7 +9,7 @@ using Nuke.Common.Tooling;
 [ShutdownDotNetAfterServerBuild]
 [TeamCity(
     TeamCityAgentPlatform.Unix,
-    Version = "2020.1",
+    Version = "2020.2",
     VcsTriggeredTargets = new[] {nameof(Up)},
     ManuallyTriggeredTargets = new[] {nameof(Up), nameof(Down)})]
 class Build : NukeBuild
