@@ -5,3 +5,6 @@ bin/
 obj/
 *.user
 *.Production.json
+.tmp/
+output/
+test-results/
