@@ -7,7 +7,7 @@ namespace CaffeMenuBot.UnitTests
         [Fact]
         public void TestExample()
         {
-            Assert.True(true);
+            Assert.True(false);
         }
     }
 }
