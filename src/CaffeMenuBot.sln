@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{4222CBC8-FBD4-4259-B21F-8770209B3EC9}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		CaffeMenuBot.AppHost\Dockerfile = CaffeMenuBot.AppHost\Dockerfile
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{C856AF76-2B27-481E-97CE-56CFFD7C43C7}"

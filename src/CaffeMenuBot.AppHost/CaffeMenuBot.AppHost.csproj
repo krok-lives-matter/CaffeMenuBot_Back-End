@@ -11,6 +11,7 @@
       <None Include="wwwroot\less\style.less" />
       <None Include="wwwroot\vendor\bootstrap.min.css" />
       <None Include="wwwroot\vendor\bootstrap.min.js" />
+      <None Remove="Dockerfile" />
     </ItemGroup>
 
     <ItemGroup>
