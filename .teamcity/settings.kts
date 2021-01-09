@@ -66,7 +66,6 @@ project {
 }
 object Down : BuildType({
     name = "Down"
-    type = Type.DEPLOYMENT
     vcs {
         root(DslContext.settingsRoot)
         cleanCheckout = true
@@ -80,7 +79,6 @@ object Down : BuildType({
 })
 object Up : BuildType({
     name = "Up"
-    type = Type.DEPLOYMENT
     vcs {
         root(DslContext.settingsRoot)
         cleanCheckout = true
@@ -157,7 +155,6 @@ object Test_P2T2 : BuildType({
 object Test : BuildType({
     name = "Test"
     type = Type.COMPOSITE
-    type = Type.DEPLOYMENT
     vcs {
         root(DslContext.settingsRoot)
         cleanCheckout = true
