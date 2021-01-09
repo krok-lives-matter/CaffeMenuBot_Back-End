@@ -1,29 +1,27 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace CaffeMenuBot.Data.Models
 {
     [Table("dishes", Schema = "public")]
-    public sealed class Dish{
-
+    public sealed record Dish
+    {
         [Key, Required, Column("dish_id", TypeName = "integer")]
-        public int Id { get; set; }
+        public int Id { get; init; }
 
         [Required, Column("dish_name", TypeName = "text")]
-        public string DishName { get; set; }
+        public string DishName { get; init; }
 
         [Required, Column("description", TypeName = "text")]
-        public string Description { get; set; }
+        public string Description { get; init; }
 
         [Required, Column("serving", TypeName = "text")]
-        public string Serving { get; set; }
+        public string Serving { get; init; }
 
         [Required, Column("price", TypeName = "decimal(5, 2)")]
-        public decimal Price { get; set; }
+        public decimal Price { get; init; }
 
-        public int CategoryId {get;set;}   
-        public Category Category{get;set;}
-
+        public int CategoryId { get; init; }
+        public Category Category { get; init; }
     }
 }
