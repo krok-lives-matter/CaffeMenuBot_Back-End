@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CaffeMenuBot.Data.Models
+namespace CaffeMenuBot.Data.Models.Menu
 {
     [Table("dishes", Schema = CaffeMenuBotContext.SchemaName)]
     public sealed record Dish

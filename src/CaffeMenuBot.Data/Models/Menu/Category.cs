@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CaffeMenuBot.Data.Models
+namespace CaffeMenuBot.Data.Models.Menu
 {
     [Table("categories", Schema = CaffeMenuBotContext.SchemaName)]
     public sealed record Category
