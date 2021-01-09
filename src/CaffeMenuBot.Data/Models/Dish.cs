@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CaffeMenuBot.Data.Models
 {
-    [Table("dishes", Schema = "public")]
+    [Table("dishes", Schema = CaffeMenuBotContext.SchemaName)]
     public sealed record Dish
     {
         [Key, Required, Column("dish_id", TypeName = "integer")]

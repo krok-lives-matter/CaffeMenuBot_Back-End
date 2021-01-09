@@ -23,7 +23,10 @@ namespace CaffeMenuBot.AppHost
             services.AddControllers();
 
             services.AddDbContext<CaffeMenuBotContext>(options =>
-                options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb")));
+                options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
+                    builder.EnableRetryOnFailure()
+                        .MigrationsAssembly("CaffeMenuBot.Data")
+                        .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

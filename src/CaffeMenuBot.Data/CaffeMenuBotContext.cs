@@ -5,6 +5,8 @@ namespace CaffeMenuBot.Data
 {
     public sealed class CaffeMenuBotContext : DbContext
     {
+        public const string SchemaName = "public";
+        
         public CaffeMenuBotContext(DbContextOptions<CaffeMenuBotContext> options) : base(options)
         {
         }

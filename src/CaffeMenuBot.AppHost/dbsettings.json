@@ -1,0 +1,5 @@
+﻿{
+    "ConnectionStrings": {
+        "CaffeMenuBotDb": "Host=caffe_menu_bot_postgres;Port=5432;UserId=postgres;Password=5koNorJ7WVqprgESuS;Database=caffe_menu_bot;CommandTimeout=300;"
+    }
+}

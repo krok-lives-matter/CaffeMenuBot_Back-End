@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CaffeMenuBot.Data.Models
 {
-    [Table("categories", Schema = "public")]
+    [Table("categories", Schema = CaffeMenuBotContext.SchemaName)]
     public sealed record Category
     {
         [Key, Required, Column("category_id", TypeName = "integer")]
