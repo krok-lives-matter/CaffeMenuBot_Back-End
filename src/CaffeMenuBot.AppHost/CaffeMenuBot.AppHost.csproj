@@ -5,6 +5,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Include="wwwroot\css\style.css" />
+      <None Include="wwwroot\css\style.css.map" />
+      <None Include="wwwroot\js\app.js" />
+      <None Include="wwwroot\less\style.less" />
+      <None Include="wwwroot\vendor\bootstrap.min.css" />
+      <None Include="wwwroot\vendor\bootstrap.min.js" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\CaffeMenuBot.Data\CaffeMenuBot.Data.csproj" />
     </ItemGroup>
 

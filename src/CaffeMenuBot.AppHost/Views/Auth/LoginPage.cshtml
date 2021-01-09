@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth</title>
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/vendor/bootstrap.min.css">
+</head>
+
+<body class="bg-secondary text-light">
+    <div class="form">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 offset-md-3 offset-sm-0">
+                    <form method="POST" class="form__wrapper">
+                        <div class="mb-5">
+                            <h1 class="display-3">
+                                Login to panel
+                            </h1>
+                        </div>
+                        <div class="mb-3">
+                            <label for="login" class="form-label">Type your login</label>
+                            <input type="email" class="form-control" id="login" placeholder="Login here">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Type your password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Password here">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Remember me
+                            </label>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary w-100">Авторизироваться</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/vendor/bootstrap.min.js"></script>
+</body>
+
+</html>
+
