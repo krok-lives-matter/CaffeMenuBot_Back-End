@@ -35,8 +35,8 @@ class Build : NukeBuild
     [Parameter("Check both checkboxes to wipe the database data")]
     readonly bool WipeDatabaseData;
 
-    [Parameter(Name = "DATABASE_WIPE_SHIELD_CHECKBOX")]
-    readonly bool WipeDatabaseDataShield;
+    [Parameter]
+    readonly bool WipeDatabaseDataProtection;
 
     [Solution] readonly Solution Solution;
     [PathExecutable("docker-compose")] readonly Tool DockerCompose;
@@ -47,7 +47,7 @@ class Build : NukeBuild
     Target Down => _ => _
         .Executes(() =>
         {
-            if (WipeDatabaseData && WipeDatabaseDataShield)
+            if (WipeDatabaseData && WipeDatabaseDataProtection)
                 DockerCompose("down --volumes", SourceDirectory);
             else
                 DockerCompose("down", SourceDirectory);
@@ -64,6 +64,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             TestsDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
+            SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
         });
 
     Target Restore => _ => _
@@ -94,8 +95,9 @@ class Build : NukeBuild
         {
             DotNetTest(_ => _
                 .SetConfiguration(Configuration)
+                .ResetVerbosity()
                 .SetNoBuild(InvokedTargets.Contains(Compile))
                 .CombineWith(TestProjects, (_, v) => _
-                    .SetProjectFile(v)));
+                    .SetProjectFile(v)), completeOnFailure: false);
         });
 }

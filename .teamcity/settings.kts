@@ -56,8 +56,8 @@ project {
             unchecked = "False",
             display = ParameterDisplay.NORMAL)
         checkbox (
-            "env.WipeDatabaseDataShield",
-            label = "WipeDatabaseDataShield",
+            "env.WipeDatabaseDataProtection",
+            label = "WipeDatabaseDataProtection",
             value = "False",
             checked = "True",
             unchecked = "False",
