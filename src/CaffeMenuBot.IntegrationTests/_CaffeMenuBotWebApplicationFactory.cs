@@ -13,6 +13,11 @@ namespace CaffeMenuBot.IntegrationTests
     public sealed class CaffeMenuBotWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup: class
     {
+        public CaffeMenuBotWebApplicationFactory()
+        {
+            ClientOptions.BaseAddress = new Uri("http://localhost:5001/");
+        }
+        
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
@@ -49,12 +54,6 @@ namespace CaffeMenuBot.IntegrationTests
                 }
             });
             builder.UseUrls("http://localhost:5001/");
-        }
-
-        protected override void ConfigureClient(HttpClient client)
-        {
-            client.BaseAddress = new Uri("http://localhost:5001/");
-            base.ConfigureClient(client);
         }
     }
 }
