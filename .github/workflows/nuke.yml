@@ -29,5 +29,3 @@ jobs:
       - uses: actions/checkout@v1
       - name: Run './build.cmd Test'
         run: ./build.cmd Test
-        env:
-            GitHubToken: ${{ secrets.GITHUB_TOKEN }}

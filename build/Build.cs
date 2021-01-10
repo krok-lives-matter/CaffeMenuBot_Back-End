@@ -24,8 +24,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     "nuke",
     GitHubActionsImage.UbuntuLatest,
     OnPushBranches = new[] {"main"},
-    InvokedTargets = new[] {nameof(Test)},
-    ImportGitHubTokenAs = nameof(GitHubToken))]
+    InvokedTargets = new[] {nameof(Test)})]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
