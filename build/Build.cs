@@ -86,7 +86,7 @@ class Build : NukeBuild
         });
     
     [Partition(2)] readonly Partition TestPartition;
-    IEnumerable<Project> TestProjects => TestPartition.GetCurrent(Solution.GetProjects("*.Tests"));
+    IEnumerable<Project> TestProjects => TestPartition.GetCurrent(Solution.GetProjects("*Tests"));
     
     Target Test => _ => _
         .Partition(() => TestPartition)
@@ -95,7 +95,7 @@ class Build : NukeBuild
         {
             DotNetTest(_ => _
                 .SetConfiguration(Configuration)
-                .ResetVerbosity()
+                .SetVerbosity(DotNetVerbosity.Minimal)
                 .SetNoBuild(InvokedTargets.Contains(Compile))
                 .CombineWith(TestProjects, (_, v) => _
                     .SetProjectFile(v)), completeOnFailure: false);
