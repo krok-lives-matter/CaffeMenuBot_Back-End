@@ -22,9 +22,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     ExcludedTargets = new[] {nameof(Clean)})]
 [GitHubActions(
     "nuke",
-    GitHubActionsImage.Ubuntu1804,
-    GitHubActionsImage.MacOs1014,
-    GitHubActionsImage.WindowsServer2019,
+    GitHubActionsImage.UbuntuLatest,
     OnPushBranches = new[] {"main"},
     InvokedTargets = new[] {nameof(Test)},
     ImportGitHubTokenAs = nameof(GitHubToken))]
