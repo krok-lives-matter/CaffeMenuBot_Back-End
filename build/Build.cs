@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Nuke.Common;
 using Nuke.Common.CI;
+using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.CI.TeamCity;
 using Nuke.Common.Execution;
 using Nuke.Common.IO;
@@ -19,6 +20,15 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     VcsTriggeredTargets = new[] {nameof(Up), nameof(Test)},
     NonEntryTargets = new[] {nameof(Restore)},
     ExcludedTargets = new[] {nameof(Clean)})]
+[GitHubActions(
+    "nuke",
+    GitHubActionsImage.Ubuntu1804,
+    GitHubActionsImage.MacOs1014,
+    GitHubActionsImage.WindowsServer2019,
+    OnPushBranches = new[] {"main"},
+    InvokedTargets = new[] {nameof(Test)},
+    ImportGitHubTokenAs = nameof(GitHubToken),
+    On = new[] {GitHubActionsTrigger.Push})]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
@@ -37,6 +47,9 @@ class Build : NukeBuild
 
     [Parameter]
     readonly bool WipeDatabaseDataProtection;
+
+    [Parameter]
+    readonly string GitHubToken;
 
     [Solution] readonly Solution Solution;
     [PathExecutable("docker-compose")] readonly Tool DockerCompose;
