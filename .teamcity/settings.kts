@@ -62,6 +62,12 @@ project {
             checked = "True",
             unchecked = "False",
             display = ParameterDisplay.NORMAL)
+        text (
+            "env.GitHubToken",
+            label = "GitHubToken",
+            value = "",
+            allowEmpty = true,
+            display = ParameterDisplay.NORMAL)
     }
 }
 object Down : BuildType({

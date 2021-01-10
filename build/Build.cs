@@ -27,8 +27,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     GitHubActionsImage.WindowsServer2019,
     OnPushBranches = new[] {"main"},
     InvokedTargets = new[] {nameof(Test)},
-    ImportGitHubTokenAs = nameof(GitHubToken),
-    On = new[] {GitHubActionsTrigger.Push})]
+    ImportGitHubTokenAs = nameof(GitHubToken))]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
