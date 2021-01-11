@@ -18,6 +18,6 @@ image:
   - Ubuntu1804
 
 build_script:
-  - cmd: .\build.cmd Test
-  - sh: ./build.cmd Test
+  - cmd: .\build.cmd Test Compile
+  - sh: ./build.cmd Test Compile
 

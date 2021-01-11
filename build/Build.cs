@@ -26,7 +26,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     "nuke",
     GitHubActionsImage.UbuntuLatest,
     OnPushBranches = new[] {"main"},
-    InvokedTargets = new[] {nameof(Test)})]
+    InvokedTargets = new[] {nameof(Test), nameof(Compile)})]
 [AzurePipelines(
     AzurePipelinesImage.UbuntuLatest,
     InvokedTargets = new[] {nameof(Test)},
@@ -36,7 +36,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [AppVeyor(
     AppVeyorImage.UbuntuLatest,
     BranchesOnly = new[] {"main"},
-    InvokedTargets = new[] {nameof(Test)})]
+    InvokedTargets = new[] {nameof(Test), nameof(Compile)})]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
