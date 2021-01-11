@@ -2,6 +2,18 @@
 
 This project is powered by ASP.NET Core 5.
 
+### Build statuses
+| Build Service | Status | Platform | Configuration |
+| -------------- | ------- | --------- | --------------- |
+| Azure Pipelines | ![Azure Pipelines](https://img.shields.io/azure-devops/build/vova-lantsov/0aba9e48-2760-46e5-977e-74cfad73d964/1?job=Compile&logo=azure-pipelines&style=for-the-badge) | Ubuntu | [azure-pipelines.yml](https://github.com/krok-lives-matter/CaffeMenuBot_Back-End/blob/main/azure-pipelines.yml) |
+| TeamCity | ![TeamCity](https://img.shields.io/teamcity/build/s/CaffeMenuBot_CaffeMenuBotBackend_Compile?logo=teamcity&server=https%3A%2F%2Ftc.vova-lantsov.dev&style=for-the-badge) | Debian | [settings.kts](https://github.com/krok-lives-matter/CaffeMenuBot_Back-End/blob/main/.teamcity/settings.kts) (Kotlin DSL) |
+| GitHub Actions | ![GitHub Actions](https://img.shields.io/github/workflow/status/krok-lives-matter/CaffeMenuBot_Back-End/build/main?logo=github&style=for-the-badge) | Ubuntu | [build.yml](https://github.com/krok-lives-matter/CaffeMenuBot_Back-End/blob/main/.github/workflows/build.yml) |
+### Test statuses
+| Test Service | Status | Platform |
+| ------------- | ------ | ---------- |
+| AppVeyor | ![AppVeyor](https://img.shields.io/appveyor/tests/vova-lantsov-dev/caffemenubot-back-end?logo=appveyor&logoColor=white&style=for-the-badge) | Ubuntu |
+| GitHub Actions | ![GitHub Actions](https://img.shields.io/github/workflow/status/krok-lives-matter/CaffeMenuBot_Back-End/test/main?label=tests&logo=github&style=for-the-badge) | Ubuntu |
+
 ### Prerequisites
 1. Install either the Visual Studio, the Visual Studio Code or the JetBrains Rider editor.
 2. Install the [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0) on your PC.
