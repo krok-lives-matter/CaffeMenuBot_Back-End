@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Nuke.Common;
 using Nuke.Common.CI;
+using Nuke.Common.CI.AppVeyor;
 using Nuke.Common.CI.AzurePipelines;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.CI.TeamCity;
@@ -32,6 +33,10 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     ExcludedTargets = new[] {nameof(Clean)},
     NonEntryTargets = new[] {nameof(Restore)},
     TriggerBranchesInclude = new[] {"main"})]
+[AppVeyor(
+    AppVeyorImage.UbuntuLatest,
+    BranchesOnly = new[] {"main"},
+    InvokedTargets = new[] {nameof(Test)})]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
