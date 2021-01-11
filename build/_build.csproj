@@ -13,4 +13,13 @@
     <PackageReference Include="Nuke.Common" Version="5.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="..\.github\workflows\build.yml">
+      <Link>ci\build.yml</Link>
+    </None>
+    <None Update="..\.github\workflows\test.yml">
+      <Link>ci\test.yml</Link>
+    </None>
+  </ItemGroup>
+
 </Project>

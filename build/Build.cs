@@ -23,10 +23,15 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     NonEntryTargets = new[] {nameof(Restore)},
     ExcludedTargets = new[] {nameof(Clean)})]
 [GitHubActions(
-    "nuke",
+    "test",
     GitHubActionsImage.UbuntuLatest,
     OnPushBranches = new[] {"main"},
-    InvokedTargets = new[] {nameof(Test), nameof(Compile)})]
+    InvokedTargets = new[] {nameof(Test)})]
+[GitHubActions(
+    "build",
+    GitHubActionsImage.UbuntuLatest,
+    OnPushBranches = new[] {"main"},
+    InvokedTargets = new[] {nameof(Compile)})]
 [AzurePipelines(
     AzurePipelinesImage.UbuntuLatest,
     InvokedTargets = new[] {nameof(Test)},
@@ -36,7 +41,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [AppVeyor(
     AppVeyorImage.UbuntuLatest,
     BranchesOnly = new[] {"main"},
-    InvokedTargets = new[] {nameof(Test), nameof(Compile)})]
+    InvokedTargets = new[] {nameof(Test)})]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
