@@ -29,6 +29,8 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [AzurePipelines(
     AzurePipelinesImage.UbuntuLatest,
     InvokedTargets = new[] {nameof(Test)},
+    ExcludedTargets = new[] {nameof(Clean)},
+    NonEntryTargets = new[] {nameof(Restore)},
     TriggerBranchesInclude = new[] {"main"})]
 class Build : NukeBuild
 {
@@ -48,9 +50,6 @@ class Build : NukeBuild
 
     [Parameter]
     readonly bool WipeDatabaseDataProtection;
-
-    [Parameter]
-    readonly string GitHubToken;
 
     [Solution] readonly Solution Solution;
     [PathExecutable("docker-compose")] readonly Tool DockerCompose;
