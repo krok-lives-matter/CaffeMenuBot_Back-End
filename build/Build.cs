@@ -122,25 +122,30 @@ class Build : NukeBuild
         .Produces(TestResultDirectory / "*.trx")
         .Executes(() =>
         {
-            DotNetTest(_ => _
-                .SetConfiguration(Configuration)
-                .SetVerbosity(DotNetVerbosity.Minimal)
-                .SetNoBuild(InvokedTargets.Contains(Compile))
-                .SetResultsDirectory(TestResultDirectory)
-                .CombineWith(TestProjects, (_, v) => _
-                    .SetProjectFile(v)
-                    .SetLogger($"trx;LogFileName={v.Name}.trx")),
-                completeOnFailure: false);
-
-            if (AzurePipelines != null)
+            try
             {
-                TestResultDirectory.GlobFiles("*.trx").ForEach(f =>
+                DotNetTest(_ => _
+                        .SetConfiguration(Configuration)
+                        .SetVerbosity(DotNetVerbosity.Minimal)
+                        .SetNoBuild(InvokedTargets.Contains(Compile))
+                        .SetResultsDirectory(TestResultDirectory)
+                        .CombineWith(TestProjects, (_, v) => _
+                            .SetProjectFile(v)
+                            .SetLogger($"trx;LogFileName={v.Name}.trx")),
+                    completeOnFailure: false);
+            }
+            finally
+            {
+                if (AzurePipelines != null)
                 {
-                    AzurePipelines.PublishTestResults(
-                        $"{Path.GetFileNameWithoutExtension(f)} ({AzurePipelines.StageDisplayName})",
-                        AzurePipelinesTestResultsType.VSTest,
-                        new string[] {f});
-                });
+                    TestResultDirectory.GlobFiles("*.trx").ForEach(f =>
+                    {
+                        AzurePipelines.PublishTestResults(
+                            $"{Path.GetFileNameWithoutExtension(f)} ({AzurePipelines.StageDisplayName})",
+                            AzurePipelinesTestResultsType.VSTest,
+                            new string[] {f});
+                    });
+                }
             }
         });
 }
