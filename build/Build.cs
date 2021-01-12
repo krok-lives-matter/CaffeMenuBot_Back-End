@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.CI.AppVeyor;
@@ -64,8 +65,11 @@ class Build : NukeBuild
     [Solution] readonly Solution Solution;
     [PathExecutable("docker-compose")] readonly Tool DockerCompose;
 
+    [CI] readonly AzurePipelines AzurePipelines;
+
     AbsolutePath SourceDirectory => RootDirectory / "src";
     AbsolutePath TestsDirectory => RootDirectory / "tests";
+    AbsolutePath OutputDirectory => RootDirectory / "output";
 
     Target Down => _ => _
         .Executes(() =>
@@ -110,17 +114,33 @@ class Build : NukeBuild
     
     [Partition(2)] readonly Partition TestPartition;
     IEnumerable<Project> TestProjects => TestPartition.GetCurrent(Solution.GetProjects("*Tests"));
+    AbsolutePath TestResultDirectory => OutputDirectory / "test-results";
     
     Target Test => _ => _
         .Partition(() => TestPartition)
         .DependsOn(Compile)
+        .Produces(TestResultDirectory / "*.trx")
         .Executes(() =>
         {
             DotNetTest(_ => _
                 .SetConfiguration(Configuration)
                 .SetVerbosity(DotNetVerbosity.Minimal)
                 .SetNoBuild(InvokedTargets.Contains(Compile))
+                .SetResultsDirectory(TestResultDirectory)
                 .CombineWith(TestProjects, (_, v) => _
-                    .SetProjectFile(v)), completeOnFailure: false);
+                    .SetProjectFile(v)
+                    .SetLogger($"trx;LogFileName={v.Name}.trx")),
+                completeOnFailure: false);
+
+            if (AzurePipelines != null)
+            {
+                TestResultDirectory.GlobFiles("*.trx").ForEach(f =>
+                {
+                    AzurePipelines.PublishTestResults(
+                        $"{Path.GetFileNameWithoutExtension(f)} ({AzurePipelines.StageDisplayName})",
+                        AzurePipelinesTestResultsType.VSTest,
+                        new string[] {f});
+                });
+            }
         });
 }

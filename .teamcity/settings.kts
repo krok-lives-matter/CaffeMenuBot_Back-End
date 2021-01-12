@@ -120,6 +120,7 @@ object Test_P1T2 : BuildType({
         root(DslContext.settingsRoot)
         cleanCheckout = true
     }
+    artifactRules = "output/test-results/*.trx => output/test-results"
     steps {
         exec {
             path = "build.sh"
@@ -139,6 +140,7 @@ object Test_P2T2 : BuildType({
         root(DslContext.settingsRoot)
         cleanCheckout = true
     }
+    artifactRules = "output/test-results/*.trx => output/test-results"
     steps {
         exec {
             path = "build.sh"
@@ -168,11 +170,11 @@ object Test : BuildType({
     }
     dependencies {
         snapshot(Test_P1T2) {
-            onDependencyFailure = FailureAction.FAIL_TO_START
+            onDependencyFailure = FailureAction.ADD_PROBLEM
             onDependencyCancel = FailureAction.CANCEL
         }
         snapshot(Test_P2T2) {
-            onDependencyFailure = FailureAction.FAIL_TO_START
+            onDependencyFailure = FailureAction.ADD_PROBLEM
             onDependencyCancel = FailureAction.CANCEL
         }
         artifacts(Test_P1T2) {

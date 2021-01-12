@@ -18,6 +18,8 @@ image:
   - Ubuntu1804
 
 build_script:
-  - cmd: .\build.cmd Test Compile
-  - sh: ./build.cmd Test Compile
+  - cmd: .\build.cmd Test
+  - sh: ./build.cmd Test
 
+artifacts:
+  - path: output/test-results/*.trx

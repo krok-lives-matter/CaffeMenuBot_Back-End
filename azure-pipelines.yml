@@ -42,3 +42,7 @@ stages:
           - task: CmdLine@2
             inputs:
               script: './build.cmd Test --skip --test-partition $(System.JobPositionInPhase)'
+          - task: PublishBuildArtifacts@1
+            inputs:
+              artifactName: test-results
+              pathtoPublish: 'output/test-results'
