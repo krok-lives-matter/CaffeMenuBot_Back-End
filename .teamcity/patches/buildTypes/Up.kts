@@ -1,6 +1,7 @@
 package patches.buildTypes
 
 import jetbrains.buildServer.configs.kotlin.v2018_1.*
+import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.ExecBuildStep
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.exec
 import jetbrains.buildServer.configs.kotlin.v2018_1.ui.*
 
@@ -32,6 +33,23 @@ changeBuildType(RelativeId("Up")) {
                       postgres:
                         environment:
                           - POSTGRES_PASSWORD=quc45iVMHo3pJG2kXswvfmkU
+                """.trimIndent())
+            }
+        }
+        update<ExecBuildStep>(1) {
+            clearConditions()
+        }
+        insert(2) {
+            step {
+                name = "Production database settings"
+                type = "MRPP_CreateTextFile"
+                param("system.dest.file", "dbsettings.Production.json")
+                param("content", """
+                    {
+                        "ConnectionStrings": {
+                            "CaffeMenuBotDb": "Host=caffe_menu_bot_postgres;Port=5432;UserId=postgres;Password=quc45iVMHo3pJG2kXswvfmkU;Database=caffe_menu_bot;CommandTimeout=300;"
+                        }
+                    }
                 """.trimIndent())
             }
         }
