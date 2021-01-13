@@ -49,7 +49,7 @@ changeBuildType(RelativeId("Up")) {
             step {
                 name = "Production database settings"
                 type = "MRPP_CreateTextFile"
-                param("system.dest.file", "dbsettings.Production.json")
+                param("system.dest.file", "%teamcity.build.checkoutDir%/src/CaffeMenuBot.AppHost/dbsettings.Production.json")
                 param("content", """
                     {
                         "ConnectionStrings": {
