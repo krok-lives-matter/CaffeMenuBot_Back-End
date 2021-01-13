@@ -31,7 +31,7 @@ changeBuildType(RelativeId("Up")) {
             step {
                 name = "Production docker-compose configuration"
                 type = "MRPP_CreateTextFile"
-                param("system.dest.file", "docker-compose.override.yml")
+                param("system.dest.file", "%teamcity.build.checkoutDir%/src/docker-compose.override.yml")
                 param("content", """
                     version: '3.7'
                     
