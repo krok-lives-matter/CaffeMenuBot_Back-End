@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
     [Route("auth")]
+    [AllowAnonymous]
     public class AuthController : Controller
     {
       
