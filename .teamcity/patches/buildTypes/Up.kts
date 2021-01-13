@@ -38,10 +38,10 @@ changeBuildType(RelativeId("Up")) {
                     services:
                       host:
                         environment:
-                          - ASPNETCORE_ENVIRONMENT=Production
+                          - ASPNETCORE_ENVIRONMENT=%env.ASPNETCORE_ENVIRONMENT%
                       postgres:
                         environment:
-                          - POSTGRES_PASSWORD=quc45iVMHo3pJG2kXswvfmkU
+                          - POSTGRES_PASSWORD=%env.POSTGRES_PASSWORD%
                 """.trimIndent())
             }
         }
