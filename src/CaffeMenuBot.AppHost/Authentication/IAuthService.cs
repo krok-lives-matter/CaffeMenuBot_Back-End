@@ -10,7 +10,7 @@ namespace CaffeMenuBot.AppHost.Authentication
 {
     public interface IAuthService
     {
-        ValueTask<ApplicationUser?> AuthenticateUserAsync(string username, string password, CancellationToken ct);
+        ValueTask<ApplicationUser?> AuthenticateUserAsync(string email, string password, CancellationToken ct);
 
         string GenerateJwtToken(ApplicationUser userInfo);
     }

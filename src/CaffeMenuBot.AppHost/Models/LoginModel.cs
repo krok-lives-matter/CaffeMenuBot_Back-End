@@ -9,10 +9,10 @@ namespace CaffeMenuBot.AppHost.Models
     {
         [Required]
         [StringLength(64, MinimumLength = 4)]
-        public string Username { get; set; } = null!;
+        public string Email { get; set; } = null!;
 
         [Required]
-        [StringLength(64, MinimumLength = 12)]
+        [StringLength(64, MinimumLength = 8)]
         public string Password { get; set; } = null!;
     }
 }

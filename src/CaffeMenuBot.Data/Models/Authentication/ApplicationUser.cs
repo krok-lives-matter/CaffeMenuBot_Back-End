@@ -12,6 +12,9 @@ namespace CaffeMenuBot.Data.Models.Authentication
         [Column("username", TypeName = "text"), Required]
         public string Username { get; init; } = null!;
 
+        [Column("email", TypeName = "text"), Required]
+        public string Email { get; init; } = null!;
+
         [Column("password_hash", TypeName = "text"), Required]
         public string PasswordHash { get; init; } = null!;
 

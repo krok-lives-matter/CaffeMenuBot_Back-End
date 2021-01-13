@@ -27,11 +27,11 @@ namespace CaffeMenuBot.AppHost.Authentication
             _jwtOptions = options.Value;
         }
 
-        public async ValueTask<ApplicationUser?> AuthenticateUserAsync(string username, string password, CancellationToken ct)
+        public async ValueTask<ApplicationUser?> AuthenticateUserAsync(string email, string password, CancellationToken ct)
         {
             var user = await _dbContext.ApplicationUsers
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Username == username, ct);
+                .FirstOrDefaultAsync(u => u.Email == email, ct);
 
             ct.ThrowIfCancellationRequested();
 
@@ -55,7 +55,7 @@ namespace CaffeMenuBot.AppHost.Authentication
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userInfo.Username),
+                new Claim(JwtRegisteredClaimNames.Sub, userInfo.Email),
                 new Claim("role", userInfo.Role)
             };
             var token = new JwtSecurityToken(_jwtOptions.Issuer, _jwtOptions.Audience, claims,

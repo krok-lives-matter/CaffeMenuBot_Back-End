@@ -24,7 +24,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> LoginPage([FromForm] LoginModel logInModel, CancellationToken ct)
         {
-            ApplicationUser? user = await _authService.AuthenticateUserAsync(logInModel.Username, logInModel.Password, ct);
+            ApplicationUser? user = await _authService.AuthenticateUserAsync(logInModel.Email, logInModel.Password, ct);
 
             if (user == null)
                 return RedirectToAction("Auth");
