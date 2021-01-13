@@ -25,16 +25,21 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     ExcludedTargets = new[] {nameof(Clean)})]
 [GitHubActions(
     "test",
+    GitHubActionsImage.WindowsLatest,
     GitHubActionsImage.UbuntuLatest,
+    GitHubActionsImage.MacOsLatest,
     OnPushBranches = new[] {"main"},
     InvokedTargets = new[] {nameof(Test)})]
 [GitHubActions(
     "build",
+    GitHubActionsImage.WindowsLatest,
     GitHubActionsImage.UbuntuLatest,
+    GitHubActionsImage.MacOsLatest,
     OnPushBranches = new[] {"main"},
     InvokedTargets = new[] {nameof(Compile)})]
 [AzurePipelines(
-    AzurePipelinesImage.UbuntuLatest,
+    AzurePipelinesImage.MacOsLatest,
+    AzurePipelinesImage.WindowsLatest,
     InvokedTargets = new[] {nameof(Test)},
     ExcludedTargets = new[] {nameof(Clean)},
     NonEntryTargets = new[] {nameof(Restore)},
