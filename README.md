@@ -9,12 +9,12 @@ This project is powered by ASP.NET Core 5.
 | TeamCity | **Debian**<br/>![TeamCity](https://img.shields.io/teamcity/build/s/CaffeMenuBot_CaffeMenuBotBackend_Compile?logo=teamcity&server=https%3A%2F%2Ftc.vova-lantsov.dev&style=for-the-badge) | [settings.kts](https://github.com/krok-lives-matter/CaffeMenuBot_Back-End/blob/main/.teamcity/settings.kts) (Kotlin DSL) |
 | GitHub Actions | **Windows, macOS, Ubuntu**<br/>![GitHub Actions](https://img.shields.io/github/workflow/status/krok-lives-matter/CaffeMenuBot_Back-End/build/main?logo=github&style=for-the-badge) | [build.yml](https://github.com/krok-lives-matter/CaffeMenuBot_Back-End/blob/main/.github/workflows/build.yml) |
 ### Test statuses
-| Test Service | Status | Build Url |
-| ------------ | ------ | --------- |
-| AppVeyor | **Ubuntu**<br/>![AppVeyor](https://img.shields.io/appveyor/tests/vova-lantsov-dev/caffemenubot-back-end?logo=appveyor&logoColor=white&style=for-the-badge) | [Link](https://ci.appveyor.com/project/vova-lantsov-dev/caffemenubot-back-end) |
-| Azure Pipelines | **macOS, Windows**<br/>![Azure Pipelines - macOS](https://img.shields.io/azure-devops/tests/vova-lantsov/caffe-menu-bot/1/main?logo=azure-devops&style=for-the-badge) | [Link](https://dev.azure.com/vova-lantsov/caffe-menu-bot/_build?definitionId=1) |
-| TeamCity | **Debian**<br/>![TeamCity - Debian](https://img.shields.io/teamcity/build/s/CaffeMenuBot_CaffeMenuBotBackend_Test?logo=teamcity&label=tests&server=https%3A%2F%2Ftc.vova-lantsov.dev&style=for-the-badge) | [Link](https://tc.vova-lantsov.dev/viewType.html?buildTypeId=CaffeMenuBot_CaffeMenuBotBackend_Test) |
-| GitHub Actions | **Windows, macOS, Ubuntu**<br/>![GitHub Actions](https://img.shields.io/github/workflow/status/krok-lives-matter/CaffeMenuBot_Back-End/test/main?label=tests&logo=github&style=for-the-badge) | [Link](https://github.com/krok-lives-matter/CaffeMenuBot_Back-End/actions?query=workflow%3Atest) |
+| Test Service | Status | Configuration | Build Url |
+| ------------ | ------ | ------------- | --------- |
+| AppVeyor | **Ubuntu**<br/>![AppVeyor](https://img.shields.io/appveyor/tests/vova-lantsov-dev/caffemenubot-back-end?logo=appveyor&logoColor=white&style=for-the-badge) | [appveyor.yml](https://github.com/krok-lives-matter/CaffeMenuBot_Back-End/blob/main/appveyor.yml) | [Link](https://ci.appveyor.com/project/vova-lantsov-dev/caffemenubot-back-end) |
+| Azure Pipelines | **macOS, Windows**<br/>![Azure Pipelines - macOS](https://img.shields.io/azure-devops/tests/vova-lantsov/caffe-menu-bot/1/main?logo=azure-devops&style=for-the-badge) | [azure-pipelines.yml](https://github.com/krok-lives-matter/CaffeMenuBot_Back-End/blob/main/azure-pipelines.yml) | [Link](https://dev.azure.com/vova-lantsov/caffe-menu-bot/_build?definitionId=1) |
+| TeamCity | **Debian**<br/>![TeamCity - Debian](https://img.shields.io/teamcity/build/s/CaffeMenuBot_CaffeMenuBotBackend_Test?logo=teamcity&label=tests&server=https%3A%2F%2Ftc.vova-lantsov.dev&style=for-the-badge) | [settings.kts](https://github.com/krok-lives-matter/CaffeMenuBot_Back-End/blob/main/.teamcity/settings.kts) (Kotlin DSL) | [Link](https://tc.vova-lantsov.dev/viewType.html?buildTypeId=CaffeMenuBot_CaffeMenuBotBackend_Test) |
+| GitHub Actions | **Windows, macOS, Ubuntu**<br/>![GitHub Actions](https://img.shields.io/github/workflow/status/krok-lives-matter/CaffeMenuBot_Back-End/test/main?label=tests&logo=github&style=for-the-badge) | [build.yml](https://github.com/krok-lives-matter/CaffeMenuBot_Back-End/blob/main/.github/workflows/test.yml) | [Link](https://github.com/krok-lives-matter/CaffeMenuBot_Back-End/actions?query=workflow%3Atest) |
 
 ### Prerequisites
 1. Install either the Visual Studio, the Visual Studio Code or the JetBrains Rider editor.
