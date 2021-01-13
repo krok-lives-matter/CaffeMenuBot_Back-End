@@ -11,6 +11,12 @@ To apply the patch, change the buildType with id = 'Up'
 accordingly, and delete the patch script.
 */
 changeBuildType(RelativeId("Up")) {
+    params {
+        add {
+            password("env.POSTGRES_PASSWORD", "credentialsJSON:fde04986-c090-4fc0-a00d-41321166f346", label = "postgres_password", display = ParameterDisplay.HIDDEN, readOnly = true)
+        }
+    }
+
     expectSteps {
         exec {
             path = "build.sh"
