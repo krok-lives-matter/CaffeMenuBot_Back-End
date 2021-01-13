@@ -5,14 +5,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CaffeMenuBot.AppHost.Models
 {
-    public sealed class LoginModel
+    public sealed record LoginModel
     {
         [Required]
         [StringLength(64, MinimumLength = 4)]
-        public string Email { get; set; } = null!;
+        [EmailAddress]
+        public string Email { get; init; } = null!;
 
         [Required]
         [StringLength(64, MinimumLength = 8)]
-        public string Password { get; set; } = null!;
+        public string Password { get; init; } = null!;
     }
 }

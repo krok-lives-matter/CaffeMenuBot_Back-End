@@ -17,7 +17,7 @@ namespace CaffeMenuBot.IntegrationTests
         }
 
         // Requirements:
-        // Username: at least 4 characters; alphanumeric, underscore and hyphen only; max - 32 characters.
+        // Email: at least 4 characters; alphanumeric, underscore, hyphen, 'at@' symbol and dot; max - 32 characters.
         // Password: at least 8 characters; max - 64 characters.
         [Theory]
         [InlineData("username=&password=",
