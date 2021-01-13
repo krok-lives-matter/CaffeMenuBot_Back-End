@@ -1,3 +1,4 @@
+using CaffeMenuBot.AppHost.Authentication;
 using CaffeMenuBot.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +29,8 @@ namespace CaffeMenuBot.AppHost
                         .MigrationsAssembly("CaffeMenuBot.Data")
                         .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
 
+            services.AddScoped<IAuthService, DatabaseBasedAuthService>();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -41,6 +44,8 @@ namespace CaffeMenuBot.AppHost
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            
 
             app.UseEndpoints(endpoints =>
             {
