@@ -7,20 +7,25 @@ namespace CaffeMenuBot.AppHost.Configuration
 {
     public static class DatabasePreparer
     {
-        public static void SeedDatabase(CaffeMenuBotContext context)
+        public static void SeedDatabase(CaffeMenuBotContext context, bool forceReseed = false)
         {
-            if (AdminUserExists(context)) return;
+            var adminUser = AdminUserExists(context);
 
-            SeedApplicationUsers(context);
+            if (adminUser != null && forceReseed == false) return;
+
+            SeedAdminUser(context, adminUser, forceReseed);
 
             context.SaveChanges();
         }
 
-        private static void SeedApplicationUsers(CaffeMenuBotContext context)
+        private static void SeedAdminUser(CaffeMenuBotContext context, ApplicationUser? adminUser, bool forceReseed = false)
         {
-            const string adminUserSalt = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw==";
+            if (forceReseed && adminUser != null)
+                context.ApplicationUsers.Remove(adminUser);
 
-            ApplicationUser adminUser = new()
+            const string adminUserSalt = "YWRtaW5AY2FmZmVtZW51Ym90LmNvbQ==";
+
+            adminUser = new ApplicationUser()
             {
                 Username = "admin",
                 Email = "admin@caffemenubot.com",
@@ -32,9 +37,11 @@ namespace CaffeMenuBot.AppHost.Configuration
 
             context.ApplicationUsers.Add(adminUser);
         }
-        private static bool AdminUserExists(CaffeMenuBotContext context)
+
+        private static ApplicationUser? AdminUserExists(CaffeMenuBotContext context)
+
         {
-            return context.ApplicationUsers.Any(user => user.Role == Roles.Admin);
+            return context.ApplicationUsers.FirstOrDefault(user => user.Role == Roles.Admin);
         }
     }
 }
