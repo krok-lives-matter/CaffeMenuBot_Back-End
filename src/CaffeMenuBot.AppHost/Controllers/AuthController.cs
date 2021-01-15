@@ -2,9 +2,7 @@
 using CaffeMenuBot.AppHost.Models;
 using CaffeMenuBot.Data.Models.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 

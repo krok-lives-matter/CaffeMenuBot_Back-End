@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CaffeMenuBot.Data.Models.Authentication
 {
-    [Table("app_users", Schema = "public")]
+    [Table("app_users", Schema = CaffeMenuBotContext.SchemaName)]
     public sealed record ApplicationUser
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), Required, Column("user_id", TypeName = "integer")]
@@ -23,6 +23,5 @@ namespace CaffeMenuBot.Data.Models.Authentication
 
         [Column("user_role", TypeName = "text"), Required]
         public string Role { get; init; } = null!;
-
     }
 }

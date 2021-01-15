@@ -11,8 +11,8 @@ namespace CaffeMenuBot.Data.Models.Menu
         public int Id { get; init; }
 
         [Required, Column("category_name", TypeName = "text")]
-        public string CategoryName { get; init; }
+        public string CategoryName { get; init; } = null!;
 
-        public List<Dish> Dishes { get; init; }
+        public List<Dish> Dishes { get; init; } = null!;
     }
 }

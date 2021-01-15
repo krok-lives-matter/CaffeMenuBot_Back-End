@@ -12,11 +12,10 @@ namespace CaffeMenuBot.Data
         public CaffeMenuBotContext(DbContextOptions<CaffeMenuBotContext> options) : base(options)
         {
         }
-        
 
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<BotUser> BotUsers { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Dish> Dishes { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
+        public DbSet<BotUser> BotUsers { get; set; } = null!;
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<Dish> Dishes { get; set; } = null!;
     }
 }

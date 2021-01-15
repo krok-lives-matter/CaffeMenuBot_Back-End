@@ -11,21 +11,21 @@ namespace CaffeMenuBot.AppHost.Authentication
             return Convert.FromBase64String(saltBase64);
         }
 
-        public static string Encrypt(string _passwordString, byte[] salt)
+        public static string Encrypt(string passwordString, byte[] salt)
         {
             HashAlgorithm algorithm = new SHA256Managed();
 
-            byte[] _password = Encoding.ASCII.GetBytes(_passwordString);
+            byte[] password = Encoding.ASCII.GetBytes(passwordString);
 
-            byte[] passwordWithSaltBytes = new byte[_password.Length + salt.Length];
+            byte[] passwordWithSaltBytes = new byte[password.Length + salt.Length];
 
-            for (int i = 0; i < _password.Length; i++)
+            for (int i = 0; i < password.Length; i++)
             {
-                passwordWithSaltBytes[i] = _password[i];
+                passwordWithSaltBytes[i] = password[i];
             }
             for (int i = 0; i < salt.Length; i++)
             {
-                passwordWithSaltBytes[_password.Length + i] = salt[i];
+                passwordWithSaltBytes[password.Length + i] = salt[i];
             }
 
             return Convert.ToBase64String(algorithm.ComputeHash(passwordWithSaltBytes));

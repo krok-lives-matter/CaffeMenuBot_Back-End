@@ -1,8 +1,4 @@
-﻿using CaffeMenuBot.Data.Models;
-using CaffeMenuBot.Data.Models.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using CaffeMenuBot.Data.Models.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -9,7 +9,7 @@ namespace CaffeMenuBot.AppHost.Configuration
     {
         public static void SeedDatabase(CaffeMenuBotContext context)
         {
-            if (AdminUserExistsAsync(context)) return;
+            if (AdminUserExists(context)) return;
 
             SeedApplicationUsers(context);
 
@@ -20,18 +20,19 @@ namespace CaffeMenuBot.AppHost.Configuration
         {
             const string adminUserSalt = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw==";
 
-            ApplicationUser adminUser = new ApplicationUser()
+            ApplicationUser adminUser = new()
             {
                 Username = "admin",
                 Email = "admin@caffemenubot.com",
                 Role = "admin",
                 Salt = adminUserSalt,
-                PasswordHash = EncryptionProvider.Encrypt("admin", EncryptionProvider.ReadSaltFromBase64(adminUserSalt))
+                PasswordHash = EncryptionProvider.Encrypt("admin",
+                    EncryptionProvider.ReadSaltFromBase64(adminUserSalt))
             };
 
             context.ApplicationUsers.Add(adminUser);
         }
-        private static bool AdminUserExistsAsync(CaffeMenuBotContext context)
+        private static bool AdminUserExists(CaffeMenuBotContext context)
         {
             return context.ApplicationUsers.Any(user => user.Role == Roles.Admin);
         }
