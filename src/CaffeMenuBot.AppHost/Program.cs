@@ -1,4 +1,3 @@
-using CaffeMenuBot.AppHost.Authentication;
 using CaffeMenuBot.AppHost.Configuration;
 using CaffeMenuBot.Data;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -20,11 +20,21 @@ namespace CaffeMenuBot.AppHost
             {
                 IServiceProvider provider = scope.ServiceProvider;
                 CaffeMenuBotContext context = provider.GetRequiredService<CaffeMenuBotContext>();
+                var logger = provider.GetRequiredService<ILogger<CaffeMenuBotContext>>();
+                var config = provider.GetRequiredService<IConfiguration>();
 
-                if (context.Database.GetPendingMigrations().Any())
-                    context.Database.Migrate();
+                try
+                {
+                    if (context.Database.GetPendingMigrations().Any())
+                        context.Database.Migrate();
 
-                DatabasePreparer.SeedDatabase(context);
+                    DatabasePreparer.SeedDatabase(context);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e.ToString());
+                    logger.LogInformation(config.GetConnectionString("CaffeMenuBotDb"));
+                }
             }
             host.Run();
         }
