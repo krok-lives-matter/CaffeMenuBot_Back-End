@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
+using CaffeMenuBot.AppHost.Filters;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -20,6 +21,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         }
 
         [HttpPost("login")]
+        [ValidateModel]
         public async Task<ActionResult> LoginPage([FromForm] LoginModel logInModel, CancellationToken ct)
         {
             ApplicationUser? user = await _authService.AuthenticateUserAsync(logInModel.Email, logInModel.Password, ct);
