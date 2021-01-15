@@ -1,13 +1,10 @@
 ﻿using CaffeMenuBot.AppHost.Options;
 using CaffeMenuBot.Data;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using CaffeMenuBot.Data.Models.Authentication;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
@@ -19,7 +16,7 @@ namespace CaffeMenuBot.AppHost.Authentication
     public sealed class DatabaseBasedAuthService : IAuthService
     {
         private readonly CaffeMenuBotContext _dbContext;
-        private readonly JwtOptions _jwtOptions;
+        private readonly JwtOptions _jwtOptions; 
 
         public DatabaseBasedAuthService(CaffeMenuBotContext context, IOptionsSnapshot<JwtOptions> options)
         {
@@ -35,17 +32,12 @@ namespace CaffeMenuBot.AppHost.Authentication
 
             ct.ThrowIfCancellationRequested();
 
-            if (user == null || user.PasswordHash != Encrypt(password, ReadSaltFromBase64(user.Salt)))
+            if (user == null || user.PasswordHash != EncryptionProvider.Encrypt(password, EncryptionProvider.ReadSaltFromBase64(user.Salt)))
             {
                 return null;
             }
 
             return user;
-        }
-
-        private static byte[] ReadSaltFromBase64(string saltBase64)
-        {
-            return Convert.FromBase64String(saltBase64);
         }
 
         public string GenerateJwtToken(ApplicationUser userInfo)
@@ -63,24 +55,5 @@ namespace CaffeMenuBot.AppHost.Authentication
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        static string Encrypt(string _passwordString, byte[] salt)
-        {
-            HashAlgorithm algorithm = new SHA256Managed();
-
-            byte[] _password = Encoding.ASCII.GetBytes(_passwordString);
-
-            byte[] passwordWithSaltBytes = new byte[_password.Length + salt.Length];
-
-            for (int i = 0; i < _password.Length; i++)
-            {
-                passwordWithSaltBytes[i] = _password[i];
-            }
-            for (int i = 0; i < salt.Length; i++)
-            {
-                passwordWithSaltBytes[_password.Length + i] = salt[i];
-            }
-
-            return Convert.ToBase64String(algorithm.ComputeHash(passwordWithSaltBytes));
-        }
     }
 }
