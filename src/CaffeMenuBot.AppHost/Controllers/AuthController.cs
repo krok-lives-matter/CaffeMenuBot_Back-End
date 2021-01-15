@@ -29,13 +29,15 @@ namespace CaffeMenuBot.AppHost.Controllers
             if (user == null)
                 return RedirectToAction("Auth");
 
-            string token = _authService.GenerateJwtToken(user);
-            Response.Cookies.Append("auth", token, new CookieOptions
-            {
-                MaxAge = TimeSpan.FromMinutes(30d),
-                SameSite = SameSiteMode.Lax,
-                IsEssential = true
-            });
+            // temp commented until jwt token is configured
+
+            //string token = _authService.GenerateJwtToken(user);
+            //Response.Cookies.Append("auth", token, new CookieOptions
+            //{
+            //    MaxAge = TimeSpan.FromMinutes(30d),
+            //    SameSite = SameSiteMode.Lax,
+            //    IsEssential = true
+            //});
 
             return Ok("Login Successful");
         }

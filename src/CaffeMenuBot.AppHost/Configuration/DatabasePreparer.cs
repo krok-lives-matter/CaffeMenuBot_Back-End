@@ -2,30 +2,34 @@
 using CaffeMenuBot.Data;
 using CaffeMenuBot.Data.Models.Authentication;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CaffeMenuBot.AppHost.Configuration
 {
     public static class DatabasePreparer
     {
-        public async static Task SeedDatabaseAsync(CaffeMenuBotContext context)
+        public static void SeedDatabase(CaffeMenuBotContext context)
         {
             if (AdminUserExistsAsync(context)) return;
 
-            await SeedApplicationUsersAsync(context);
+            SeedApplicationUsers(context);
 
-            await context.SaveChangesAsync();
+            context.SaveChanges();
         }
 
-        private async static Task SeedApplicationUsersAsync(CaffeMenuBotContext context)
+        private static void SeedApplicationUsers(CaffeMenuBotContext context)
         {
+            const string adminUserSalt = "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw==";
+
             ApplicationUser adminUser = new ApplicationUser()
             {
                 Username = "admin",
-                Role = "admin"
+                Email = "admin@caffemenubot.com",
+                Role = "admin",
+                Salt = adminUserSalt,
+                PasswordHash = EncryptionProvider.Encrypt("admin", EncryptionProvider.ReadSaltFromBase64(adminUserSalt))
             };
 
-            await context.ApplicationUsers.AddAsync(adminUser);
+            context.ApplicationUsers.AddAsync(adminUser);
         }
         private static bool AdminUserExistsAsync(CaffeMenuBotContext context)
         {
