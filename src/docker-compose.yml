@@ -28,6 +28,8 @@ services:
     << : *restart_policy
     container_name: caffe_menu_bot_postgres
     image: postgres:12.4
+    ports:
+    - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=caffe_menu_bot
