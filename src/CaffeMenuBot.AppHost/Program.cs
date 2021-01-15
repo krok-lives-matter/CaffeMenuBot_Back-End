@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
-using Microsoft.Extensions.Logging;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -20,21 +19,11 @@ namespace CaffeMenuBot.AppHost
             {
                 IServiceProvider provider = scope.ServiceProvider;
                 CaffeMenuBotContext context = provider.GetRequiredService<CaffeMenuBotContext>();
-                var logger = provider.GetRequiredService<ILogger<CaffeMenuBotContext>>();
-                var config = provider.GetRequiredService<IConfiguration>();
 
-                try
-                {
-                    if (context.Database.GetPendingMigrations().Any())
-                        context.Database.Migrate();
+                if (context.Database.GetPendingMigrations().Any())
+                    context.Database.Migrate();
 
-                    DatabasePreparer.SeedDatabase(context);
-                }
-                catch (Exception e)
-                {
-                    logger.LogError(e.ToString());
-                    logger.LogInformation(config.GetConnectionString("CaffeMenuBotDb"));
-                }
+                DatabasePreparer.SeedDatabase(context);
             }
             host.Run();
         }
