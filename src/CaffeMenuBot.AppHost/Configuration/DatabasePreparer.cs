@@ -29,11 +29,11 @@ namespace CaffeMenuBot.AppHost.Configuration
                 PasswordHash = EncryptionProvider.Encrypt("admin", EncryptionProvider.ReadSaltFromBase64(adminUserSalt))
             };
 
-            context.ApplicationUsers.AddAsync(adminUser);
+            context.ApplicationUsers.Add(adminUser);
         }
         private static bool AdminUserExistsAsync(CaffeMenuBotContext context)
         {
-            return context.ApplicationUsers.FirstOrDefault(user => user.Role == Roles.Admin) != null;
+            return context.ApplicationUsers.Any(user => user.Role == Roles.Admin);
         }
     }
 }
