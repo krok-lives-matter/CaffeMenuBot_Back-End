@@ -7,7 +7,7 @@ namespace CaffeMenuBot.AppHost.Models
     {
         [Required]
         [StringLength(254, MinimumLength = 4)]
-        [RegularExpression("/^[a-z0-9!#$%&'*+\\/=?^_`{|}~.-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/iD")]
+        [RegularExpression("^[a-z0-9!#$%&'*+\\/=?^_`{|}~.-]+@[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$")]
         public string Email { get; init; } = null!;
 
         [Required]

@@ -15,6 +15,7 @@ namespace CaffeMenuBot.IntegrationTests
         public CaffeMenuBotWebApplicationFactory()
         {
             ClientOptions.BaseAddress = new Uri("http://localhost:5001/");
+            ClientOptions.AllowAutoRedirect = false;
         }
         
         protected override void ConfigureWebHost(IWebHostBuilder builder)

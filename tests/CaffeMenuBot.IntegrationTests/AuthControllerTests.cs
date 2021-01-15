@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,6 +53,47 @@ namespace CaffeMenuBot.IntegrationTests
             HttpResponseMessage result = await client.PostAsync("auth/login", content);
             
             Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("test@gmail.com")]
+        [InlineData("contact@vova-lantsov.dev")]
+        [InlineData("email@example.com")]
+        public async Task Login_UserDoesNotExist_RedirectToAuthPage(string email)
+        {
+            const string testPassword = "Passw0rd123";
+
+            HttpClient client = _factory.CreateClient();
+
+            Dictionary<string, string> contentData = new()
+            {
+                ["email"] = email,
+                ["password"] = testPassword
+            };
+            using FormUrlEncodedContent content = new(contentData);
+            HttpResponseMessage result = await client.PostAsync("auth/login", content);
+            
+            Assert.Equal(HttpStatusCode.Redirect, result.StatusCode);
+            Assert.Equal("/auth", result.Headers.Location?.ToString());
+        }
+
+        [Fact]
+        public async Task Login_Ok()
+        {
+            const string email = "test@example.com";
+            const string password = "my_password";
+            
+            HttpClient client = _factory.CreateClient();
+
+            Dictionary<string, string> contentData = new()
+            {
+                ["email"] = email,
+                ["password"] = password
+            };
+            using FormUrlEncodedContent content = new(contentData);
+            HttpResponseMessage result = await client.PostAsync("auth/login", content);
+            
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
     }
 }
