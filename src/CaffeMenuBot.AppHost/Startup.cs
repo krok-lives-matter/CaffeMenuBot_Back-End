@@ -1,12 +1,14 @@
 using CaffeMenuBot.AppHost.Authentication;
 using CaffeMenuBot.AppHost.Options;
 using CaffeMenuBot.Data;
+using CaffeMenuBot.Data.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -22,7 +24,7 @@ namespace CaffeMenuBot.AppHost
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             services.AddDbContext<CaffeMenuBotContext>(options =>
                 options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
@@ -31,6 +33,8 @@ namespace CaffeMenuBot.AppHost
                         .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
 
             services.AddScoped<IAuthService, DatabaseBasedAuthService>();
+
+            services.AddScoped<IDashboardRepo, PostgreDashboardRepo>();
 
             services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
 
@@ -43,12 +47,12 @@ namespace CaffeMenuBot.AppHost
                 app.UseDeveloperExceptionPage();
             }
 
-            
+
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            
+
 
             app.UseEndpoints(endpoints =>
             {

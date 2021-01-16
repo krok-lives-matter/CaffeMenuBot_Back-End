@@ -24,7 +24,7 @@ namespace CaffeMenuBot.AppHost
                     context.Database.Migrate();
 
                 // use true to force reseed admin user
-                DatabasePreparer.SeedDatabase(context, true);
+                DatabasePreparer.SeedDatabase(context, false);
             }
             host.Run();
         }
