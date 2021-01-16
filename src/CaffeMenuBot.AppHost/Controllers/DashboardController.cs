@@ -17,8 +17,6 @@ namespace CaffeMenuBot.AppHost.Controllers
             _dashboardRepo = dashboardRepo;
         }
 
-        #region dishes
-
         //GET api/dashboard/dishes
         [HttpGet("dishes")]
         public ActionResult<IEnumerable<Dish>> GetAllDishes()
@@ -55,10 +53,6 @@ namespace CaffeMenuBot.AppHost.Controllers
             return CreatedAtRoute(nameof(GetDishById), new { Id = createdDish.Id }, createdDish);
         }
 
-        #endregion
-
-
-        #region categories
         //GET api/dashboard/categories
         [HttpGet("categories")]
         public ActionResult<IEnumerable<Category>> GetAllCategories()
@@ -93,7 +87,5 @@ namespace CaffeMenuBot.AppHost.Controllers
 
             return CreatedAtRoute(nameof(GetCategoryById), new { Id = createdCategory.Id }, createdCategory);
         }
-#endregion
-
     }
 }
