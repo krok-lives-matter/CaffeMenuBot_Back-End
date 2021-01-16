@@ -31,7 +31,7 @@ namespace CaffeMenuBot.AppHost.Configuration
                 Email = "admin@caffemenubot.com",
                 Role = "admin",
                 Salt = adminUserSalt,
-                PasswordHash = EncryptionProvider.Encrypt("admin",
+                PasswordHash = EncryptionProvider.Encrypt("adminadmin",
                     EncryptionProvider.ReadSaltFromBase64(adminUserSalt))
             };
 
