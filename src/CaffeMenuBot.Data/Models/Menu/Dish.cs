@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CaffeMenuBot.Data.Models.Menu
 {
@@ -22,6 +23,7 @@ namespace CaffeMenuBot.Data.Models.Menu
         public decimal Price { get; init; }
 
         public int CategoryId { get; init; }
-        public Category Category { get; init; } = null!;
+        [JsonIgnore]
+        public Category? Category { get; init; } = null!;
     }
 }
