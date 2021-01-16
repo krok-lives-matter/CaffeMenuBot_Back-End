@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace CaffeMenuBot.Data.Models.Menu
 {
@@ -16,8 +15,9 @@ namespace CaffeMenuBot.Data.Models.Menu
 
         public int? ParentCategoryId { get; init; }
         public Category? ParentCategory { get; init; }
+        
         public IEnumerable<Category>? SubCategories { get; set; }
 
-        public List<Dish>? Dishes { get; init; } = null!;
+        public List<Dish>? Dishes { get; init; }
     }
 }

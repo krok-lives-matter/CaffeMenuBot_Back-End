@@ -2,7 +2,6 @@ using System.Text.Json.Serialization;
 using CaffeMenuBot.AppHost.Authentication;
 using CaffeMenuBot.AppHost.Options;
 using CaffeMenuBot.Data;
-using CaffeMenuBot.Data.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -36,8 +35,6 @@ namespace CaffeMenuBot.AppHost
                         .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
 
             services.AddScoped<IAuthService, DatabaseBasedAuthService>();
-
-            services.AddScoped<IDashboardRepo, PostgreDashboardRepo>();
 
             services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
 
