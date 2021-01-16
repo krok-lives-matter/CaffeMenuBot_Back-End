@@ -11,6 +11,12 @@ namespace CaffeMenuBot.AppHost.Authentication
             return Convert.FromBase64String(saltBase64);
         }
 
+        public static string GenerateSaltForUser(string email)
+        {
+            var emailBytes = Encoding.ASCII.GetBytes(email);
+            return Convert.ToBase64String(emailBytes);
+        }
+
         public static string Encrypt(string passwordString, byte[] salt)
         {
             HashAlgorithm algorithm = new SHA256Managed();
