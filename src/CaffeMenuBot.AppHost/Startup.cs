@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using CaffeMenuBot.AppHost.Authentication;
 using CaffeMenuBot.AppHost.Options;
 using CaffeMenuBot.Data;
@@ -8,13 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 
 namespace CaffeMenuBot.AppHost
 {
     public sealed class Startup
     {
-
         private readonly IConfiguration _configuration;
 
         public Startup(IConfiguration configuration)
@@ -24,7 +23,11 @@ namespace CaffeMenuBot.AppHost
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            services.AddControllersWithViews()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                });
 
             services.AddDbContext<CaffeMenuBotContext>(options =>
                 options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
