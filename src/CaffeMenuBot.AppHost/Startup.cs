@@ -1,4 +1,5 @@
 using CaffeMenuBot.AppHost.Authentication;
+using CaffeMenuBot.AppHost.Options;
 using CaffeMenuBot.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,8 @@ namespace CaffeMenuBot.AppHost
                         .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
 
             services.AddScoped<IAuthService, DatabaseBasedAuthService>();
+
+            services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
 
         }
 

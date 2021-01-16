@@ -1,0 +1,7 @@
+{
+  "Jwt": {
+    "Issuer": "KROK Lives Matter",
+    "Audience": "KROK",
+    "SecretKey": "fa5uVXcDDi4sMUyMlR"
+  }
+}

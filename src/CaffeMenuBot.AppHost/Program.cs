@@ -36,6 +36,8 @@ namespace CaffeMenuBot.AppHost
                     var env = context.HostingEnvironment.EnvironmentName;
                     builder.AddJsonFile("dbsettings.json", false, true)
                         .AddJsonFile($"dbsettings.{env}.json", true, true);
+                    builder.AddJsonFile("jwt.json", false, true)
+                        .AddJsonFile($"jwt.{env}.json", true, true);
                 })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
 using CaffeMenuBot.AppHost.Filters;
+using Microsoft.AspNetCore.Http;
+using System;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -29,15 +31,13 @@ namespace CaffeMenuBot.AppHost.Controllers
             if (user == null)
                 return RedirectToAction("Auth");
 
-            // temp commented until jwt token is configured
-
-            //string token = _authService.GenerateJwtToken(user);
-            //Response.Cookies.Append("auth", token, new CookieOptions
-            //{
-            //    MaxAge = TimeSpan.FromMinutes(30d),
-            //    SameSite = SameSiteMode.Lax,
-            //    IsEssential = true
-            //});
+            string token = _authService.GenerateJwtToken(user);
+            Response.Cookies.Append("auth", token, new CookieOptions
+            {
+                MaxAge = TimeSpan.FromMinutes(30d),
+                SameSite = SameSiteMode.Lax,
+                IsEssential = true
+            });
 
             return Ok("Login Successful");
         }
