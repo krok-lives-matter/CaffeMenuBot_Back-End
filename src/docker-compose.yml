@@ -10,6 +10,10 @@ x-host-config: &host_config
   ports:
     - "5000:80"
 
+x-client-config: &client_config
+  ports:
+    - "5002:80"
+
 services:
   host:
     << : *restart_policy
@@ -21,6 +25,19 @@ services:
     build:
       context: .
       dockerfile: CaffeMenuBot.AppHost/Dockerfile
+    networks:
+      - host_network
+  
+  client:
+    << : *restart_policy
+    << : *client_config
+    depends_on:
+      - host
+    container_name: caffe_menu_bot_client
+    image: caffe_menu_bot/client:latest
+    build:
+      context: .
+      dockerfile: CaffeMenuBot.Client/Dockerfile
     networks:
       - host_network
 

@@ -35,4 +35,8 @@
       <ProjectReference Include="..\CaffeMenuBot.Data\CaffeMenuBot.Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Views\Dashboard" />
+    </ItemGroup>
+
 </Project>
