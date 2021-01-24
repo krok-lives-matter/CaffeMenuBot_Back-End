@@ -1,0 +1,47 @@
+﻿@inject HttpClient Http
+
+<div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Confirm action</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="CloseModal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Do you want to delete <span></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="CloseModal">Cancel</button>
+                <button type="button" class="btn btn-danger" @onclick="DeleteAsync">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    #nullable enable
+    
+    [Parameter]
+    private int IdToDelete { get; set; }
+    
+    [Parameter]
+    private DeleteAction DeleteAction { get; set; }
+
+    [Parameter]
+    private Action CloseModal { get; set; } = null!;
+
+    private async Task DeleteAsync()
+    {
+        string link = DeleteAction == DeleteAction.Category
+            ? "dashboard/deleteCategoryById"
+            : "dashboard/deleteDishById";
+        using HttpResponseMessage response = await Http.PostAsJsonAsync(link, new object());
+        response.EnsureSuccessStatusCode();
+        // Validate deletion
+
+        CloseModal();
+    }
+}
