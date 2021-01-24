@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,6 +23,10 @@
       <Folder Include="wwwroot\js" />
       <Folder Include="wwwroot\less" />
       <Folder Include="wwwroot\vendor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CaffeMenuBot.Shared\CaffeMenuBot.Shared.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,10 +1,74 @@
 ﻿@page "/auth"
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-<RemoteAuthenticatorView Action="@Action"/>
+@using CaffeMenuBot.Shared.Models.Auth
+@layout EmptyLayout
+@inject HttpClient Client
 
-@code{
+<div class="bg-secondary text-light">
+    <div class="form">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 offset-md-3 offset-sm-0">
+                    <form method="POST" class="form__wrapper">
+                        <div class="mb-5">
+                            <h1 class="display-3">
+                                Login to panel
+                            </h1>
+                        </div>
+                        <div class="mb-3">
+                            <label for="login" class="form-label">Type your login</label>
+                            <input type="email" id="login" @bind="Email" class="form-control" placeholder="Login here">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Type your password</label>
+                            <input type="password" id="password" @bind="Password" class="form-control" placeholder="Password here">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" @bind="RememberMe" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Remember me
+                            </label>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary w-100" @onclick="AuthorizeAsync">Авторизироваться</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    [Parameter]
-    public string Action { get; set; }
+@code {
+    #nullable enable
+
+    private string Email { get; set; } = "";
+    private string Password { get; set; } = "";
+    private bool RememberMe { get; set; }
+
+    private async Task AuthorizeAsync()
+    {
+        LoginRequestModel requestModel = new()
+        {
+            Email = Email,
+            Password = Password
+        };
+        using HttpResponseMessage response = await Client.PostAsJsonAsync("auth/login", requestModel);
+        LoginResponseModel? responseModel = await response.Content.ReadFromJsonAsync<LoginResponseModel>();
+
+        if (requestModel == null)
+        {
+            Reset();
+            return;
+        }
+        
+        string token = responseModel!.Token;
+        // handle token here
+    }
+
+    private void Reset()
+    {
+        Email = Password = "";
+        RememberMe = false;
+    }
 
 }

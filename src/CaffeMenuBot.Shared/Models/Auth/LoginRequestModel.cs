@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-
-namespace CaffeMenuBot.AppHost.Models
+namespace CaffeMenuBot.Shared.Models.Auth
 {
-    public sealed record LoginModel
+    public sealed record LoginRequestModel
     {
         [Required]
         [StringLength(254, MinimumLength = 4)]

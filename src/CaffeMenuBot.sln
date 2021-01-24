@@ -26,6 +26,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaffeMenuBot.Client", "CaffeMenuBot.Client\CaffeMenuBot.Client.csproj", "{ADF12BA4-1341-432F-88D4-6F6E9FBA02C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaffeMenuBot.Shared", "CaffeMenuBot.Shared\CaffeMenuBot.Shared.csproj", "{90138637-8248-434E-890B-E9649C5F1CB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -119,6 +121,18 @@ Global
 		{ADF12BA4-1341-432F-88D4-6F6E9FBA02C6}.Release|x64.Build.0 = Release|Any CPU
 		{ADF12BA4-1341-432F-88D4-6F6E9FBA02C6}.Release|x86.ActiveCfg = Release|Any CPU
 		{ADF12BA4-1341-432F-88D4-6F6E9FBA02C6}.Release|x86.Build.0 = Release|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Debug|x64.Build.0 = Debug|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Debug|x86.Build.0 = Debug|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Release|x64.ActiveCfg = Release|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Release|x64.Build.0 = Release|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Release|x86.ActiveCfg = Release|Any CPU
+		{90138637-8248-434E-890B-E9649C5F1CB1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

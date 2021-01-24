@@ -1,11 +1,13 @@
 ﻿@inject NavigationManager Navigation
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @code {
+    
+    [Parameter]
+    private string Resource { get; set; }
 
     protected override void OnInitialized()
     {
-        Navigation.NavigateTo($"auth?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
+        Navigation.NavigateTo(Resource);
     }
 
 }
