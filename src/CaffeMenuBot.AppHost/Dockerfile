@@ -1,9 +1,10 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal AS base
+FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
 
 WORKDIR /src
 COPY CaffeMenuBot.AppHost/CaffeMenuBot.AppHost.csproj CaffeMenuBot.AppHost/
 COPY CaffeMenuBot.Data/CaffeMenuBot.Data.csproj CaffeMenuBot.Data/
+COPY CaffeMenuBot.Shared/CaffeMenuBot.Shared.csproj CaffeMenuBot.Shared/
 
 RUN dotnet restore CaffeMenuBot.AppHost/CaffeMenuBot.AppHost.csproj
 
