@@ -1,13 +1,10 @@
 ﻿@inject NavigationManager Navigation
 
 @code {
-    
-    [Parameter]
-    private string Resource { get; set; }
 
     protected override void OnInitialized()
     {
-        Navigation.NavigateTo(Resource);
+        Navigation.NavigateTo("/auth");
     }
 
 }

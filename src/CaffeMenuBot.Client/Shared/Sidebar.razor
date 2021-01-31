@@ -1,0 +1,52 @@
+﻿<div class="container-fluid">
+    <div class="row">
+        <div class="col-2">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" role="tab" @onclick="(() => Mode = SidebarMode.Categories)"
+                    aria-controls="v-pills-home" aria-selected="true">Categories</a>
+                <a class="nav-link" id="v-pills-dishes-tab" data-toggle="pill" role="tab" @onclick="(() => Mode = SidebarMode.Dishes)"
+                    aria-controls="v-pills-dishes" aria-selected="false">Dishes</a>
+                <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" role="tab" @onclick="(() => Mode = SidebarMode.Messages)"
+                    aria-controls="v-pills-messages" aria-selected="false">Messages</a>
+                <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" role="tab" @onclick="(() => Mode = SidebarMode.Settings)"
+                    aria-controls="v-pills-settings" aria-selected="false">Settings</a>
+            </div>
+        </div>
+        <div class="col-10">
+            <div class="tab-content" id="v-pills-tabContent">
+                @switch (Mode)
+                {
+                    case SidebarMode.Categories:
+                        <Categories />
+                        break;
+                        
+                    case SidebarMode.Dishes:
+                        <Dishes />
+                        break;
+                        
+                    case SidebarMode.Messages:
+                        <Messages />
+                        break;
+                        
+                    case SidebarMode.Settings:
+                        <Settings />
+                        break;
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private SidebarMode Mode { get; set; } = SidebarMode.Categories;
+    
+    private enum SidebarMode
+    {
+        Categories,
+        Dishes,
+        Messages,
+        Settings
+    }
+    
+}

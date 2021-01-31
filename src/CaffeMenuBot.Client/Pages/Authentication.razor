@@ -55,13 +55,13 @@
         using HttpResponseMessage response = await Client.PostAsJsonAsync("auth/login", requestModel);
         LoginResponseModel? responseModel = await response.Content.ReadFromJsonAsync<LoginResponseModel>();
 
-        if (requestModel == null)
+        if (responseModel == null)
         {
             Reset();
             return;
         }
         
-        string token = responseModel!.Token;
+        string token = responseModel.Token;
         // handle token here
     }
 

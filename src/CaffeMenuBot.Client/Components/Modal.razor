@@ -25,13 +25,13 @@
     #nullable enable
     
     [Parameter]
-    private int IdToDelete { get; set; }
+    public int IdToDelete { get; set; }
     
     [Parameter]
-    private DeleteAction DeleteAction { get; set; }
+    public DeleteAction DeleteAction { get; set; }
 
     [Parameter]
-    private Action CloseModal { get; set; } = null!;
+    public Action CloseModal { get; set; } = null!;
 
     private async Task DeleteAsync()
     {
