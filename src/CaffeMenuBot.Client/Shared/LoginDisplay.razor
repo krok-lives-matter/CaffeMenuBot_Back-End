@@ -4,14 +4,14 @@
 @inject NavigationManager Navigation
 @inject SignOutSessionStateManager SignOutManager
 
-<AuthorizeView>
-    <Authorized>
+@*<AuthorizeView>
+    <Authorized>*@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Greetings, @context.User.Identity!.Name
+                        Greetings, eminzzz@*@context.User.Identity!.Name*@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="#actions">Actions</a>
@@ -22,11 +22,11 @@
                 </li>
             </ul>
         </div>
-    </Authorized>
+    @*</Authorized>
     <NotAuthorized>
         <RedirectToLogin />
     </NotAuthorized>
-</AuthorizeView>
+</AuthorizeView>*@
 
 @code{
 
