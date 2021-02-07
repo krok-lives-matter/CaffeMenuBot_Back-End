@@ -1,8 +1,8 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CaffeMenuBot.Client
@@ -14,18 +14,14 @@ namespace CaffeMenuBot.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(provider =>
-            {
-                var config = provider.GetRequiredService<IConfiguration>();
-                return new HttpClient {BaseAddress = new Uri(config["Server:BaseAddress"])};
-            });
+            builder.Services.AddHttpClient("WebAPI",
+                    client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+                .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
-            builder.Services.AddOidcAuthentication(options =>
-            {
-                // Configure your authentication provider options here.
-                // For more information, see https://aka.ms/blazor-standalone-auth
-                //builder.Configuration.Bind("Local", options.ProviderOptions);
-            });
+            builder.Services.AddScoped(provider =>
+                provider.GetRequiredService<IHttpClientFactory>().CreateClient("WebAPI"));
+
+            builder.Services.AddApiAuthorization();
 
             await builder.Build().RunAsync();
         }

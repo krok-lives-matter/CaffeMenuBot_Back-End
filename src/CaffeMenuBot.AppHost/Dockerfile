@@ -5,19 +5,21 @@ WORKDIR /src
 COPY CaffeMenuBot.AppHost/CaffeMenuBot.AppHost.csproj CaffeMenuBot.AppHost/
 COPY CaffeMenuBot.Data/CaffeMenuBot.Data.csproj CaffeMenuBot.Data/
 COPY CaffeMenuBot.Shared/CaffeMenuBot.Shared.csproj CaffeMenuBot.Shared/
+COPY CaffeMenuBot.Client/CaffeMenuBot.Client.csproj CaffeMenuBot.Client/
 
 RUN dotnet restore CaffeMenuBot.AppHost/CaffeMenuBot.AppHost.csproj
+RUN dotnet restore CaffeMenuBot.Client/CaffeMenuBot.Client.csproj
 
 COPY . .
 WORKDIR /src/CaffeMenuBot.AppHost
 RUN dotnet build CaffeMenuBot.AppHost.csproj -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish CaffeMenuBot.AppHost.csproj -c Release -o /app
+RUN dotnet publish CaffeMenuBot.AppHost.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app .
+COPY --from=publish /app/publish .
 
 EXPOSE 80
 

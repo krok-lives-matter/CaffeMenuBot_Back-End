@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using CaffeMenuBot.Data;
+using CaffeMenuBot.AppHost.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -24,11 +24,11 @@ namespace CaffeMenuBot.IntegrationTests
             {
                 var descriptor = services.SingleOrDefault(
                     d => d.ServiceType ==
-                         typeof(DbContextOptions<CaffeMenuBotContext>));
+                         typeof(DbContextOptions<AuthorizationDbContext>));
 
                 services.Remove(descriptor);
 
-                services.AddDbContext<CaffeMenuBotContext>(options =>
+                services.AddDbContext<AuthorizationDbContext>(options =>
                 {
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
                 });
@@ -37,7 +37,7 @@ namespace CaffeMenuBot.IntegrationTests
 
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
-                var db = scopedServices.GetRequiredService<CaffeMenuBotContext>();
+                var db = scopedServices.GetRequiredService<AuthorizationDbContext>();
                 var logger = scopedServices
                     .GetRequiredService<ILogger<CaffeMenuBotWebApplicationFactory<TStartup>>>();
 

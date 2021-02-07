@@ -3,30 +3,23 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <Nullable>enable</Nullable>
+        <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.2" PrivateAssets="all" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="5.0.2" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
         <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Update=".dockerignore">
-        <DependentUpon>Dockerfile</DependentUpon>
-      </None>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="wwwroot\css" />
-      <Folder Include="wwwroot\js" />
-      <Folder Include="wwwroot\less" />
-      <Folder Include="wwwroot\vendor" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\CaffeMenuBot.Shared\CaffeMenuBot.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
     </ItemGroup>
 
 </Project>

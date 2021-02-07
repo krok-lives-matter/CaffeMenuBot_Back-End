@@ -1,25 +1,24 @@
 ﻿using System;
 using CaffeMenuBot.AppHost.Authentication;
 using CaffeMenuBot.Data;
-using CaffeMenuBot.Data.Models.Authentication;
 
 namespace CaffeMenuBot.IntegrationTests
 {
     internal static class Utilities
     {
-        public static void InitializeDatabaseForTests(CaffeMenuBotContext context, IServiceProvider services)
+        public static void InitializeDatabaseForTests(AuthorizationDbContext context, IServiceProvider services)
         {
             const string salt = "YWRtaW5AY2FmZmVtZW51Ym90LmNvbQ==";
             var user = new ApplicationUser
             {
-                Id = 1,
+                Id = Guid.NewGuid().ToString(),
                 Email = "test@example.com",
-                Role = "admin",
+                /*Role = "admin",
                 Username = "my_username",
-                Salt = salt,
+                Salt = salt,*/
                 PasswordHash = EncryptionProvider.Encrypt("my_password", EncryptionProvider.ReadSaltFromBase64(salt))
             };
-            context.ApplicationUsers.Add(user);
+            context.Users.Add(user);
             context.SaveChanges();
         }
     }

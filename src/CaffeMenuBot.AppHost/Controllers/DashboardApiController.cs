@@ -13,7 +13,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 {
     [ApiController]
     [Route("api/dashboard")]
-    [AllowAnonymous]
+    [Authorize]
     public class DashboardApiController : ControllerBase
     {
         private readonly CaffeMenuBotContext _context;

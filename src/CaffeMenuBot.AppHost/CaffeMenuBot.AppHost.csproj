@@ -17,28 +17,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="wwwroot\css\style.css" />
-      <None Include="wwwroot\css\style.css.map" />
-      <None Include="wwwroot\js\app.js" />
-      <None Include="wwwroot\less\style.less" />
-      <None Include="wwwroot\vendor\bootstrap.min.css" />
-      <None Include="wwwroot\vendor\bootstrap.min.js" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.8.0" />
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
-      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.2" />
+      <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="5.0.2" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.2" />
+      <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.2" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.2" />
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\CaffeMenuBot.Client\CaffeMenuBot.Client.csproj" />
       <ProjectReference Include="..\CaffeMenuBot.Data\CaffeMenuBot.Data.csproj" />
       <ProjectReference Include="..\CaffeMenuBot.Shared\CaffeMenuBot.Shared.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="Views\Auth\Auth.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Shared\_Layout.cshtml" />
     </ItemGroup>
 
 </Project>

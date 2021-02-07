@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using CaffeMenuBot.AppHost.Authentication;
-using CaffeMenuBot.AppHost.Options;
 using CaffeMenuBot.Data;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +22,14 @@ namespace CaffeMenuBot.AppHost
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
+            services.AddControllersWithViews()
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
                 });
+            services.AddRazorPages();
+            
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDbContext<CaffeMenuBotContext>(options =>
                 options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
@@ -34,10 +37,18 @@ namespace CaffeMenuBot.AppHost
                         .MigrationsAssembly("CaffeMenuBot.Data")
                         .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
 
-            services.AddScoped<IAuthService, DatabaseBasedAuthService>();
+            services.AddDbContext<AuthorizationDbContext>(options =>
+                options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
+                    builder.EnableRetryOnFailure()));
+            
+            services.AddDefaultIdentity<ApplicationUser>()
+                .AddEntityFrameworkStores<AuthorizationDbContext>();
 
-            services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
-
+            services.AddIdentityServer()
+                .AddApiAuthorization<ApplicationUser, AuthorizationDbContext>();
+            
+            services.AddAuthentication()
+                .AddIdentityServerJwt();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -45,18 +56,24 @@ namespace CaffeMenuBot.AppHost
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //app.UseMigrationsEndPoint();
+                app.UseWebAssemblyDebugging();
             }
 
-
+            app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-
+            
             app.UseRouting();
 
-
+            app.UseIdentityServer();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

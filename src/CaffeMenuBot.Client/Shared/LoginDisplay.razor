@@ -4,33 +4,33 @@
 @inject NavigationManager Navigation
 @inject SignOutSessionStateManager SignOutManager
 
-@*<AuthorizeView>
-    <Authorized>*@
+<AuthorizeView>
+    <Authorized>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Greetings, eminzzz@*@context.User.Identity!.Name*@
+                        Greetings, @context.User.Identity!.Name!
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#actions">Actions</a>
-                        <a class="dropdown-item" href="#settings">User settings</a>
+                        <a class="dropdown-item" role="button">Actions</a>
+                        <a class="dropdown-item" role="button">User settings</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#exit">Exit</a>
+                        <a class="dropdown-item" role="button" @onclick="SignOutAsync">Sign out</a>
                     </div>
                 </li>
             </ul>
         </div>
-    @*</Authorized>
+    </Authorized>
     <NotAuthorized>
         <RedirectToLogin />
     </NotAuthorized>
-</AuthorizeView>*@
+</AuthorizeView>
 
 @code{
 
-    private async Task BeginSignOut(MouseEventArgs args)
+    private async Task SignOutAsync(MouseEventArgs args)
     {
         await SignOutManager.SetSignOutState();
         Navigation.NavigateTo("authentication/logout");
