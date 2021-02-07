@@ -1,5 +1,11 @@
+using System;
+using System.Linq;
+using CaffeMenuBot.AppHost.Authentication;
+using CaffeMenuBot.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace CaffeMenuBot.AppHost
@@ -8,7 +14,19 @@ namespace CaffeMenuBot.AppHost
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            using (IServiceScope scope = host.Services.CreateScope())
+            {
+                IServiceProvider provider = scope.ServiceProvider;
+                CaffeMenuBotContext context = provider.GetRequiredService<CaffeMenuBotContext>();
+                AuthorizationDbContext authContext = provider.GetRequiredService<AuthorizationDbContext>();
+
+                if (context.Database.GetPendingMigrations().Any())
+                    context.Database.Migrate();
+                if (authContext.Database.GetPendingMigrations().Any())
+                    authContext.Database.Migrate();
+            }
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
