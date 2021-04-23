@@ -117,6 +117,7 @@ class Build : NukeBuild
                 .EnableNoRestore());
         });
     
+    
     [Partition(2)] readonly Partition TestPartition;
     IEnumerable<Project> TestProjects => TestPartition.GetCurrent(Solution.GetProjects("*Tests"));
     AbsolutePath TestResultDirectory => OutputDirectory / "test-results";
