@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using CaffeMenuBot.Data.Models.Menu;
 using CaffeMenuBot.Data.Models.Bot;
+using CaffeMenuBot.Data.Models.Reviews;
+using CaffeMenuBot.Data.Models.Schedule;
 
 namespace CaffeMenuBot.Data
 {
@@ -13,7 +15,10 @@ namespace CaffeMenuBot.Data
         }
 
         public DbSet<BotUser> BotUsers { get; set; } = null!;
+        public DbSet<Review> Reviews {get; set; } = null!;
+        public DbSet<Schedule> Schedule { get; set; } = null!;
         public DbSet<Category> Categories { get; set; } = null!;
+
         public DbSet<Dish> Dishes { get; set; } = null!;
     }
 }
