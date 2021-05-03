@@ -1,12 +1,12 @@
 ﻿@page "/"
-@page "/dashboard"
+@page "/menu"
 @inject NavigationManager NavigationManager
 
 @code {
     
     protected override void OnInitialized()
     {
-        NavigationManager.NavigateTo("/dashboard/categories");
+        NavigationManager.NavigateTo("/menu/categories");
     }
 
 }
