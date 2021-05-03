@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CaffeMenuBot.AppHost.Controllers
 {
     [ApiController]
-    [Route("api/menu")]
+    [Route("api/dashboard/menu")]
     [Authorize]
     public class MenuApiController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             _context = context;
         }
 
-        //GET api/menu/dishes
+        //GET api/dashboard/menu/dishes
         [HttpGet("dishes")]
         public async Task<ActionResult<IEnumerable<Dish>>> GetDishes(CancellationToken cancellationToken)
         {
@@ -35,7 +35,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         }
 
 
-        //GET api/menu/dishes/{id}
+        //GET api/dashboard/menu/dishes/{id}
         [HttpGet("dishes/{id:int:min(1)}")]
         public async Task<ActionResult<Dish>> GetDish(int id, CancellationToken cancellationToken)
         {
@@ -50,7 +50,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return dish;
         }
 
-        //DELETE api/menu/dishes/{id}
+        //DELETE api/dashboard/menu/dishes/{id}
         [HttpDelete("dishes/{id:int:min(1)}")]
         public async Task<ActionResult<Dish>> DeleteDish(int id, CancellationToken cancellationToken)
         {
@@ -69,7 +69,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return NoContent();
         }
 
-        //POST api/menu/dishes
+        //POST api/dashboard/menu/dishes
         [HttpPost("dishes")]
         public async Task<ActionResult<CreatedItemResult>> PostDish([FromBody] Dish dish, CancellationToken cancellationToken)
         {
@@ -80,7 +80,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return new CreatedItemResult {CreatedItemId = dish.Id};
         }
 
-        //Put api/menu/dishes
+        //Put api/dashboard/menu/dishes
         [HttpPut("dishes")]
         public async Task<ActionResult<CreatedItemResult>> PutDish([FromBody] Dish dish, CancellationToken cancellationToken)
         {
@@ -90,7 +90,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return new CreatedItemResult { CreatedItemId = dish.Id };
         }
 
-        //GET api/menu/categories
+        //GET api/dashboard/menu/categories
         [HttpGet("categories")]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories(CancellationToken cancellationToken)
         {
@@ -99,7 +99,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         }
 
 
-        //GET api/menu/categories/{id}
+        //GET api/dashboard/menu/categories/{id}
         [HttpGet("categories/{id:int:min(1)}")]
         public async Task<ActionResult<Category>> GetCategory(int id, CancellationToken cancellationToken)
         {
@@ -116,7 +116,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         
 
         // WARNING deletes all related subcategories and dishes
-        //DELETE api/menu/categories/{id}
+        //DELETE api/dashboard/menu/categories/{id}
         [HttpDelete("categories/{id:int:min(1)}")]
         public async Task<ActionResult<Category>> DeleteCategory(int id, CancellationToken cancellationToken)
         {
@@ -146,7 +146,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         }
 
 
-        //POST api/menu/categories
+        //POST api/dashboard/menu/categories
         [HttpPost("categories")]
         public async Task<ActionResult<CreatedItemResult>> PostCategory([FromBody] Category category,
             CancellationToken cancellationToken)
@@ -158,7 +158,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return new CreatedItemResult {CreatedItemId = category.Id};
         }
 
-        //PUT api/menu/categories
+        //PUT api/dashboard/menu/categories
         [HttpPut("categories")]
         public async Task<ActionResult<CreatedItemResult>> PutCategory([FromBody] Category category,
             CancellationToken cancellationToken)

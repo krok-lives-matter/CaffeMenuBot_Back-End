@@ -11,7 +11,7 @@ using CaffeMenuBot.AppHost.Models;
 namespace CaffeMenuBot.AppHost.Controllers
 {
     [ApiController]
-    [Route("api/reviews")]
+    [Route("api/dashboard/reviews")]
     [Authorize]
     public class ReviewApiController: ControllerBase
     {
@@ -22,7 +22,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             _context = context;
         }
 
-        //GET api/reviews/
+        //GET api/dashboard/reviews/
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Review>>> Get(CancellationToken cancellationToken)
         {
@@ -33,7 +33,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return reviews;
         }
 
-        //GET api/reviews/{id}
+        //GET api/dashboard/reviews/{id}
         [HttpGet("{id:int:min(1)}")]
         public async Task<ActionResult<Review>> Get(int id, CancellationToken cancellationToken)
         {
@@ -48,7 +48,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return review;
         }
 
-        //DELETE api/reviews/{id}
+        //DELETE api/dashboard/reviews/{id}
         [HttpDelete("{id:int:min(1)}")]
         public async Task<ActionResult<Review>> Delete(int id, CancellationToken cancellationToken)
         {
@@ -67,7 +67,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return NoContent();
         }
 
-        //POST api/reviews/
+        //POST api/dashboard/reviews/
         [HttpPost]
         public async Task<ActionResult<CreatedItemResult>> Post([FromBody] Review review,
             CancellationToken cancellationToken)
@@ -79,7 +79,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return new CreatedItemResult {CreatedItemId = review.Id};
         }
 
-        //PUT api/reviews/
+        //PUT api/dashboard/reviews/
         [HttpPut]
         public async Task<ActionResult<CreatedItemResult>> Put([FromBody] Review review,
             CancellationToken cancellationToken)

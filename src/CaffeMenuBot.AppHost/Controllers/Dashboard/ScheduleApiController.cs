@@ -11,7 +11,7 @@ using CaffeMenuBot.AppHost.Models;
 namespace CaffeMenuBot.AppHost.Controllers
 {
     [ApiController]
-    [Route("api/schedule")]
+    [Route("api/dashboard/schedule")]
     [Authorize]
     public class ScheduleApiController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             _context = context;
         }
 
-        //GET api/schedule/
+        //GET api/dashboard/schedule/
         [HttpGet]
         [AllowAnonymous] // for bot to be able to request schedule
         public async Task<ActionResult<IEnumerable<Schedule>>> Get(CancellationToken cancellationToken)
@@ -34,7 +34,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return schedule;
         }
 
-        //DELETE api/schedule/{id}
+        //DELETE api/dashboard/schedule/{id}
         [HttpDelete("{id:int:min(1)}")]
         public async Task<ActionResult<Schedule>> Delete(int id, CancellationToken cancellationToken)
         {
@@ -53,7 +53,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return NoContent();
         }
 
-        //POST api/schedule/
+        //POST api/dashboard/schedule/
         [HttpPost]
         public async Task<ActionResult<CreatedItemResult>> Post([FromBody] Schedule schedule,
             CancellationToken cancellationToken)
@@ -65,7 +65,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return new CreatedItemResult {CreatedItemId = schedule.Id};
         }
 
-        //PUT api/schedule/
+        //PUT api/dashboard/schedule/
         [HttpPut]
         public async Task<ActionResult<CreatedItemResult>> Put([FromBody] Schedule schedule,
             CancellationToken cancellationToken)

@@ -36,8 +36,8 @@
     private async Task DeleteAsync()
     {
         string link = DeleteAction == DeleteAction.Category
-            ? "menu/categories"
-            : "menu/dishes";
+            ? "dashboard/menu/categories"
+            : "dashboard/menu/dishes";
         // help to rewrite this for DELETE http method
         using HttpResponseMessage response = await Http.PostAsJsonAsync(link, new object());
         response.EnsureSuccessStatusCode();
