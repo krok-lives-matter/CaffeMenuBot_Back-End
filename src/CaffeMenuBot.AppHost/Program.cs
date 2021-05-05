@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using CaffeMenuBot.AppHost.Authentication;
 using CaffeMenuBot.Data;
 using Microsoft.AspNetCore.Hosting;
@@ -8,12 +9,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace CaffeMenuBot.AppHost
 {
     public static class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
             using (IServiceScope scope = host.Services.CreateScope())
@@ -38,16 +40,22 @@ namespace CaffeMenuBot.AppHost
                 );
                 
             }
-            host.Run();
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole();
+                })
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     var env = context.HostingEnvironment.EnvironmentName;
                     builder.AddJsonFile("dbsettings.json", false, true)
-                           .AddJsonFile($"botsettings.{env}.json", false, true)
+                           .AddJsonFile($"botsettings.json", false, true)
+                           .AddJsonFile($"botsettings.{env}.json", true, true)
                            .AddJsonFile($"dbsettings.{env}.json", true, true);
                 })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });

@@ -29,7 +29,7 @@ namespace CaffeMenuBot.Bot.Services
         {
             await (update switch
             {
-                { Message: { Chat: { Type: ChatType.Group or ChatType.Supergroup }, Text: { } } } =>
+                { Message: { Chat: { Type: ChatType.Private }, Text: { } } } =>
                     HandleMessageAsync(update.Message, cancellationToken),
                 _ => Task.CompletedTask
             });

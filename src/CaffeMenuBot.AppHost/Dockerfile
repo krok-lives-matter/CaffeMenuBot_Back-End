@@ -4,6 +4,7 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
 WORKDIR /src
 COPY CaffeMenuBot.AppHost/CaffeMenuBot.AppHost.csproj CaffeMenuBot.AppHost/
 COPY CaffeMenuBot.Data/CaffeMenuBot.Data.csproj CaffeMenuBot.Data/
+COPY CaffeMenuBot.Bot/CaffeMenuBot.Bot.csproj CaffeMenuBot.Bot/
 COPY CaffeMenuBot.Shared/CaffeMenuBot.Shared.csproj CaffeMenuBot.Shared/
 COPY CaffeMenuBot.Client/CaffeMenuBot.Client.csproj CaffeMenuBot.Client/
 
