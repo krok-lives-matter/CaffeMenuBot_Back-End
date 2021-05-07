@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaffeMenuBot.Client", "Caff
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaffeMenuBot.Shared", "CaffeMenuBot.Shared\CaffeMenuBot.Shared.csproj", "{90138637-8248-434E-890B-E9649C5F1CB1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaffeMenuBot.Bot", "CaffeMenuBot.Bot\CaffeMenuBot.Bot.csproj", "{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +135,18 @@ Global
 		{90138637-8248-434E-890B-E9649C5F1CB1}.Release|x64.Build.0 = Release|Any CPU
 		{90138637-8248-434E-890B-E9649C5F1CB1}.Release|x86.ActiveCfg = Release|Any CPU
 		{90138637-8248-434E-890B-E9649C5F1CB1}.Release|x86.Build.0 = Release|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Debug|x64.Build.0 = Debug|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Debug|x86.Build.0 = Debug|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Release|x64.ActiveCfg = Release|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Release|x64.Build.0 = Release|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Release|x86.ActiveCfg = Release|Any CPU
+		{54E5BF6B-54DE-44B9-B30D-D9BB4CBE57B5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
