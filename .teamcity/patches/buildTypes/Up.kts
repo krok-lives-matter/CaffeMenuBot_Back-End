@@ -16,10 +16,10 @@ changeBuildType(RelativeId("Up")) {
             text("env.ASPNETCORE_ENVIRONMENT", "Production", label = "aspnetcore_environment", allowEmpty = false)
         }
         add {
-            password("env.POSTGRES_PASSWORD", "credentialsJSON:93abc2d6-85ac-48e4-9410-d21613885080", label = "postgres_password", display = ParameterDisplay.HIDDEN)
+            password("env.JWT_KEY", "credentialsJSON:1367a739-5fae-41ff-9a3d-26e141ef03fa", display = ParameterDisplay.HIDDEN)
         }
         add {
-            password("env.JWT_KEY", "credentialsJSON:1367a739-5fae-41ff-9a3d-26e141ef03fa", display = ParameterDisplay.HIDDEN)
+            password("env.POSTGRES_PASSWORD", "credentialsJSON:93abc2d6-85ac-48e4-9410-d21613885080", label = "postgres_password", display = ParameterDisplay.HIDDEN)
         }
     }
 
@@ -81,7 +81,7 @@ changeBuildType(RelativeId("Up")) {
                         }
                       },
                       "JwtOptions": {
-                        "Key": "%env.JWT_KEY%"
+                        "SecretKey": "%env.JWT_KEY%"
                       }
                     }
                 """.trimIndent())
