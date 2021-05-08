@@ -1,10 +1,11 @@
 using System.Linq;
+using System.Text;
 using System.Text.Json.Serialization;
 using CaffeMenuBot.AppHost.Authentication;
 using CaffeMenuBot.Bot.Commands;
 using CaffeMenuBot.Bot.Services;
 using CaffeMenuBot.Data;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Telegram.Bot;
 using Telegram.Bot.Extensions.Polling;
 
@@ -28,12 +30,11 @@ namespace CaffeMenuBot.AppHost
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews()
+            services.AddControllers()
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
                 });
-            services.AddRazorPages();
             
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -47,18 +48,26 @@ namespace CaffeMenuBot.AppHost
                 options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
                     builder.EnableRetryOnFailure()));
             
-            this.ConfigureBot(services);
-            
-            services.AddDefaultIdentity<ApplicationUser>()
-                .AddRoles<IdentityRole>()
-                .AddRoleManager<RoleManager<IdentityRole>>()
-                .AddEntityFrameworkStores<AuthorizationDbContext>();
+            ConfigureBot(services);
 
-            services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, AuthorizationDbContext>();
-            
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(jwt =>
+                {
+                    var key = Encoding.ASCII.GetBytes(_configuration["JwtOptions:SecretKey"]);
+                    jwt.SaveToken = true;
+                    jwt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        RequireExpirationTime = false,
+                        ValidateLifetime = true
+                    };
+                });
+
+            services.AddDefaultIdentity<IdentityUser>()
+                .AddEntityFrameworkStores<AuthorizationDbContext>();
         }
 
         private void ConfigureBot(IServiceCollection services)
@@ -83,24 +92,18 @@ namespace CaffeMenuBot.AppHost
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseMigrationsEndPoint();
-                app.UseWebAssemblyDebugging();
             }
 
-            app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
             
             app.UseRouting();
 
-            app.UseIdentityServer();
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
             });
         }
     }
