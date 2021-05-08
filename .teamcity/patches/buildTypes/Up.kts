@@ -77,10 +77,8 @@ changeBuildType(RelativeId("Up")) {
                           "Microsoft.Hosting.Lifetime": "Information"
                         }
                       },
-                      "IdentityServer": {
-                        "Key": {
-                          "Type": "Development"
-                        }
+                      "JwtOptions": {
+                        "Key": "%env.JWT_KEY%"
                       }
                     }
                 """.trimIndent())
