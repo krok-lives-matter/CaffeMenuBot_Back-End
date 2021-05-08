@@ -33,15 +33,19 @@ changeBuildType(RelativeId("Up")) {
                 type = "MRPP_CreateTextFile"
                 param("system.dest.file", "%teamcity.build.checkoutDir%/src/docker-compose.override.yml")
                 param("content", """
-                    version: '3.7'
+                    version: '3.9'
                     
                     services:
                       host:
                         environment:
                           - ASPNETCORE_ENVIRONMENT=%env.ASPNETCORE_ENVIRONMENT%
-                      postgres:
-                        environment:
-                          - POSTGRES_PASSWORD=%env.POSTGRES_PASSWORD%
+                        networks:
+                          - caffe_menu_bot_network
+                    
+                    networks:
+                      caffe_menu_bot_network:
+                        external:
+                          name: postgres_network
                 """.trimIndent())
             }
         }
