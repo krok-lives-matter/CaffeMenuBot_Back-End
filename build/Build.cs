@@ -67,6 +67,9 @@ class Build : NukeBuild
     [Parameter]
     readonly bool WipeDatabaseDataProtection;
 
+    [Parameter]
+    readonly string ProjectName = "caffe-menu-bot";
+
     [Solution] readonly Solution Solution;
     [PathExecutable("docker-compose")] readonly Tool DockerCompose;
 
@@ -79,17 +82,18 @@ class Build : NukeBuild
     Target Down => _ => _
         .Executes(() =>
         {
+            string command = $"-p {ProjectName} down";
             if (WipeDatabaseData && WipeDatabaseDataProtection)
-                DockerCompose("down --volumes", SourceDirectory);
-            else
-                DockerCompose("down", SourceDirectory);
+                command += " --volumes";
+            
+            DockerCompose(command, SourceDirectory);
         });
 
     Target Up => _ => _
         .DependsOn(Down)
         .Executes(() =>
         {
-            DockerCompose("up --build -d", SourceDirectory);
+            DockerCompose($"-p {ProjectName} up --build -d", SourceDirectory);
         });
     
     Target Clean => _ => _
