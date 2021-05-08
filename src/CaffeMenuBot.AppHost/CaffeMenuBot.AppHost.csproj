@@ -27,14 +27,15 @@
       <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.5" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.5" />
       <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+      <PackageReference Include="Serilog" Version="2.10.0" />
+      <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
+      <PackageReference Include="Serilog.Sinks.Loki" Version="3.0.0" />
       <PackageReference Include="Telegram.Bot" Version="15.7.1" />
       <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="0.2.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CaffeMenuBot.Client\CaffeMenuBot.Client.csproj" />
       <ProjectReference Include="..\CaffeMenuBot.Data\CaffeMenuBot.Data.csproj" />
-      <ProjectReference Include="..\CaffeMenuBot.Shared\CaffeMenuBot.Shared.csproj" />
       <ProjectReference Include="..\CaffeMenuBot.Bot\CaffeMenuBot.Bot.csproj" />
     </ItemGroup>
 

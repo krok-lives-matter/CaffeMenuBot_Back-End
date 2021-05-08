@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Sinks.Loki;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -45,12 +47,6 @@ namespace CaffeMenuBot.AppHost
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.AddConsole();
-                    logging.AddDebug();
-                })
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     var env = context.HostingEnvironment.EnvironmentName;
@@ -58,6 +54,23 @@ namespace CaffeMenuBot.AppHost
                         .AddJsonFile($"dbsettings.{env}.json", true, true)
                         .AddJsonFile("botsettings.json", false, true)
                         .AddJsonFile($"botsettings.{env}.json", true, true);
+                })
+                .ConfigureLogging((context, builder) =>
+                {
+                    builder.AddConfiguration(context.Configuration);
+                    builder.AddConsole();
+                    builder.AddDebug();
+
+                    if (context.HostingEnvironment.IsProduction())
+                    {
+                        var credentials = new NoAuthCredentials("https://loki.vova-lantsov.dev/");
+                        var lokiLogger = new LoggerConfiguration()
+                            .MinimumLevel.Information()
+                            .Enrich.FromLogContext()
+                            .WriteTo.LokiHttp(credentials)
+                            .CreateLogger();
+                        builder.AddSerilog(lokiLogger);
+                    }
                 })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
