@@ -18,6 +18,9 @@ changeBuildType(RelativeId("Up")) {
         add {
             password("env.POSTGRES_PASSWORD", "credentialsJSON:93abc2d6-85ac-48e4-9410-d21613885080", label = "postgres_password", display = ParameterDisplay.HIDDEN)
         }
+        add {
+            password("env.JWT_KEY", "credentialsJSON:1367a739-5fae-41ff-9a3d-26e141ef03fa", display = ParameterDisplay.HIDDEN)
+        }
     }
 
     expectSteps {
