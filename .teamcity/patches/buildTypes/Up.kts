@@ -16,7 +16,7 @@ changeBuildType(RelativeId("Up")) {
             text("env.ASPNETCORE_ENVIRONMENT", "Production", label = "aspnetcore_environment", allowEmpty = false)
         }
         add {
-            password("env.POSTGRES_PASSWORD", "credentialsJSON:fde04986-c090-4fc0-a00d-41321166f346", label = "postgres_password", display = ParameterDisplay.HIDDEN, readOnly = true)
+            password("env.POSTGRES_PASSWORD", "credentialsJSON:fde04986-c090-4fc0-a00d-41321166f346", label = "postgres_password", display = ParameterDisplay.HIDDEN)
         }
     }
 
