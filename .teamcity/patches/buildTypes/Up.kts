@@ -16,7 +16,10 @@ changeBuildType(RelativeId("Up")) {
             text("env.ASPNETCORE_ENVIRONMENT", "Production", label = "aspnetcore_environment", allowEmpty = false)
         }
         add {
-            password("env.POSTGRES_PASSWORD", "credentialsJSON:fde04986-c090-4fc0-a00d-41321166f346", label = "postgres_password", display = ParameterDisplay.HIDDEN, readOnly = true)
+            password("env.POSTGRES_PASSWORD", "credentialsJSON:93abc2d6-85ac-48e4-9410-d21613885080", label = "postgres_password", display = ParameterDisplay.HIDDEN)
+        }
+        add {
+            password("env.JWT_KEY", "credentialsJSON:1367a739-5fae-41ff-9a3d-26e141ef03fa", display = ParameterDisplay.HIDDEN)
         }
     }
 
@@ -33,15 +36,19 @@ changeBuildType(RelativeId("Up")) {
                 type = "MRPP_CreateTextFile"
                 param("system.dest.file", "%teamcity.build.checkoutDir%/src/docker-compose.override.yml")
                 param("content", """
-                    version: '3.7'
+                    version: '3.9'
                     
                     services:
                       host:
                         environment:
                           - ASPNETCORE_ENVIRONMENT=%env.ASPNETCORE_ENVIRONMENT%
-                      postgres:
-                        environment:
-                          - POSTGRES_PASSWORD=%env.POSTGRES_PASSWORD%
+                        networks:
+                          - caffe_menu_bot_network
+                    
+                    networks:
+                      caffe_menu_bot_network:
+                        external:
+                          name: postgres_network
                 """.trimIndent())
             }
         }
@@ -53,16 +60,13 @@ changeBuildType(RelativeId("Up")) {
                 param("content", """
                     {
                         "ConnectionStrings": {
-                            "CaffeMenuBotDb": "Host=caffe_menu_bot_postgres;Port=5432;UserId=postgres;Password=%env.POSTGRES_PASSWORD%;Database=caffe_menu_bot;CommandTimeout=300;"
+                            "CaffeMenuBotDb": "Host=postgres;Port=5432;UserId=caffe_menu_bot;Password=%env.POSTGRES_PASSWORD%;Database=caffe_menu_bot;CommandTimeout=300;"
                         }
                     }
                 """.trimIndent())
             }
         }
-        update<ExecBuildStep>(2) {
-            clearConditions()
-        }
-        insert(3) {
+        insert(2) {
             step {
                 name = "Production application settings"
                 type = "MRPP_CreateTextFile"
@@ -76,14 +80,15 @@ changeBuildType(RelativeId("Up")) {
                           "Microsoft.Hosting.Lifetime": "Information"
                         }
                       },
-                      "IdentityServer": {
-                        "Key": {
-                          "Type": "Development"
-                        }
+                      "JwtOptions": {
+                        "Key": "%env.JWT_KEY%"
                       }
                     }
                 """.trimIndent())
             }
+        }
+        update<ExecBuildStep>(3) {
+            clearConditions()
         }
     }
 }
