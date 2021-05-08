@@ -49,14 +49,15 @@ namespace CaffeMenuBot.AppHost
                 {
                     logging.ClearProviders();
                     logging.AddConsole();
+                    logging.AddDebug();
                 })
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     var env = context.HostingEnvironment.EnvironmentName;
                     builder.AddJsonFile("dbsettings.json", false, true)
-                           .AddJsonFile($"botsettings.json", false, true)
-                           .AddJsonFile($"botsettings.{env}.json", true, true)
-                           .AddJsonFile($"dbsettings.{env}.json", true, true);
+                        .AddJsonFile($"dbsettings.{env}.json", true, true)
+                        .AddJsonFile("botsettings.json", false, true)
+                        .AddJsonFile($"botsettings.{env}.json", true, true);
                 })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
