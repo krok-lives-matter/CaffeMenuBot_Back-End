@@ -13,13 +13,16 @@ accordingly, and delete the patch script.
 changeBuildType(RelativeId("Up")) {
     params {
         add {
+            password("env.BOT_TOKEN", "credentialsJSON:6a0b19ab-3765-454f-9103-49ff1acabe87", display = ParameterDisplay.HIDDEN)
+        }
+        add {
+            password("env.POSTGRES_PASSWORD", "credentialsJSON:93abc2d6-85ac-48e4-9410-d21613885080", label = "postgres_password", display = ParameterDisplay.HIDDEN)
+        }
+        add {
             text("env.ASPNETCORE_ENVIRONMENT", "Production", label = "aspnetcore_environment", allowEmpty = false)
         }
         add {
             password("env.JWT_KEY", "credentialsJSON:1367a739-5fae-41ff-9a3d-26e141ef03fa", display = ParameterDisplay.HIDDEN)
-        }
-        add {
-            password("env.POSTGRES_PASSWORD", "credentialsJSON:93abc2d6-85ac-48e4-9410-d21613885080", label = "postgres_password", display = ParameterDisplay.HIDDEN)
         }
     }
 
