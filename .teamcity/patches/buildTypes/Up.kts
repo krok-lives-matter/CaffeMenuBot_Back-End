@@ -57,7 +57,7 @@ changeBuildType(RelativeId("Up")) {
                 param("content", """
                     {
                         "ConnectionStrings": {
-                            "CaffeMenuBotDb": "Host=caffe_menu_bot_postgres;Port=5432;UserId=postgres;Password=%env.POSTGRES_PASSWORD%;Database=caffe_menu_bot;CommandTimeout=300;"
+                            "CaffeMenuBotDb": "Host=postgres;Port=5432;UserId=caffe_menu_bot;Password=%env.POSTGRES_PASSWORD%;Database=caffe_menu_bot;CommandTimeout=300;"
                         }
                     }
                 """.trimIndent())
