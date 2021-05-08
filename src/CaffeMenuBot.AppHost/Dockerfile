@@ -7,7 +7,6 @@ COPY CaffeMenuBot.Data/CaffeMenuBot.Data.csproj CaffeMenuBot.Data/
 COPY CaffeMenuBot.Bot/CaffeMenuBot.Bot.csproj CaffeMenuBot.Bot/
 
 RUN dotnet restore CaffeMenuBot.AppHost/CaffeMenuBot.AppHost.csproj
-RUN dotnet restore CaffeMenuBot.Client/CaffeMenuBot.Client.csproj
 
 COPY . .
 WORKDIR /src/CaffeMenuBot.AppHost
