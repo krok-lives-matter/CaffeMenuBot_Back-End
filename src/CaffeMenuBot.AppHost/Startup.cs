@@ -22,6 +22,7 @@ namespace CaffeMenuBot.AppHost
 {
     public sealed class Startup
     {
+        const string publicCorsPolicyName = "publicCORS";
         private readonly IConfiguration _configuration;
 
         public Startup(IConfiguration configuration)
@@ -31,6 +32,17 @@ namespace CaffeMenuBot.AppHost
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: publicCorsPolicyName,
+                              builder =>
+                              {
+                                  builder.AllowAnyOrigin()
+                                         .AllowAnyHeader()
+                                         .AllowAnyMethod();
+                              });
+            });
+
             services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -117,6 +129,8 @@ namespace CaffeMenuBot.AppHost
 
             app.UseStaticFiles();
             
+            app.UseCors(publicCorsPolicyName);
+
             app.UseRouting();
 
             app.UseAuthentication();
