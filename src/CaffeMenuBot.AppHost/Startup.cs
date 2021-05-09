@@ -16,6 +16,7 @@ using Telegram.Bot;
 using Telegram.Bot.Extensions.Polling;
 using CaffeMenuBot.AppHost.Options;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -80,6 +81,11 @@ namespace CaffeMenuBot.AppHost
                     ValidateLifetime = true
                 };
             });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dashboard API", Version = "v1" });
+            });
         }
 
         private void ConfigureBot(IServiceCollection services)
@@ -105,6 +111,9 @@ namespace CaffeMenuBot.AppHost
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DashboardAPI v1"));
 
             app.UseStaticFiles();
             
