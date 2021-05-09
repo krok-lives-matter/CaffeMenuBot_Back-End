@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using CaffeMenuBot.AppHost;
 using Xunit;
@@ -24,7 +22,7 @@ namespace CaffeMenuBot.IntegrationTests
         {
             HttpClient client = _factory.CreateClient();
 
-            HttpResponseMessage result = await client.GetAsync($"api/dashboard/getDish/{id}");
+            HttpResponseMessage result = await client.GetAsync($"api/dashboard/menu/dishes/{id}");
 
             Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         }
@@ -35,7 +33,7 @@ namespace CaffeMenuBot.IntegrationTests
         {
             HttpClient client = _factory.CreateClient();
 
-            HttpResponseMessage result = await client.GetAsync($"api/dashboard/getCategory/{id}");
+            HttpResponseMessage result = await client.GetAsync($"api/dashboard/menu/categories/{id}");
 
             Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         }

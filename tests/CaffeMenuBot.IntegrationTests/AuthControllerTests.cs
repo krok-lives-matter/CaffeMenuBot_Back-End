@@ -50,7 +50,7 @@ namespace CaffeMenuBot.IntegrationTests
             HttpClient client = _factory.CreateClient();
 
             using StringContent content = new(data, Encoding.UTF8, "application/x-www-form-urlencoded");
-            HttpResponseMessage result = await client.PostAsync("auth/login", content);
+            HttpResponseMessage result = await client.PostAsync("api/auth/login", content);
             
             Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         }
@@ -71,10 +71,9 @@ namespace CaffeMenuBot.IntegrationTests
                 ["password"] = testPassword
             };
             using FormUrlEncodedContent content = new(contentData);
-            HttpResponseMessage result = await client.PostAsync("auth/login", content);
+            HttpResponseMessage result = await client.PostAsync("api/auth/login", content);
             
-            Assert.Equal(HttpStatusCode.Redirect, result.StatusCode);
-            Assert.Equal("/auth", result.Headers.Location?.ToString());
+            Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         }
 
         [Fact]
@@ -91,7 +90,7 @@ namespace CaffeMenuBot.IntegrationTests
                 ["password"] = password
             };
             using FormUrlEncodedContent content = new(contentData);
-            HttpResponseMessage result = await client.PostAsync("auth/login", content);
+            HttpResponseMessage result = await client.PostAsync("api/auth/login", content);
             
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
