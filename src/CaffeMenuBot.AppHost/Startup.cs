@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
-using CaffeMenuBot.AppHost.Authentication;
 using CaffeMenuBot.Bot.Commands;
 using CaffeMenuBot.Bot.Services;
 using CaffeMenuBot.Data;
@@ -15,6 +14,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Telegram.Bot;
 using Telegram.Bot.Extensions.Polling;
+using CaffeMenuBot.AppHost.Options;
+using Microsoft.AspNetCore.Identity;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -37,36 +38,48 @@ namespace CaffeMenuBot.AppHost
             
             services.AddDatabaseDeveloperPageExceptionFilter();
 
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.ClaimsIdentity.UserIdClaimType = "Id";
+            })
+            .AddRoles<IdentityRole>()
+            .AddRoleManager<RoleManager<IdentityRole>>()
+            .AddEntityFrameworkStores<CaffeMenuBotContext>();
+            
+
             services.AddDbContext<CaffeMenuBotContext>(options =>
                 options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
                     builder.EnableRetryOnFailure()
                         .MigrationsAssembly("CaffeMenuBot.Data")
-                        .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
+                        .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));            
 
-            services.AddDbContext<AuthorizationDbContext>(options =>
-                options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
-                    builder.EnableRetryOnFailure()));
+            services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
             
-            ConfigureBot(services);
+            //ConfigureBot(services);
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(jwt =>
+            // within this section we are configuring the authentication and setting the default scheme
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(jwt =>
+            {
+                var key = Encoding.ASCII.GetBytes(_configuration["Jwt:SecretKey"]);
+
+                jwt.SaveToken = true;
+                jwt.TokenValidationParameters = new TokenValidationParameters
                 {
-                    var key = Encoding.ASCII.GetBytes(_configuration["JwtOptions:SecretKey"]);
-                    jwt.SaveToken = true;
-                    jwt.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        RequireExpirationTime = false,
-                        ValidateLifetime = true
-                    };
-                });
-
-            services.AddDefaultIdentity<ApplicationUser>()
-                .AddEntityFrameworkStores<AuthorizationDbContext>();
+                    ValidateIssuerSigningKey = true, // this will validate the 3rd part of the jwt token using the secret that we added in the appsettings and verify we have generated the jwt token
+                    IssuerSigningKey = new SymmetricSecurityKey(key), // Add the secret key to our Jwt encryption
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    RequireExpirationTime = false,
+                    ValidateLifetime = true
+                };
+            });
         }
 
         private void ConfigureBot(IServiceCollection services)

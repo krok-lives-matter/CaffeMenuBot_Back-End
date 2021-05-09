@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using CaffeMenuBot.AppHost.Authentication;
+using CaffeMenuBot.AppHost.Configuration;
 using CaffeMenuBot.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -22,21 +22,17 @@ namespace CaffeMenuBot.AppHost
             var host = CreateHostBuilder(args).Build();
             using (IServiceScope scope = host.Services.CreateScope())
             {
-                IServiceProvider             provider    = scope.ServiceProvider;
-                CaffeMenuBotContext          context     = provider.GetRequiredService<CaffeMenuBotContext>();
-                AuthorizationDbContext       authContext = provider.GetRequiredService<AuthorizationDbContext>();
-                UserManager<ApplicationUser> userManager = provider.GetRequiredService<UserManager<ApplicationUser>>();
-                RoleManager<IdentityRole>    roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
-                
+                IServiceProvider provider   = scope.ServiceProvider;
+                CaffeMenuBotContext context = provider.GetRequiredService<CaffeMenuBotContext>();
+                UserManager<IdentityUser> userManager = provider.GetRequiredService<UserManager<IdentityUser>>();
+                RoleManager<IdentityRole> roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
+
 
                 if (context.Database.GetPendingMigrations().Any())
                     context.Database.Migrate();
-                if (authContext.Database.GetPendingMigrations().Any())
-                    authContext.Database.Migrate();
 
-                AuthenticationSeeder.SeedAdminUser
-                (
-                    authContext,
+                await DatabaseSeeder.SeedDatabaseAsync(
+                    context,
                     userManager,
                     roleManager
                 );
@@ -51,9 +47,11 @@ namespace CaffeMenuBot.AppHost
                 {
                     var env = context.HostingEnvironment.EnvironmentName;
                     builder.AddJsonFile("dbsettings.json", false, true)
-                        .AddJsonFile($"dbsettings.{env}.json", true, true)
-                        .AddJsonFile("botsettings.json", false, true)
-                        .AddJsonFile($"botsettings.{env}.json", true, true);
+                           .AddJsonFile($"dbsettings.{env}.json", true, true)
+                           .AddJsonFile("botsettings.json", false, true)
+                           .AddJsonFile($"botsettings.{env}.json", true, true)
+                           .AddJsonFile("jwt.json", false, true)
+                           .AddJsonFile($"jwt.{env}.json", true, true);
                 })
                 .ConfigureLogging((context, builder) =>
                 {
