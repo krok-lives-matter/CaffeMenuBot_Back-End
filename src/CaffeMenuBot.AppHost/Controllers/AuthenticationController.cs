@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using CaffeMenuBot.AppHost.Options;
 using CaffeMenuBot.AppHost.Model.DTO.Requests;
 using CaffeMenuBot.AppHost.Model.DTO.Responses;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -30,6 +31,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         [HttpPost]
         [Route("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest user)
         {
             if (ModelState.IsValid)
@@ -88,6 +90,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         [HttpPost]
         [Route("register")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Register([FromBody] UserLoginRequest user)
         {
             // Check if the incoming request is valid
