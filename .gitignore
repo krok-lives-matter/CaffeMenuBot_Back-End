@@ -5,6 +5,7 @@ bin/
 obj/
 *.user
 *.Production.json
+botsettings.Development.json
 .tmp/
 output/
 test-results/
