@@ -9,6 +9,9 @@ namespace CaffeMenuBot.Data.Models.Schedule
         [Key, Required, Column("schedule_id", TypeName = "integer")]
         public int Id { get; init; }
 
+        [Required, Column("order_index", TypeName = "integer")]
+        public int OrderIndex{get;set;} = 1;
+
         [Required, Column("weekday_name", TypeName = "text")]
         public string WeekdayName { get; set; } = null!;
 

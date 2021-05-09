@@ -54,43 +54,50 @@ namespace CaffeMenuBot.AppHost.Configuration
                 {
                     WeekdayName = "Понеділок",
                     OpenTime = "8:00",
-                    CloseTime = "20:00"
+                    CloseTime = "20:00",
+                    OrderIndex = 1
                 },
                 new Schedule
                 {
                     WeekdayName = "Вівторок",
                     OpenTime = "8:00",
-                    CloseTime = "20:00"
+                    CloseTime = "20:00",
+                    OrderIndex = 2
                 },
                 new Schedule
                 {
                     WeekdayName = "Середа",
                     OpenTime = "8:00",
-                    CloseTime = "20:00"
+                    CloseTime = "20:00",
+                    OrderIndex = 3
                 },
                 new Schedule
                 {
                     WeekdayName = "Четвер",
                     OpenTime = "8:00",
-                    CloseTime = "20:00"
+                    CloseTime = "20:00",
+                    OrderIndex = 4
                 },
                 new Schedule
                 {
                     WeekdayName = "П'ятниця",
                     OpenTime = "10:00",
-                    CloseTime = "22:00"
+                    CloseTime = "22:00",
+                    OrderIndex = 5
                 },
                 new Schedule
                 {
                     WeekdayName = "Субота",
                     OpenTime = "10:00",
-                    CloseTime = "22:00"
+                    CloseTime = "22:00",
+                    OrderIndex = 6
                 },
                 new Schedule
                 {
                     WeekdayName = "Неділя",
                     OpenTime = "9:00",
-                    CloseTime = "19:00"
+                    CloseTime = "19:00",
+                    OrderIndex = 7
                 }
             );
             await context.SaveChangesAsync();

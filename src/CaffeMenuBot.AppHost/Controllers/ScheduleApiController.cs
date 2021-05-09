@@ -7,6 +7,7 @@ using CaffeMenuBot.Data;
 using CaffeMenuBot.Data.Models.Schedule;
 using Microsoft.EntityFrameworkCore;
 using CaffeMenuBot.AppHost.Models;
+using System.Linq;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -30,6 +31,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             var schedule = await _context
                 .Schedule
                 .AsNoTracking()
+                .OrderBy(s => s.OrderIndex)
                 .ToListAsync(cancellationToken);
             return schedule;
         }
