@@ -4,6 +4,8 @@ using CaffeMenuBot.Data;
 using CaffeMenuBot.Data.Models.Menu;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
+using CaffeMenuBot.Data.Models.Schedule;
+using System;
 
 namespace CaffeMenuBot.AppHost.Configuration
 {
@@ -15,6 +17,7 @@ namespace CaffeMenuBot.AppHost.Configuration
         {
             await SeedAdminUserAsync(context, userManager, roleManager);
             await SeedDashboardDataAsync(context);
+            await SeedScheduleDataAsync(context);
         }
 
         private static async Task SeedAdminUserAsync(
@@ -40,6 +43,59 @@ namespace CaffeMenuBot.AppHost.Configuration
                     await userManager.AddToRoleAsync(adminUser, adminRole.Name);
                 }
         }
+
+        private static async Task SeedScheduleDataAsync(CaffeMenuBotContext context)
+        {
+            if (context.Schedule.Any())
+                return;
+            
+            context.Schedule.AddRange(
+                new Schedule
+                {
+                    WeekdayName = "Понеділок",
+                    OpenTime = "8:00",
+                    CloseTime = "20:00"
+                },
+                new Schedule
+                {
+                    WeekdayName = "Вівторок",
+                    OpenTime = "8:00",
+                    CloseTime = "20:00"
+                },
+                new Schedule
+                {
+                    WeekdayName = "Середа",
+                    OpenTime = "8:00",
+                    CloseTime = "20:00"
+                },
+                new Schedule
+                {
+                    WeekdayName = "Четвер",
+                    OpenTime = "8:00",
+                    CloseTime = "20:00"
+                },
+                new Schedule
+                {
+                    WeekdayName = "П'ятниця",
+                    OpenTime = "10:00",
+                    CloseTime = "22:00"
+                },
+                new Schedule
+                {
+                    WeekdayName = "Субота",
+                    OpenTime = "10:00",
+                    CloseTime = "22:00"
+                },
+                new Schedule
+                {
+                    WeekdayName = "Неділя",
+                    OpenTime = "9:00",
+                    CloseTime = "19:00"
+                }
+            );
+            await context.SaveChangesAsync();
+        }
+
         private static async Task SeedDashboardDataAsync(CaffeMenuBotContext context)
         {
             if (context.Categories.Any())

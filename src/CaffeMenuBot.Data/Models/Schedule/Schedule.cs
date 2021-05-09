@@ -10,7 +10,7 @@ namespace CaffeMenuBot.Data.Models.Schedule
         public int Id { get; init; }
 
         [Required, Column("weekday_name", TypeName = "text")]
-        public string ScheduleName { get; set; } = null!;
+        public string WeekdayName { get; set; } = null!;
 
         [Required, Column("open_time", TypeName = "text")]
         public string OpenTime {get;set;} = null!;
