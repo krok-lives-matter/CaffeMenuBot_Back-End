@@ -27,7 +27,7 @@ namespace CaffeMenuBot.AppHost.Configuration
         {
             var adminRole = new IdentityRole("admin");
 
-                if (!context.Roles.Any())
+                if (!context.Roles.Any(r => r.Name == adminRole.Name))
                 {
                     await roleManager.CreateAsync(adminRole);
                 }
@@ -36,7 +36,7 @@ namespace CaffeMenuBot.AppHost.Configuration
                 {
                     var adminUser = new IdentityUser
                     {
-                        UserName = "admin@caffemenubot.com",
+                        UserName = "admin",
                         Email = "admin@caffemenubot.com"
                     };
                     var result = await userManager.CreateAsync(adminUser, "_Change$ThisPlease3");

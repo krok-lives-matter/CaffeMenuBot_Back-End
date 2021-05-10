@@ -25,7 +25,7 @@ namespace CaffeMenuBot.IntegrationTests
         {
             var adminRole = new IdentityRole("admin");
 
-            if (!context.Roles.Any())
+            if (!context.Roles.Any(r => r.Name == adminRole.Name))
             {
                 roleManager.CreateAsync(adminRole).GetAwaiter().GetResult();
             }
@@ -34,7 +34,7 @@ namespace CaffeMenuBot.IntegrationTests
             {
                 var adminUser = new IdentityUser
                 {
-                    UserName = "admin@caffemenubot.com",
+                    UserName = "admin",
                     Email = "admin@caffemenubot.com"
                 };
                 var result = userManager.CreateAsync(adminUser, "_Change$ThisPlease3").GetAwaiter().GetResult();

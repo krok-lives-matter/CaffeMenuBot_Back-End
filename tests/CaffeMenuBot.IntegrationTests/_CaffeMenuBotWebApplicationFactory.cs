@@ -44,15 +44,15 @@ namespace CaffeMenuBot.IntegrationTests
 
                 db.Database.EnsureCreated();
 
-                try
-                {
-                    Utilities.InitializeDatabaseForTests(db, scopedServices);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "An error occurred seeding the " +
-                                        "database with test data. Error: {Message}", ex.Message);
-                }
+                //try
+                //{
+                //    Utilities.InitializeDatabaseForTests(db, scopedServices);
+                //}
+                //catch (Exception ex)
+                //{
+                //   logger.LogError(ex, "An error occurred seeding the " +
+                //                        "database with test data. Error: {Message}", ex.Message);
+                //}
             });
             builder.UseUrls("http://localhost:5001/");
         }
