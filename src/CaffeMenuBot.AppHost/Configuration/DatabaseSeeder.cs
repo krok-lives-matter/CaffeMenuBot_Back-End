@@ -13,7 +13,7 @@ namespace CaffeMenuBot.AppHost.Configuration
     {
         internal static async Task SeedDatabaseAsync(CaffeMenuBotContext context,
             UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager) 
+            RoleManager<IdentityRole> roleManager)
         {
             await SeedAdminUserAsync(context, userManager, roleManager);
             await SeedDashboardDataAsync(context);
@@ -23,32 +23,36 @@ namespace CaffeMenuBot.AppHost.Configuration
         private static async Task SeedAdminUserAsync(
             CaffeMenuBotContext context,
             UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager)     
+            RoleManager<IdentityRole> roleManager)
         {
             var adminRole = new IdentityRole("admin");
 
-                if (!context.Roles.Any(r => r.Name == adminRole.Name))
-                {
-                    await roleManager.CreateAsync(adminRole);
-                }
+            Console.WriteLine("Removing all roles");
+            context.Roles.RemoveRange(context.Roles.ToList());
+            await context.SaveChangesAsync();
 
-                if (!context.Users.Any(u => u.UserName == "admin"))
-                {
-                    var adminUser = new IdentityUser
-                    {
-                        UserName = "admin",
-                        Email = "admin@caffemenubot.com"
-                    };
-                    var result = await userManager.CreateAsync(adminUser, "_Change$ThisPlease3");
-                    await userManager.AddToRoleAsync(adminUser, adminRole.Name);
-                }
+            await roleManager.CreateAsync(adminRole);
+            Console.WriteLine("Created admin role");
+
+            Console.WriteLine("Removing all users");
+            context.Users.RemoveRange(context.Users.ToList());
+            await context.SaveChangesAsync();
+
+            var adminUser = new IdentityUser
+            {
+                UserName = "admin",
+                Email = "admin@caffemenubot.com"
+            };
+            var result = await userManager.CreateAsync(adminUser, "_Change$ThisPlease3");
+            await userManager.AddToRoleAsync(adminUser, adminRole.Name);
+            Console.WriteLine("Created admin user");
         }
 
         private static async Task SeedScheduleDataAsync(CaffeMenuBotContext context)
         {
             if (context.Schedule.Any())
                 return;
-            
+
             context.Schedule.AddRange(
                 new Schedule
                 {
@@ -107,7 +111,7 @@ namespace CaffeMenuBot.AppHost.Configuration
         {
             if (context.Categories.Any())
                 return;
-            
+
             context.Categories.AddRange(
                 new Category
                 {
