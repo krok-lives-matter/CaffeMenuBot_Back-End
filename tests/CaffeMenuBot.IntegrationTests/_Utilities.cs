@@ -13,32 +13,30 @@ namespace CaffeMenuBot.IntegrationTests
         {
             UserManager<IdentityUser> userManager = services.GetRequiredService<UserManager<IdentityUser>>();
             RoleManager<IdentityRole> roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-            Debug.WriteLine(roleManager);
-            Debug.WriteLine(userManager);
-            SeedAdminUser(context, userManager, roleManager);
+            SeedTestUser(context, userManager, roleManager);
         }
 
-        private static void SeedAdminUser(
+        private static void SeedTestUser(
             CaffeMenuBotContext context,
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
-            var adminRole = new IdentityRole("admin");
+            var testRole = new IdentityRole("test");
 
-            if (!context.Roles.Any(r => r.Name == adminRole.Name))
+            if (!context.Roles.Any(r => r.Name == testRole.Name))
             {
-                roleManager.CreateAsync(adminRole).GetAwaiter().GetResult();
+                roleManager.CreateAsync(testRole).GetAwaiter().GetResult();
             }
 
-            if (!context.Users.Any(u => u.UserName == "admin"))
+            if (!context.Users.Any(u => u.UserName == "test"))
             {
-                var adminUser = new IdentityUser
+                var testUser = new IdentityUser
                 {
-                    UserName = "admin",
-                    Email = "admin@caffemenubot.com"
+                    UserName = "test",
+                    Email = "test@caffemenubot.com"
                 };
-                var result = userManager.CreateAsync(adminUser, "_Change$ThisPlease3").GetAwaiter().GetResult();
-                userManager.AddToRoleAsync(adminUser, adminRole.Name).GetAwaiter().GetResult();
+                var result = userManager.CreateAsync(testUser, "_Change$ThisPlease3").GetAwaiter().GetResult();
+                userManager.AddToRoleAsync(testUser, testRole.Name).GetAwaiter().GetResult();
             }
         }
     }

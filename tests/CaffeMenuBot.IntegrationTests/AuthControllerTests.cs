@@ -57,7 +57,7 @@ namespace CaffeMenuBot.IntegrationTests
         [Fact]
         public async Task Login_Ok()
         {
-            const string email = "admin@caffemenubot.com";
+            const string email = "test@caffemenubot.com";
             const string password = "_Change$ThisPlease3";
             
             HttpClient client = _factory.CreateClient();

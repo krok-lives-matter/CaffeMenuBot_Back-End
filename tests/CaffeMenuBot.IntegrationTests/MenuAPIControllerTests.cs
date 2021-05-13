@@ -22,7 +22,7 @@ namespace CaffeMenuBot.IntegrationTests
 
         private async Task<string> GetTokenAsync()
         {
-            const string email = "admin@caffemenubot.com";
+            const string email = "test@caffemenubot.com";
             const string password = "_Change$ThisPlease3";
             
             HttpClient client = _factory.CreateClient();
