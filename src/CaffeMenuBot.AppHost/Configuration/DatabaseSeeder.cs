@@ -27,7 +27,7 @@ namespace CaffeMenuBot.AppHost.Configuration
         {
             var adminRole = new IdentityRole("admin");
 
-                if (!context.Roles.Any())
+                if (!context.Roles.Any(r => r.Name == adminRole.Name))
                 {
                     await roleManager.CreateAsync(adminRole);
                 }
