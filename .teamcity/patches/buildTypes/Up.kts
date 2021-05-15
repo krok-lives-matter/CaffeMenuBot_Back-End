@@ -101,5 +101,17 @@ changeBuildType(RelativeId("Up")) {
                 """.trimIndent())
             }
         }
+        insert(5) {
+            step {
+                name = "Production bot settings"
+                type = "MRPP_CreateTextFile"
+                param("system.dest.file", "%teamcity.build.checkoutDir%/src/CaffeMenuBot.AppHost/botsettings.Production.json")
+                param("content", """
+                    {
+                        "BOT_TOKEN": "%env.BOT_TOKEN%"
+                    }
+                """.trimIndent())
+            }
+        }
     }
 }
