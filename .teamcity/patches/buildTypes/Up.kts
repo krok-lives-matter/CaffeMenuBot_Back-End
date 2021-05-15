@@ -66,5 +66,19 @@ changeBuildType(RelativeId("Up")) {
                 """.trimIndent())
             }
         }
+        insert(3) {
+            step {
+                name = "Production database settings"
+                type = "MRPP_CreateTextFile"
+                param("system.dest.file", "%teamcity.build.checkoutDir%/src/CaffeMenuBot.AppHost/dbsettings.Production.json")
+                param("content", """
+                    {
+                        "ConnectionStrings": {
+                            "CaffeMenuBotDb": "Host=postgres;Port=5432;UserId=caffe_menu_bot;Password=%env.POSTGRES_PASSWORD%;Database=caffe_menu_bot;CommandTimeout=300;"
+                        }
+                    }
+                """.trimIndent())
+            }
+        }
     }
 }
