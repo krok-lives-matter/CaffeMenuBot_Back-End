@@ -10,9 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using CaffeMenuBot.AppHost.Options;
-using CaffeMenuBot.AppHost.Model.DTO.Requests;
-using CaffeMenuBot.AppHost.Model.DTO.Responses;
+using CaffeMenuBot.AppHost.Models.DTO.Requests;
+using CaffeMenuBot.AppHost.Models.DTO.Responses;
 using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -80,6 +81,9 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         [HttpPost]
         [Route("register")]
+        [SwaggerOperation("Registers a new user. Administration rights are required.",
+            Tags = new[] {"Authentication"})]
+        [SwaggerResponse(200, "Successfully register a new user.", typeof(RegistrationResponse))]
         public async Task<IActionResult> Register([FromBody] UserLoginRequest user)
         {
             // check if the user with the same email exist
@@ -136,12 +140,12 @@ namespace CaffeMenuBot.AppHost.Controllers
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                new Claim("Id", user.Id),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                // the JTI is used for our refresh token which we will be convering in the next video
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            }),
+                    new Claim("Id", user.Id),
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                    // the JTI is used for our refresh token which we will be convering in the next video
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                }),
                 // the life span of the token needs to be shorter and utilise refresh token to keep the user signedin
                 // but since this is a demo app we can extend it to fit our current need
                 Expires = DateTime.UtcNow.AddHours(6),

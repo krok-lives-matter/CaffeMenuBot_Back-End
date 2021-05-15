@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using CaffeMenuBot.AppHost;
 using Xunit;
 using System.Net.Http.Json;
-using CaffeMenuBot.AppHost.Model.DTO.Responses;
 using System.Text;
 using System.Net.Http.Headers;
+using CaffeMenuBot.AppHost.Models.DTO.Responses;
 
 namespace CaffeMenuBot.IntegrationTests
 {
