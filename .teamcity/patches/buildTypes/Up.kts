@@ -16,5 +16,8 @@ changeBuildType(RelativeId("Up")) {
         add {
             password("env.POSTGRES_PASSWORD", "credentialsJSON:93abc2d6-85ac-48e4-9410-d21613885080", display = ParameterDisplay.HIDDEN)
         }
+        add {
+            text("env.ASPNETCORE_ENVIRONMENT", "Production", allowEmpty = false)
+        }
     }
 }
