@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -98,6 +99,29 @@ namespace CaffeMenuBot.AppHost
 
             services.AddSwaggerGen(c =>
             {
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    Description = "JWT Authorization header using the Bearer scheme. " +
+                                  "You should request JWT token using login endpoints.",
+                    Name = "Authorize"
+                };
+                c.AddSecurityDefinition("jwt", securityScheme);
+
+                var securityRequirement = new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference {Type = ReferenceType.SecurityScheme, Id = "jwt"}
+                        },
+                        Array.Empty<string>()
+                    }
+                };
+                c.AddSecurityRequirement(securityRequirement);
+                
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Dashboard API", Version = "v1"});
                 c.EnableAnnotations();
                 c.SupportNonNullableReferenceTypes();
