@@ -31,7 +31,7 @@ namespace CaffeMenuBot.IntegrationTests
             new($"{{\"email\":\"{email}\",\"password\":\"{password}\"}}", Encoding.UTF8, "application/json");
             HttpResponseMessage result = await client.PostAsync("api/auth/login", content);
             
-            RegistrationResponse resultBody = await result.Content.ReadFromJsonAsync<RegistrationResponse>();
+            AuthResponse resultBody = await result.Content.ReadFromJsonAsync<AuthResponse>();
 
             return resultBody.Token;
         }

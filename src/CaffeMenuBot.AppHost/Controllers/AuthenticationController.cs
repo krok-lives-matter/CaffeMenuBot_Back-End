@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using CaffeMenuBot.AppHost.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -42,7 +43,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             if (existingUser == null)
             {
                 // We dont want to give to much information on why the request has failed for security reasons
-                return BadRequest(new RegistrationResponse
+                return BadRequest(new AuthResponse
                 {
                     Result = false,
                     Errors = new List<string>
@@ -59,16 +60,21 @@ namespace CaffeMenuBot.AppHost.Controllers
             {
                 var jwtToken = GenerateJwtToken(existingUser);
 
-                return Ok(new RegistrationResponse
+                return Ok(new AuthResponse
                 {
-                    User = existingUser,
+                    User = new UserResponse
+                    {
+                        Id = existingUser.Id,
+                        Email = existingUser.NormalizedEmail,
+                        UserName = existingUser.UserName
+                    },
                     Result = true,
                     Token = jwtToken
                 });
             }
 
             // We dont want to give to much information on why the request has failed for security reasons
-            return BadRequest(new RegistrationResponse
+            return BadRequest(new AuthResponse
             {
                 Result = false,
                 Errors = new List<string>
@@ -81,46 +87,60 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         [HttpPost]
         [Route("register")]
-        [SwaggerOperation("Registers a new user. Administration rights are required.",
+        [SwaggerOperation("Registers a new user.", "Administration rights are required.",
             Tags = new[] {"Authentication"})]
-        [SwaggerResponse(200, "Successfully register a new user.", typeof(RegistrationResponse))]
-        public async Task<IActionResult> Register([FromBody] UserLoginRequest user)
+        [SwaggerResponse(200, "Successfully registered a new user.", typeof(AuthResponse))]
+        [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
+        [SwaggerResponse(401, "Unauthorized.")]
+        [SwaggerResponse(403, "User with the specified email already exists.", typeof(ErrorResponse))]
+        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
+        public async Task<ActionResult> Register([FromBody] UserRegisterRequest user)
         {
             // check if the user with the same email exist
-            var existingUser = await _userManager.FindByEmailAsync(user.Email);
+            var existingUser = await _userManager.FindByEmailAsync(user.Email) ??
+                               await _userManager.FindByNameAsync(user.UserName);
 
             if (existingUser != null)
             {
-                return BadRequest(new RegistrationResponse
+                return BadRequest(new AuthResponse
                 {
                     Result = false,
                     Errors = new List<string>
                     {
-                        "Email already exist"
+                        "User with the specified email or username already exists."
                     }
                 });
             }
 
-            var newUser = new IdentityUser {Email = user.Email, UserName = user.Email};
+            var newUser = new IdentityUser
+            {
+                Email = user.Email,
+                NormalizedEmail = user.NormalizedEmail ?? user.Email,
+                UserName = user.UserName
+            };
             var isCreated = await _userManager.CreateAsync(newUser, user.Password);
             if (isCreated.Succeeded)
             {
                 var jwtToken = GenerateJwtToken(newUser);
 
-                return Ok(new RegistrationResponse
+                return Ok(new AuthResponse
                 {
-                    User = newUser,
+                    User = new UserResponse
+                    {
+                        Id = newUser.Id,
+                        Email = newUser.NormalizedEmail,
+                        UserName = newUser.UserName
+                    },
                     Result = true,
                     Token = jwtToken
                 });
             }
-
-            return new JsonResult(new RegistrationResponse
-                {
-                    Result = false,
-                    Errors = isCreated.Errors.Select(x => x.Description).ToList()
-                })
-                {StatusCode = 500};
+            
+            return new JsonResult(new AuthResponse
+            {
+                Result = false,
+                Errors = isCreated.Errors.Select(x => x.Description).ToList()
+            }) {StatusCode = 500};
         }
 
         private string GenerateJwtToken(IdentityUser user)
@@ -143,13 +163,13 @@ namespace CaffeMenuBot.AppHost.Controllers
                     new Claim("Id", user.Id),
                     new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    // the JTI is used for our refresh token which we will be convering in the next video
+                    // the JTI is used for our refresh token which we will be converting in the next video
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 }),
                 // the life span of the token needs to be shorter and utilise refresh token to keep the user signedin
                 // but since this is a demo app we can extend it to fit our current need
                 Expires = DateTime.UtcNow.AddHours(6),
-                // here we are adding the encryption alogorithim information which will be used to decrypt our token
+                // here we are adding the encryption algorithm information which will be used to decrypt our token
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
             };
 

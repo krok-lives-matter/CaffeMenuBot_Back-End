@@ -3,9 +3,7 @@ using System.Linq;
 using CaffeMenuBot.Data;
 using CaffeMenuBot.Data.Models.Menu;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
 using CaffeMenuBot.Data.Models.Schedule;
-using System;
 
 namespace CaffeMenuBot.AppHost.Configuration
 {
