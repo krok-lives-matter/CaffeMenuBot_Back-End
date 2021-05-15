@@ -39,20 +39,8 @@ namespace CaffeMenuBot.IntegrationTests
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
                 var db = scopedServices.GetRequiredService<CaffeMenuBotContext>();
-                var logger = scopedServices
-                    .GetRequiredService<ILogger<CaffeMenuBotWebApplicationFactory<TStartup>>>();
 
                 db.Database.EnsureCreated();
-
-                try
-                {
-                    Utilities.InitializeDatabaseForTests(db, scopedServices);
-                }
-                catch (Exception ex)
-                {
-                   logger.LogError(ex, "An error occurred seeding the " +
-                                       "database with test data. Error: {Message}", ex.Message);
-                }
             });
             builder.UseUrls("http://localhost:5001/");
         }

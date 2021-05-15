@@ -14,22 +14,25 @@ namespace CaffeMenuBot.IntegrationTests
     public sealed class DashboardAPIControllerTests : IClassFixture<CaffeMenuBotWebApplicationFactory<Startup>>
     {
         private readonly CaffeMenuBotWebApplicationFactory<Startup> _factory;
+        private readonly HttpClient _client;
 
         public DashboardAPIControllerTests(CaffeMenuBotWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
+            _client = _factory.CreateDefaultClient();
+            _client.DefaultRequestHeaders.Authorization
+                         = new AuthenticationHeaderValue("Bearer", GetTokenAsync().GetAwaiter().GetResult());
+
         }
 
         private async Task<string> GetTokenAsync()
         {
-            const string email = "test@caffemenubot.com";
+            const string email = "admin@caffemenubot.com";
             const string password = "_Change$ThisPlease3";
             
-            HttpClient client = _factory.CreateClient();
-
             using StringContent content = 
             new($"{{\"email\":\"{email}\",\"password\":\"{password}\"}}", Encoding.UTF8, "application/json");
-            HttpResponseMessage result = await client.PostAsync("api/auth/login", content);
+            HttpResponseMessage result = await _client.PostAsync("api/auth/login", content);
             
             AuthResponse resultBody = await result.Content.ReadFromJsonAsync<AuthResponse>();
 
@@ -40,12 +43,7 @@ namespace CaffeMenuBot.IntegrationTests
         [InlineData(Int32.MaxValue, "missing id is passed")]
         public async Task GetDishById_MissingIdSouldReturnNotFound(int id, string description)
         {
-            HttpClient client = _factory.CreateClient();
-
-            client.DefaultRequestHeaders.Authorization 
-                         = new AuthenticationHeaderValue("Bearer", await this.GetTokenAsync());
-
-            HttpResponseMessage result = await client.GetAsync($"api/dashboard/menu/dishes/{id}");
+            HttpResponseMessage result = await _client.GetAsync($"api/dashboard/menu/dishes/{id}");
 
             Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         }
@@ -54,12 +52,7 @@ namespace CaffeMenuBot.IntegrationTests
         [InlineData(Int32.MaxValue, "missing id is passed")]
         public async Task GetCategoryById_MissingIdSouldReturnNotFound(int id, string description)
         {
-            HttpClient client = _factory.CreateClient();
-
-            client.DefaultRequestHeaders.Authorization 
-                         = new AuthenticationHeaderValue("Bearer", await this.GetTokenAsync());
-
-            HttpResponseMessage result = await client.GetAsync($"api/dashboard/menu/categories/{id}");
+            HttpResponseMessage result = await _client.GetAsync($"api/dashboard/menu/categories/{id}");
 
             Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
         }

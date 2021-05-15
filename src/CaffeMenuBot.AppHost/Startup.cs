@@ -70,7 +70,7 @@ namespace CaffeMenuBot.AppHost
 
             services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
 
-            //ConfigureBot(services);
+            ConfigureBot(services);
 
             // within this section we are configuring the authentication and setting the default scheme
             services

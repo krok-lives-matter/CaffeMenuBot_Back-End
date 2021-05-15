@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,10 +10,12 @@ namespace CaffeMenuBot.IntegrationTests
     public sealed class AuthControllerTests : IClassFixture<CaffeMenuBotWebApplicationFactory<Startup>>
     {
         private readonly CaffeMenuBotWebApplicationFactory<Startup> _factory;
+        private readonly HttpClient _client;
 
         public AuthControllerTests(CaffeMenuBotWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
+            _client = _factory.CreateDefaultClient();
         }
 
         // Requirements:
@@ -47,24 +48,20 @@ namespace CaffeMenuBot.IntegrationTests
             "Empty data string is passed.")]
         public async Task Login_BadRequestData_ReturnsHttpCode400(string data, string description)
         {
-            HttpClient client = _factory.CreateClient();
-
             using StringContent content = new(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage result = await client.PostAsync("api/auth/login", content);
+            HttpResponseMessage result = await _client.PostAsync("api/auth/login", content);
             Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
         }
 
         [Fact]
         public async Task Login_Ok()
         {
-            const string email = "test@caffemenubot.com";
+            const string email = "admin@caffemenubot.com";
             const string password = "_Change$ThisPlease3";
             
-            HttpClient client = _factory.CreateClient();
-
             using StringContent content = 
             new($"{{\"email\":\"{email}\",\"password\":\"{password}\"}}", Encoding.UTF8, "application/json");
-            HttpResponseMessage result = await client.PostAsync("api/auth/login", content);
+            HttpResponseMessage result = await _client.PostAsync("api/auth/login", content);
             
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
