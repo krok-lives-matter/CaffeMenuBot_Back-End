@@ -15,7 +15,11 @@ namespace CaffeMenuBot.AppHost.Models
     {
         public IOpenApiAny SchemaExample => new OpenApiObject
         {
-
+            ["result"] = new OpenApiBoolean(false),
+            ["errors"] = new OpenApiArray
+            {
+                new OpenApiString("Description of any error that has occurred")
+            }
         };
         
         public void Apply(OpenApiSchema schema, SchemaFilterContext context)
