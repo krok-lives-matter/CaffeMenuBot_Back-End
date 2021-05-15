@@ -16,8 +16,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
-    [Route("api/auth")] // api/authmanagement
+    [Route("api/auth")]
     [ApiController]
+    [Authorize(Roles = "admin")]
     public class AuthenticationController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -34,112 +35,88 @@ namespace CaffeMenuBot.AppHost.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest user)
         {
-            if (ModelState.IsValid)
+            // check if the user with the same email exist
+            var existingUser = await _userManager.FindByEmailAsync(user.Email);
+
+            if (existingUser == null)
             {
-                // check if the user with the same email exist
-                var existingUser = await _userManager.FindByEmailAsync(user.Email);
-
-                if (existingUser == null)
+                // We dont want to give to much information on why the request has failed for security reasons
+                return BadRequest(new RegistrationResponse
                 {
-                    // We dont want to give to much information on why the request has failed for security reasons
-                    return BadRequest(new RegistrationResponse()
+                    Result = false,
+                    Errors = new List<string>
                     {
-                        Result = false,
-                        Errors = new List<string>(){
-                                        "Invalid authentication request"
-                                    }
-                    });
-                }
-
-                // Now we need to check if the user has inputed the right password
-                var isCorrect = await _userManager.CheckPasswordAsync(existingUser, user.Password);
-
-                if (isCorrect)
-                {
-                    var jwtToken = GenerateJwtToken(existingUser);
-
-                    return Ok(new RegistrationResponse()
-                    {
-                        User = existingUser,
-                        Result = true,
-                        Token = jwtToken
-                    });
-                }
-                else
-                {
-                    // We dont want to give to much information on why the request has failed for security reasons
-                    return BadRequest(new RegistrationResponse()
-                    {
-                        Result = false,
-                        Errors = new List<string>(){
-                                         "Invalid authentication request"
-                                    }
-                    });
-                }
+                        "Invalid authentication request"
+                    }
+                });
             }
 
-            return BadRequest(new RegistrationResponse()
+            // Now we need to check if the user has filled the right password
+            var isCorrect = await _userManager.CheckPasswordAsync(existingUser, user.Password);
+
+            if (isCorrect)
+            {
+                var jwtToken = GenerateJwtToken(existingUser);
+
+                return Ok(new RegistrationResponse
+                {
+                    User = existingUser,
+                    Result = true,
+                    Token = jwtToken
+                });
+            }
+
+            // We dont want to give to much information on why the request has failed for security reasons
+            return BadRequest(new RegistrationResponse
             {
                 Result = false,
-                Errors = new List<string>(){
-                                        "Invalid payload"
-                                    }
+                Errors = new List<string>
+                {
+                    "Invalid authentication request"
+                }
             });
         }
 
 
         [HttpPost]
         [Route("register")]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Register([FromBody] UserLoginRequest user)
         {
-            // Check if the incoming request is valid
-            if (ModelState.IsValid)
+            // check if the user with the same email exist
+            var existingUser = await _userManager.FindByEmailAsync(user.Email);
+
+            if (existingUser != null)
             {
-                // check i the user with the same email exist
-                var existingUser = await _userManager.FindByEmailAsync(user.Email);
-
-                if (existingUser != null)
+                return BadRequest(new RegistrationResponse
                 {
-                    return BadRequest(new RegistrationResponse()
+                    Result = false,
+                    Errors = new List<string>
                     {
-                        Result = false,
-                        Errors = new List<string>(){
-                                            "Email already exist"
-                                        }
-                    });
-                }
+                        "Email already exist"
+                    }
+                });
+            }
 
-                var newUser = new IdentityUser() { Email = user.Email, UserName = user.Email };
-                var isCreated = await _userManager.CreateAsync(newUser, user.Password);
-                if (isCreated.Succeeded)
+            var newUser = new IdentityUser {Email = user.Email, UserName = user.Email};
+            var isCreated = await _userManager.CreateAsync(newUser, user.Password);
+            if (isCreated.Succeeded)
+            {
+                var jwtToken = GenerateJwtToken(newUser);
+
+                return Ok(new RegistrationResponse
                 {
-                    var jwtToken = GenerateJwtToken(newUser);
+                    User = newUser,
+                    Result = true,
+                    Token = jwtToken
+                });
+            }
 
-                    return Ok(new RegistrationResponse()
-                    {
-                        User = newUser,
-                        Result = true,
-                        Token = jwtToken
-                    });
-                }
-
-                return new JsonResult(new RegistrationResponse()
+            return new JsonResult(new RegistrationResponse
                 {
                     Result = false,
                     Errors = isCreated.Errors.Select(x => x.Description).ToList()
-                }
-                        )
-                { StatusCode = 500 };
-            }
-
-            return BadRequest(new RegistrationResponse()
-            {
-                Result = false,
-                Errors = new List<string>(){
-                                            "Invalid payload"
-                                        }
-            });
+                })
+                {StatusCode = 500};
         }
 
         private string GenerateJwtToken(IdentityUser user)
