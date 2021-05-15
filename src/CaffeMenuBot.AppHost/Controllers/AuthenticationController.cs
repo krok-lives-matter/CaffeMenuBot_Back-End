@@ -35,7 +35,13 @@ namespace CaffeMenuBot.AppHost.Controllers
         [HttpPost]
         [Route("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] UserLoginRequest user)
+        [SwaggerOperation("Authorizes the specified user.",
+            Tags = new[] {"Authentication"})]
+        [SwaggerResponse(200, "Successfully authorized the specified user.", typeof(AuthResponse))]
+        [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
+        [SwaggerResponse(404, "User with the specified email was not found.", typeof(ErrorResponse))]
+        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
+        public async Task<ActionResult> Login([FromBody] UserLoginRequest user)
         {
             // check if the user with the same email exist
             var existingUser = await _userManager.FindByEmailAsync(user.Email);
@@ -48,7 +54,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                     Result = false,
                     Errors = new List<string>
                     {
-                        "Invalid authentication request"
+                        "User with the specified email was not found"
                     }
                 });
             }
@@ -79,7 +85,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Result = false,
                 Errors = new List<string>
                 {
-                    "Invalid authentication request"
+                    "Bad email or password, try again"
                 }
             });
         }

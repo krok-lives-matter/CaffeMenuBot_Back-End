@@ -2,10 +2,12 @@
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace CaffeMenuBot.AppHost.Models.DTO.Responses
 {
+    [SwaggerSchemaFilter(typeof(AuthResponseSchema))]
     public record AuthResponse
     {
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
