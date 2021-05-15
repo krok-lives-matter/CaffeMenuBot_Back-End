@@ -28,7 +28,7 @@ changeBuildType(RelativeId("Up")) {
 
     expectSteps {
         exec {
-            path = "build.sh"
+            path = "build.cmd"
             arguments = "Up --skip"
         }
     }
