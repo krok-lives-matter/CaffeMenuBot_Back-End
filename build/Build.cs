@@ -18,7 +18,6 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
 [TeamCity(
-    TeamCityAgentPlatform.Unix,
     Version = "2020.2",
     VcsTriggeredTargets = new[] {nameof(Up), nameof(Test)},
     NonEntryTargets = new[] {nameof(Restore)},
