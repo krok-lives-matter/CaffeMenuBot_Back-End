@@ -80,5 +80,26 @@ changeBuildType(RelativeId("Up")) {
                 """.trimIndent())
             }
         }
+        insert(4) {
+            step {
+                name = "Production application settings"
+                type = "MRPP_CreateTextFile"
+                param("system.dest.file", "%teamcity.build.checkoutDir%/src/CaffeMenuBot.AppHost/appsettings.Production.json")
+                param("content", """
+                    {
+                      "Logging": {
+                        "LogLevel": {
+                          "Default": "Information",
+                          "Microsoft": "Warning",
+                          "Microsoft.Hosting.Lifetime": "Information"
+                        }
+                      },
+                      "JwtOptions": {
+                        "SecretKey": "%env.JWT_KEY%"
+                      }
+                    }
+                """.trimIndent())
+            }
+        }
     }
 }
