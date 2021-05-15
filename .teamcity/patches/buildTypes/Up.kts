@@ -1,6 +1,7 @@
 package patches.buildTypes
 
 import jetbrains.buildServer.configs.kotlin.v2018_1.*
+import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.exec
 import jetbrains.buildServer.configs.kotlin.v2018_1.ui.*
 
 /*
@@ -21,6 +22,49 @@ changeBuildType(RelativeId("Up")) {
         }
         add {
             password("env.JWT_KEY", "credentialsJSON:1367a739-5fae-41ff-9a3d-26e141ef03fa", display = ParameterDisplay.HIDDEN)
+        }
+    }
+
+    expectSteps {
+        exec {
+
+            conditions {
+                contains("teamcity.agent.jvm.os.name", "Windows")
+            }
+            path = "build.cmd"
+            arguments = "Up --skip"
+        }
+        exec {
+
+            conditions {
+                doesNotContain("teamcity.agent.jvm.os.name", "Windows")
+            }
+            path = "build.sh"
+            arguments = "Up --skip"
+        }
+    }
+    steps {
+        insert(2) {
+            step {
+                name = "Production docker-compose configuration"
+                type = "MRPP_CreateTextFile"
+                param("system.dest.file", "%teamcity.build.checkoutDir%/src/docker-compose.override.yml")
+                param("content", """
+                    version: '3.9'
+                    
+                    services:
+                      host:
+                        environment:
+                          - ASPNETCORE_ENVIRONMENT=%env.ASPNETCORE_ENVIRONMENT%
+                        networks:
+                          - caffe_menu_bot_network
+                    
+                    networks:
+                      caffe_menu_bot_network:
+                        external:
+                          name: postgres_network
+                """.trimIndent())
+            }
         }
     }
 }
