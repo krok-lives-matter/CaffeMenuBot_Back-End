@@ -19,5 +19,8 @@ changeBuildType(RelativeId("Up")) {
         add {
             text("env.ASPNETCORE_ENVIRONMENT", "Production", allowEmpty = false)
         }
+        add {
+            password("env.JWT_KEY", "credentialsJSON:1367a739-5fae-41ff-9a3d-26e141ef03fa", display = ParameterDisplay.HIDDEN)
+        }
     }
 }
