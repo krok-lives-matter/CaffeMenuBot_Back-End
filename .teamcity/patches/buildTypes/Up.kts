@@ -44,7 +44,7 @@ changeBuildType(RelativeId("Up")) {
         }
     }
     steps {
-        insert(2) {
+        insert(0) {
             step {
                 name = "Production docker-compose configuration"
                 type = "MRPP_CreateTextFile"
@@ -66,7 +66,7 @@ changeBuildType(RelativeId("Up")) {
                 """.trimIndent())
             }
         }
-        insert(3) {
+        insert(1) {
             step {
                 name = "Production database settings"
                 type = "MRPP_CreateTextFile"
@@ -80,7 +80,7 @@ changeBuildType(RelativeId("Up")) {
                 """.trimIndent())
             }
         }
-        insert(4) {
+        insert(2) {
             step {
                 name = "Production application settings"
                 type = "MRPP_CreateTextFile"
@@ -101,7 +101,7 @@ changeBuildType(RelativeId("Up")) {
                 """.trimIndent())
             }
         }
-        insert(5) {
+        insert(3) {
             step {
                 name = "Production bot settings"
                 type = "MRPP_CreateTextFile"
