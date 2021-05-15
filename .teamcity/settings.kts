@@ -34,18 +34,24 @@ project {
 
     params {
         select (
-            "env.Verbosity",
-            label = "Verbosity",
-            description = "Logging verbosity during build execution. Default is 'Normal'.",
-            value = "Normal",
-            options = listOf("Minimal" to "Minimal", "Normal" to "Normal", "Quiet" to "Quiet", "Verbose" to "Verbose"),
-            display = ParameterDisplay.NORMAL)
-        select (
             "env.Configuration",
             label = "Configuration",
             description = "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
             value = "Release",
             options = listOf("Debug" to "Debug", "Release" to "Release"),
+            display = ParameterDisplay.NORMAL)
+        text (
+            "env.ProjectName",
+            label = "ProjectName",
+            value = "caffe-menu-bot",
+            allowEmpty = true,
+            display = ParameterDisplay.NORMAL)
+        select (
+            "env.Verbosity",
+            label = "Verbosity",
+            description = "Logging verbosity during build execution. Default is 'Normal'.",
+            value = "Normal",
+            options = listOf("Minimal" to "Minimal", "Normal" to "Normal", "Quiet" to "Quiet", "Verbose" to "Verbose"),
             display = ParameterDisplay.NORMAL)
         checkbox (
             "env.WipeDatabaseData",
@@ -62,6 +68,11 @@ project {
             checked = "True",
             unchecked = "False",
             display = ParameterDisplay.NORMAL)
+        text(
+            "teamcity.runner.commandline.stdstreams.encoding",
+            "UTF-8",
+            display = ParameterDisplay.HIDDEN
+        )
     }
 }
 object Down : BuildType({
@@ -72,9 +83,22 @@ object Down : BuildType({
     }
     steps {
         exec {
+            path = "build.cmd"
+            arguments = "Down --skip"
+            conditions { contains("teamcity.agent.jvm.os.name", "Windows") }
+        }
+        exec {
             path = "build.sh"
             arguments = "Down --skip"
+            conditions { doesNotContain("teamcity.agent.jvm.os.name", "Windows") }
         }
+    }
+    params {
+        text(
+            "teamcity.ui.runButton.caption",
+            "Down",
+            display = ParameterDisplay.HIDDEN
+        )
     }
 })
 object Up : BuildType({
@@ -85,9 +109,22 @@ object Up : BuildType({
     }
     steps {
         exec {
+            path = "build.cmd"
+            arguments = "Up --skip"
+            conditions { contains("teamcity.agent.jvm.os.name", "Windows") }
+        }
+        exec {
             path = "build.sh"
             arguments = "Up --skip"
+            conditions { doesNotContain("teamcity.agent.jvm.os.name", "Windows") }
         }
+    }
+    params {
+        text(
+            "teamcity.ui.runButton.caption",
+            "Up",
+            display = ParameterDisplay.HIDDEN
+        )
     }
     triggers {
         vcs {
@@ -109,9 +146,22 @@ object Compile : BuildType({
     }
     steps {
         exec {
+            path = "build.cmd"
+            arguments = "Restore Compile --skip"
+            conditions { contains("teamcity.agent.jvm.os.name", "Windows") }
+        }
+        exec {
             path = "build.sh"
             arguments = "Restore Compile --skip"
+            conditions { doesNotContain("teamcity.agent.jvm.os.name", "Windows") }
         }
+    }
+    params {
+        text(
+            "teamcity.ui.runButton.caption",
+            "Compile",
+            display = ParameterDisplay.HIDDEN
+        )
     }
 })
 object Test_P1T2 : BuildType({
@@ -123,8 +173,14 @@ object Test_P1T2 : BuildType({
     artifactRules = "output/test-results/*.trx => output/test-results"
     steps {
         exec {
+            path = "build.cmd"
+            arguments = "Test --skip --test-partition 1"
+            conditions { contains("teamcity.agent.jvm.os.name", "Windows") }
+        }
+        exec {
             path = "build.sh"
             arguments = "Test --skip --test-partition 1"
+            conditions { doesNotContain("teamcity.agent.jvm.os.name", "Windows") }
         }
     }
     dependencies {
@@ -143,8 +199,14 @@ object Test_P2T2 : BuildType({
     artifactRules = "output/test-results/*.trx => output/test-results"
     steps {
         exec {
+            path = "build.cmd"
+            arguments = "Test --skip --test-partition 2"
+            conditions { contains("teamcity.agent.jvm.os.name", "Windows") }
+        }
+        exec {
             path = "build.sh"
             arguments = "Test --skip --test-partition 2"
+            conditions { doesNotContain("teamcity.agent.jvm.os.name", "Windows") }
         }
     }
     dependencies {
@@ -163,6 +225,13 @@ object Test : BuildType({
         showDependenciesChanges = true
     }
     artifactRules = "**/*"
+    params {
+        text(
+            "teamcity.ui.runButton.caption",
+            "Test",
+            display = ParameterDisplay.HIDDEN
+        )
+    }
     triggers {
         vcs {
             triggerRules = "+:**"

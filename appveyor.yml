@@ -17,6 +17,10 @@
 image:
   - Ubuntu1804
 
+branches:
+  only:
+    - main
+
 build_script:
   - cmd: .\build.cmd Test
   - sh: ./build.cmd Test
