@@ -6,6 +6,6 @@ obj/
 *.user
 *.Production.json
 botsettings.Development.json
-.tmp/
+.nuke/temp/
 output/
 test-results/
