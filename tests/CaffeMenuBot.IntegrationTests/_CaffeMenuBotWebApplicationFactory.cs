@@ -2,6 +2,7 @@
 using System.Linq;
 using CaffeMenuBot.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,8 +50,8 @@ namespace CaffeMenuBot.IntegrationTests
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, "An error occurred seeding the " +
-                                        "database with test data. Error: {Message}", ex.Message);
+                   logger.LogError(ex, "An error occurred seeding the " +
+                                       "database with test data. Error: {Message}", ex.Message);
                 }
             });
             builder.UseUrls("http://localhost:5001/");

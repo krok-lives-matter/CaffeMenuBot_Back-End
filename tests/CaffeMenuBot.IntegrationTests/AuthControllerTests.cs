@@ -21,27 +21,27 @@ namespace CaffeMenuBot.IntegrationTests
         // Email: at least 4 characters; validation the same as for <input type="email">; max - 254 characters.
         // Password: at least 8 characters; max - 64 characters.
         [Theory]
-        [InlineData("email=&password=",
+        [InlineData(@"{""email"":"""",""password"":""""}",
             "Email and password fields are passed, but they have no values.")]
-        [InlineData("email=test@gmail.com",
+        [InlineData(@"""email"""""":""test@gmail.com""",
             "Email is passed and has a value, but there is no password parameter.")]
-        [InlineData("password=Passw0rd",
+        [InlineData(@"""password"":""Passw0rd""",
             "Password is passed and has a value, but there is no email parameter.")]
-        [InlineData("email=a@b&password=Passw0rd",
+        [InlineData(@"""email"":""""a@b,""password"":""Passw0rd""",
             "Email consists of 3 characters, but it has to be at least 4 characters.")]
-        [InlineData("email=test@gmail.com&password=Passw0r",
+        [InlineData(@"""email"":""test@gmail.com"",""password"":""Passw0r""",
             "Password consists of 7 characters, but it has to be at least 8 characters.")]
-        [InlineData("email=test@gmail.com&password=n67AsCQhodZoH8wSzP7TXFX8YpUS8R6GUehNyFsYuoeXE8AvMWwjFCvycpgA63JmH",
+        [InlineData(@"""email"":""test@gmail.com"",""password"":""n67AsCQhodZoH8wSzP7TXFX8YpUS8R6GUehNyFsYuoeXE8AvMWwjFCvycpgA63JmH""",
             "Password is 65 characters in length, but the max allowed length is 64 characters.")]
-        [InlineData("email=test@gmail@com&Password=Passw0rd",
+        [InlineData(@"""email"":""test@gmail@com"",""password"":""Passw0rd""",
             "Invalid email value.")]
-        [InlineData("email=hello.world@&password=Passw0rd",
+        [InlineData(@"""email"":""hello.world@"",""password"":""Passw0rd""",
             "Invalid email value.")]
-        [InlineData("email=@hello/world&password=Passw0rd",
+        [InlineData(@"""email"":""@hello/world"",""password"":""Passw0rd""",
             "Invalid email value.")]
-        [InlineData("email=gmail.com&password=Passw0rd",
+        [InlineData(@"""email"":""gmail.com"",""password"":""Passw0rd""",
             "Invalid email value.")]
-        [InlineData("email=hello—world_gmail.com&password=Passw0rd",
+        [InlineData(@"""email"":""hello—world_gmail.com"",""password"":""Passw0rd""",
             "Invalid email value.")]
         [InlineData("",
             "Empty data string is passed.")]
@@ -49,47 +49,21 @@ namespace CaffeMenuBot.IntegrationTests
         {
             HttpClient client = _factory.CreateClient();
 
-            using StringContent content = new(data, Encoding.UTF8, "application/x-www-form-urlencoded");
+            using StringContent content = new(data, Encoding.UTF8, "application/json");
             HttpResponseMessage result = await client.PostAsync("api/auth/login", content);
-            
             Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
-        }
-
-        [Theory]
-        [InlineData("test@gmail.com")]
-        [InlineData("contact@vova-lantsov.dev")]
-        [InlineData("email@example.com")]
-        public async Task Login_UserDoesNotExist_RedirectToAuthPage(string email)
-        {
-            const string testPassword = "Passw0rd123";
-
-            HttpClient client = _factory.CreateClient();
-
-            Dictionary<string, string> contentData = new()
-            {
-                ["email"] = email,
-                ["password"] = testPassword
-            };
-            using FormUrlEncodedContent content = new(contentData);
-            HttpResponseMessage result = await client.PostAsync("api/auth/login", content);
-            
-            Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         }
 
         [Fact]
         public async Task Login_Ok()
         {
-            const string email = "test@example.com";
-            const string password = "my_password";
+            const string email = "test@caffemenubot.com";
+            const string password = "_Change$ThisPlease3";
             
             HttpClient client = _factory.CreateClient();
 
-            Dictionary<string, string> contentData = new()
-            {
-                ["email"] = email,
-                ["password"] = password
-            };
-            using FormUrlEncodedContent content = new(contentData);
+            using StringContent content = 
+            new($"{{\"email\":\"{email}\",\"password\":\"{password}\"}}", Encoding.UTF8, "application/json");
             HttpResponseMessage result = await client.PostAsync("api/auth/login", content);
             
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);

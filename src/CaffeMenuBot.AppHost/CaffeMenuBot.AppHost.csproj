@@ -30,6 +30,7 @@
       <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
       <PackageReference Include="Serilog.Sinks.Loki" Version="3.0.0" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.1.4" />
       <PackageReference Include="Telegram.Bot" Version="15.7.1" />
       <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="0.2.0" />
     </ItemGroup>

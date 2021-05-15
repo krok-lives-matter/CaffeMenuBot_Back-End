@@ -1,5 +1,9 @@
-﻿using System;
+﻿using System.Diagnostics;
+using System;
+using System.Linq;
 using CaffeMenuBot.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CaffeMenuBot.IntegrationTests
 {
@@ -7,18 +11,33 @@ namespace CaffeMenuBot.IntegrationTests
     {
         public static void InitializeDatabaseForTests(CaffeMenuBotContext context, IServiceProvider services)
         {
-            /*const string salt = "YWRtaW5AY2FmZmVtZW51Ym90LmNvbQ==";
-            var user = new ApplicationUser
+            UserManager<IdentityUser> userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+            RoleManager<IdentityRole> roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+            SeedTestUser(context, userManager, roleManager);
+        }
+
+        private static void SeedTestUser(
+            CaffeMenuBotContext context,
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager)
+        {
+            var testRole = new IdentityRole("test");
+
+            if (!context.Roles.Any(r => r.Name == testRole.Name))
             {
-                Id = Guid.NewGuid().ToString(),
-                Email = "test@example.com",
-                /*Role = "admin",
-                Username = "my_username",
-                Salt = salt,#1#
-                PasswordHash = EncryptionProvider.Encrypt("my_password", EncryptionProvider.ReadSaltFromBase64(salt))
-            };
-            context.Users.Add(user);
-            context.SaveChanges();*/
+                roleManager.CreateAsync(testRole).GetAwaiter().GetResult();
+            }
+
+            if (!context.Users.Any(u => u.UserName == "test"))
+            {
+                var testUser = new IdentityUser
+                {
+                    UserName = "test",
+                    Email = "test@caffemenubot.com"
+                };
+                var result = userManager.CreateAsync(testUser, "_Change$ThisPlease3").GetAwaiter().GetResult();
+                userManager.AddToRoleAsync(testUser, testRole.Name).GetAwaiter().GetResult();
+            }
         }
     }
 }

@@ -35,12 +35,12 @@ namespace CaffeMenuBot.AppHost
             services.AddCors(options =>
             {
                 options.AddPolicy(name: publicCorsPolicyName,
-                              builder =>
-                              {
-                                  builder.AllowAnyOrigin()
-                                         .AllowAnyHeader()
-                                         .AllowAnyMethod();
-                              });
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
             });
 
             services.AddControllers()
@@ -48,55 +48,60 @@ namespace CaffeMenuBot.AppHost
                 {
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
                 });
-            
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
-            {
-                options.SignIn.RequireConfirmedAccount = true;
-                options.ClaimsIdentity.UserIdClaimType = "Id";
-            })
-            .AddRoles<IdentityRole>()
-            .AddRoleManager<RoleManager<IdentityRole>>()
-            .AddEntityFrameworkStores<CaffeMenuBotContext>();
-            
+                {
+                    options.SignIn.RequireConfirmedAccount = true;
+                    options.ClaimsIdentity.UserIdClaimType = "Id";
+                })
+                .AddRoles<IdentityRole>()
+                .AddRoleManager<RoleManager<IdentityRole>>()
+                .AddEntityFrameworkStores<CaffeMenuBotContext>();
+
 
             services.AddDbContext<CaffeMenuBotContext>(options =>
                 options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
                     builder.EnableRetryOnFailure()
                         .MigrationsAssembly("CaffeMenuBot.Data")
-                        .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));            
+                        .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
 
             services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
-            
-            ConfigureBot(services);
+
+            //ConfigureBot(services);
 
             // within this section we are configuring the authentication and setting the default scheme
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(jwt =>
-            {
-                var key = Encoding.ASCII.GetBytes(_configuration["Jwt:SecretKey"]);
-
-                jwt.SaveToken = true;
-                jwt.TokenValidationParameters = new TokenValidationParameters
+            services
+                .AddAuthentication(options =>
                 {
-                    ValidateIssuerSigningKey = true, // this will validate the 3rd part of the jwt token using the secret that we added in the appsettings and verify we have generated the jwt token
-                    IssuerSigningKey = new SymmetricSecurityKey(key), // Add the secret key to our Jwt encryption
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    RequireExpirationTime = false,
-                    ValidateLifetime = true
-                };
-            });
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(jwt =>
+                {
+                    var key = Encoding.ASCII.GetBytes(_configuration["Jwt:SecretKey"]);
+
+                    jwt.SaveToken = true;
+                    jwt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey =
+                            true, // this will validate the 3rd part of the jwt token using the secret that we added in the appsettings and verify we have generated the jwt token
+                        IssuerSigningKey = new SymmetricSecurityKey(key), // Add the secret key to our Jwt encryption
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        RequireExpirationTime = false,
+                        ValidateLifetime = true
+                    };
+                });
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dashboard API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Dashboard API", Version = "v1"});
+                c.EnableAnnotations();
+                c.SupportNonNullableReferenceTypes();
+                c.DescribeAllParametersInCamelCase();
             });
         }
 
