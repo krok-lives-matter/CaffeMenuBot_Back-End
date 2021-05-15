@@ -31,12 +31,7 @@ namespace CaffeMenuBot.AppHost
                 if (context.Database.GetPendingMigrations().Any())
                     context.Database.Migrate();
 
-                await DatabaseSeeder.SeedDatabaseAsync(
-                    context,
-                    userManager,
-                    roleManager
-                );
-                
+                await DatabaseSeeder.SeedDatabaseAsync(context);
             }
             await host.RunAsync();
         }

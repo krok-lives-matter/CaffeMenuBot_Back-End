@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Linq;
 using CaffeMenuBot.Data;
 using CaffeMenuBot.Data.Models.Menu;
@@ -11,44 +11,17 @@ namespace CaffeMenuBot.AppHost.Configuration
 {
     internal static class DatabaseSeeder
     {
-        internal static async Task SeedDatabaseAsync(CaffeMenuBotContext context,
-            UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager) 
+        internal static async Task SeedDatabaseAsync(CaffeMenuBotContext context)
         {
-            await SeedAdminUserAsync(context, userManager, roleManager);
             await SeedDashboardDataAsync(context);
             await SeedScheduleDataAsync(context);
-        }
-
-        private static async Task SeedAdminUserAsync(
-            CaffeMenuBotContext context,
-            UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager)     
-        {
-            var adminRole = new IdentityRole("admin");
-
-                if (!context.Roles.Any(r => r.Name == adminRole.Name))
-                {
-                    await roleManager.CreateAsync(adminRole);
-                }
-
-                if (!context.Users.Any(u => u.UserName == "admin"))
-                {
-                    var adminUser = new IdentityUser
-                    {
-                        UserName = "admin@caffemenubot.com",
-                        Email = "admin@caffemenubot.com"
-                    };
-                    var result = await userManager.CreateAsync(adminUser, "_Change$ThisPlease3");
-                    await userManager.AddToRoleAsync(adminUser, adminRole.Name);
-                }
         }
 
         private static async Task SeedScheduleDataAsync(CaffeMenuBotContext context)
         {
             if (context.Schedule.Any())
                 return;
-            
+
             context.Schedule.AddRange(
                 new Schedule
                 {
@@ -107,7 +80,7 @@ namespace CaffeMenuBot.AppHost.Configuration
         {
             if (context.Categories.Any())
                 return;
-            
+
             context.Categories.AddRange(
                 new Category
                 {
