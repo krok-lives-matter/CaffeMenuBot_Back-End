@@ -8,6 +8,7 @@ using CaffeMenuBot.Data.Models.Schedule;
 using Microsoft.EntityFrameworkCore;
 using CaffeMenuBot.AppHost.Models;
 using System.Linq;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -25,7 +26,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //GET api/dashboard/schedule/
         [HttpGet]
-        [AllowAnonymous] // for bot to be able to request schedule
+        [SwaggerOperation("Gets all schedule")]
         public async Task<ActionResult<IEnumerable<Schedule>>> Get(CancellationToken cancellationToken)
         {
             var schedule = await _context
@@ -38,6 +39,9 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //DELETE api/dashboard/schedule/{id}
         [HttpDelete("{id:int:min(1)}")]
+        [SwaggerOperation("Deletes schedule by id")]
+        [SwaggerResponse(204, "Successfully schedule dish by specified id")]
+        [SwaggerResponse(404, "Schedule was not found by specified id")]
         public async Task<ActionResult<Schedule>> Delete(int id, CancellationToken cancellationToken)
         {
             var scheduleToDelete = await _context
@@ -57,6 +61,9 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //POST api/dashboard/schedule/
         [HttpPost]
+        [SwaggerOperation("Creates schedule")]
+        [SwaggerResponse(200, "Successfully created schedule with result of id of created schedule", typeof(Schedule))]
+        [SwaggerResponse(402, "Bad request, bad data was specified")]
         public async Task<ActionResult<CreatedItemResult>> Post([FromBody] Schedule schedule,
             CancellationToken cancellationToken)
         {
@@ -69,6 +76,9 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //PUT api/dashboard/schedule/
         [HttpPut]
+        [SwaggerOperation("Updates schedule")]
+        [SwaggerResponse(200, "Successfully updated schedule with result of id of updated schedule", typeof(Schedule))]
+        [SwaggerResponse(402, "Bad request, bad data was specified")]
         public async Task<ActionResult<CreatedItemResult>> Put([FromBody] Schedule schedule,
             CancellationToken cancellationToken)
         {

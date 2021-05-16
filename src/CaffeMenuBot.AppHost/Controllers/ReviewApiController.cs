@@ -7,6 +7,7 @@ using CaffeMenuBot.Data;
 using CaffeMenuBot.Data.Models.Reviews;
 using Microsoft.EntityFrameworkCore;
 using CaffeMenuBot.AppHost.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -24,6 +25,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //GET api/dashboard/reviews/
         [HttpGet]
+        [SwaggerOperation("Gets all reviews")]
         public async Task<ActionResult<IEnumerable<Review>>> Get(CancellationToken cancellationToken)
         {
             var reviews = await _context
@@ -35,6 +37,9 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //GET api/dashboard/reviews/{id}
         [HttpGet("{id:int:min(1)}")]
+        [SwaggerOperation("Gets review by id")]
+        [SwaggerResponse(200, "Successfully found review by specified id", typeof(Review))]
+        [SwaggerResponse(404, "Review was not found by specified id")]
         public async Task<ActionResult<Review>> Get(int id, CancellationToken cancellationToken)
         {
             var review = await _context
@@ -50,6 +55,9 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //DELETE api/dashboard/reviews/{id}
         [HttpDelete("{id:int:min(1)}")]
+        [SwaggerOperation("Deletes review by id")]
+        [SwaggerResponse(204, "Successfully review dish by specified id")]
+        [SwaggerResponse(404, "Review was not found by specified id")]
         public async Task<ActionResult<Review>> Delete(int id, CancellationToken cancellationToken)
         {
             var reviewToDelete = await _context
@@ -69,6 +77,9 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //POST api/dashboard/reviews/
         [HttpPost]
+        [SwaggerOperation("Creates review")]
+        [SwaggerResponse(200, "Successfully created review with result of id of created review", typeof(Review))]
+        [SwaggerResponse(402, "Bad request, bad data was specified")]
         public async Task<ActionResult<CreatedItemResult>> Post([FromBody] Review review,
             CancellationToken cancellationToken)
         {
@@ -81,6 +92,9 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //PUT api/dashboard/reviews/
         [HttpPut]
+        [SwaggerOperation("Updates review")]
+        [SwaggerResponse(200, "Successfully updated review with result of id of updated review", typeof(Review))]
+        [SwaggerResponse(402, "Bad request, bad data was specified")]
         public async Task<ActionResult<CreatedItemResult>> Put([FromBody] Review review,
             CancellationToken cancellationToken)
         {
