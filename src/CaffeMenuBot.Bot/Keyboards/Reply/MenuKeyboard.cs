@@ -9,7 +9,15 @@ namespace CaffeMenuBot.Bot.Keyboards.Reply
             {
                 new[]
                 {
+                    new KeyboardButton("Меню"),
+                },
+                new[]
+                {
                     new KeyboardButton("Графік роботи")
+                },
+                new[]
+                {
+                    new KeyboardButton("Оцінити роботу")
                 }
             })
         { ResizeKeyboard = true };

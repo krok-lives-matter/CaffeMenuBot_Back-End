@@ -1,51 +1,30 @@
-using System.Text;
 using System.Threading;
-using CaffeMenuBot.Data;
 using Telegram.Bot;
 using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Telegram.Bot.Types;
+using CaffeMenuBot.Bot.Keyboards.Inline;
 
 namespace CaffeMenuBot.Bot.Commands
 {
-    public class ScheduleCommand : IChatAction
+    public class SendRatingMenuCommand : IChatAction
     {
-        private readonly CaffeMenuBotContext _context;
         private readonly ITelegramBotClient _client;
-        private const string scheduleTitleMessage = "Завітайте до нас!";
-        private const string commandName = "Графік роботи";
+        private const string ratingTitleMessage = "<b>УВАГА!</b> При натисканні будь якої опції оцінки ваш відгук буде відправлено";
+        private const string commandName = "Оцінити роботу";
 
-        public ScheduleCommand(CaffeMenuBotContext context, ITelegramBotClient client)
+        public SendRatingMenuCommand(ITelegramBotClient client)
         {
-            _context = context;
             _client = client;
         }
 
         public async Task ExecuteAsync(Message message, CancellationToken ct)
         {
-            var schedule = await _context
-                           .Schedule
-                           .AsNoTracking()
-                           .OrderBy(s => s.OrderIndex)
-                           .ToListAsync();
-
-            StringBuilder scheduleMessage = new StringBuilder();
-            scheduleMessage.Append(scheduleTitleMessage + "\n");
-
-            foreach (var weekday in schedule)
-            {
-                scheduleMessage.Append
-                (
-                    $"<b>{weekday.WeekdayName}</b> {weekday.OpenTime}-{weekday.CloseTime}\n"
-                );
-            }
-        
             await _client.SendTextMessageAsync
             (
                 message.From.Id,
-                scheduleMessage.ToString(),
-                Telegram.Bot.Types.Enums.ParseMode.Html
+                ratingTitleMessage,
+                Telegram.Bot.Types.Enums.ParseMode.Html,
+                replyMarkup: RateKeyboard.GetRateKeyboard
             );
         }
         public bool Contains(Message message)
