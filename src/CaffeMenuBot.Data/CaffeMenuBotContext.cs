@@ -5,18 +5,24 @@ using CaffeMenuBot.Data.Models.Menu;
 using CaffeMenuBot.Data.Models.Bot;
 using CaffeMenuBot.Data.Models.Reviews;
 using CaffeMenuBot.Data.Models.Schedule;
+using Npgsql;
 
 namespace CaffeMenuBot.Data
 {
     public sealed class CaffeMenuBotContext : IdentityDbContext
     {
         public const string SchemaName = "public";
-        
+
+        static CaffeMenuBotContext()
+        {
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<ChatState>();
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<Rating>();
+        }
         public CaffeMenuBotContext(DbContextOptions<CaffeMenuBotContext> options) : base(options)
         {
         }
         public DbSet<BotUser> BotUsers { get; set; } = null!;
-        public DbSet<Review> Reviews {get; set; } = null!;
+        public DbSet<Review> Reviews { get; set; } = null!;
         public DbSet<Schedule> Schedule { get; set; } = null!;
         public DbSet<Category> Categories { get; set; } = null!;
 
@@ -25,6 +31,10 @@ namespace CaffeMenuBot.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.HasPostgresEnum<ChatState>();
+            builder.HasPostgresEnum<Rating>();
+
             // any guid
             const string ADMIN_ID = "a18be9c0-aa65-4af8-bd17-00bd9344e575";
             // any guid, but nothing is against to use the same one

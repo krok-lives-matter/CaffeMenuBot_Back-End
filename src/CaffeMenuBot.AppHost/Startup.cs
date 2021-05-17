@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
-using CaffeMenuBot.Bot.Commands;
 using CaffeMenuBot.Bot.Services;
 using CaffeMenuBot.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,6 +17,7 @@ using Telegram.Bot.Extensions.Polling;
 using CaffeMenuBot.AppHost.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using CaffeMenuBot.Bot.Actions.Interface;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -65,8 +65,8 @@ namespace CaffeMenuBot.AppHost
             services.AddDbContext<CaffeMenuBotContext>(options =>
                 options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
                     builder.EnableRetryOnFailure()
-                        .MigrationsAssembly("CaffeMenuBot.Data")
-                        .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
+                           .MigrationsAssembly("CaffeMenuBot.Data")
+                           .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
 
             services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
 
@@ -132,7 +132,8 @@ namespace CaffeMenuBot.AppHost
         private void ConfigureBot(IServiceCollection services)
         {
             services.AddLogging();
-            services.AddSingleton<CommandPatternManager>();
+            services.AddSingleton<PatternManager<IChatAction>>();
+            services.AddSingleton<PatternManager<IStateAction>>();
             services.AddSingleton<ITelegramBotClient>(
                 new TelegramBotClient(_configuration["BOT_TOKEN"]));
             services.AddSingleton<IUpdateHandler, BotHandler>();
@@ -140,6 +141,13 @@ namespace CaffeMenuBot.AppHost
 
             var baseType = typeof(IChatAction);
             
+            foreach (var commandType in baseType.Assembly.GetTypes().Where(t => baseType.IsAssignableFrom(t) && t.IsClass && t.IsPublic && !t.IsAbstract))
+            {
+                services.AddScoped(baseType, commandType);
+            }
+
+            baseType = typeof(IStateAction);
+
             foreach (var commandType in baseType.Assembly.GetTypes().Where(t => baseType.IsAssignableFrom(t) && t.IsClass && t.IsPublic && !t.IsAbstract))
             {
                 services.AddScoped(baseType, commandType);

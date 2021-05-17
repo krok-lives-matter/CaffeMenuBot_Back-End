@@ -3,8 +3,10 @@ using Telegram.Bot;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using CaffeMenuBot.Bot.Keyboards.Inline;
+using CaffeMenuBot.Data.Models.Bot;
+using CaffeMenuBot.Bot.Actions.Interface;
 
-namespace CaffeMenuBot.Bot.Commands
+namespace CaffeMenuBot.Bot.Actions.Commands
 {
     public class SendRatingMenuCommand : IChatAction
     {
@@ -17,19 +19,20 @@ namespace CaffeMenuBot.Bot.Commands
             _client = client;
         }
 
-        public async Task ExecuteAsync(Message message, CancellationToken ct)
+        public async Task ExecuteAsync(BotUser user, Update update, CancellationToken ct)
         {
             await _client.SendTextMessageAsync
             (
-                message.From.Id,
+                update.Message.From.Id,
                 ratingTitleMessage,
                 Telegram.Bot.Types.Enums.ParseMode.Html,
                 replyMarkup: RateKeyboard.GetRateKeyboard
             );
         }
-        public bool Contains(Message message)
+        public bool Contains(BotUser user, Update update)
         {
-            return message.Text.StartsWith(commandName);
+            if (update.CallbackQuery != null) return false;
+            return update.Message.Text.StartsWith(commandName);
         }
     }
 }

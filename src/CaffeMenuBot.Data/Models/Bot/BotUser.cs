@@ -9,9 +9,7 @@ namespace CaffeMenuBot.Data.Models.Bot
     {
         [Key, Required, Column("user_id", TypeName = "integer")]
         public int Id { get; init; }
-        [Column("user_phone", TypeName = "text")]
-        public string? PhoneNumber { get; init; }
-        [Column("user_chat_state", TypeName = "text")]
-        public string State { get; set; } = "default";
+        [Column("user_chat_state")]
+        public ChatState State { get; set; } = ChatState.default_state;
     }
 }

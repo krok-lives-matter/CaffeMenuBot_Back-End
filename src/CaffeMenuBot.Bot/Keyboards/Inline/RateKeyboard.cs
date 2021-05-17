@@ -1,4 +1,5 @@
-﻿using Telegram.Bot.Types.ReplyMarkups;
+﻿using CaffeMenuBot.Data.Models.Bot;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace CaffeMenuBot.Bot.Keyboards.Inline
 {
@@ -9,13 +10,13 @@ namespace CaffeMenuBot.Bot.Keyboards.Inline
             {
                 new[] 
                 {
-                    new InlineKeyboardButton{Text = "😡", CallbackData = "rating_bad"},
-                    new InlineKeyboardButton{Text = "😐", CallbackData = "rating_ok"},
-                    new InlineKeyboardButton{Text = "🙂", CallbackData = "rating_good"},
-                    new InlineKeyboardButton{Text = "😀", CallbackData = "rating_great"},
-                    new InlineKeyboardButton{Text = "😍", CallbackData = "rating_excellent"},
+                    new InlineKeyboardButton{Text = "😡", CallbackData = "RRR " + Rating.rating_bad.ToString()},
+                    new InlineKeyboardButton{Text = "😐", CallbackData = "RRR " + Rating.rating_ok.ToString()},
+                    new InlineKeyboardButton{Text = "🙂", CallbackData = "RRR " + Rating.rating_good.ToString()},
+                    new InlineKeyboardButton{Text = "😀", CallbackData = "RRR " + Rating.rating_great.ToString()},
+                    new InlineKeyboardButton{Text = "😍", CallbackData = "RRR " + Rating.rating_excellent.ToString()},
                 },
-                new[] {new InlineKeyboardButton{Text = "✉", CallbackData = "comment"}}
+                new[] {new InlineKeyboardButton{Text = "✉", CallbackData = "CCC"} }
             });
     }
 }

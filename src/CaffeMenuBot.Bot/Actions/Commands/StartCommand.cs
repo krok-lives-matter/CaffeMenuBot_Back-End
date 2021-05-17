@@ -1,11 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
-using CaffeMenuBot.Bot.Commands;
+using CaffeMenuBot.Bot.Actions.Interface;
 using CaffeMenuBot.Bot.Keyboards.Reply;
+using CaffeMenuBot.Data.Models.Bot;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace CaffeMenuBot.Bot.Сommands
+namespace CaffeMenuBot.Bot.Actions.Сommands
 {
     public sealed class StartCommand : IChatAction
     {
@@ -19,15 +20,16 @@ namespace CaffeMenuBot.Bot.Сommands
             Client = client;
         }
 
-        public bool Contains(Message message)
+        public bool Contains(BotUser user, Update update)
         {
-            return message.Text.StartsWith(CommandName);
+            if (update.CallbackQuery != null) return false;
+            return update.Message.Text.StartsWith(CommandName);
         }
 
-        public async Task ExecuteAsync(Message message, CancellationToken ct)
+        public async Task ExecuteAsync(BotUser user, Update update, CancellationToken ct)
         {
             await Client.SendTextMessageAsync(
-                message.Chat.Id,
+                update.Message.From.Id,
                 messageTitle,
                 replyMarkup: MenuKeyboard.MainMenu,
                 cancellationToken: ct);

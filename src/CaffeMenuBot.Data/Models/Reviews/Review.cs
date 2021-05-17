@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CaffeMenuBot.Data.Models.Bot;
@@ -11,12 +10,11 @@ namespace CaffeMenuBot.Data.Models.Reviews
         [Key, Required, Column("review_id", TypeName = "integer")]
         public int Id { get; init; }
 
-        // for 5-start-like rating, can be changed later by user
-        [Required, Column("rating", TypeName = "smallint")]
-        public byte Rating {get;set;}
+        [Column("rating")]
+        public Rating Rating { get; set; } = Rating.rating_unrated;
 
         [Column("review_comment", TypeName = "text")]
-        public string ReviewComment { get; init; } = null!;
+        public string ReviewComment { get; set; } = null!;
 
         [Required, Column("bot_user")]
         public BotUser User {get;init;} = null!;

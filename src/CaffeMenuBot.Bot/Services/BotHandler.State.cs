@@ -7,9 +7,9 @@ namespace CaffeMenuBot.Bot.Services
 {
     partial class BotHandler
     {
-        private async Task HandleMessageAsync(BotUser user, Update u, CancellationToken ct)
+        private async Task HandleStateAsync(BotUser user, Update u, CancellationToken ct)
         {
-            await _commandPatternManager.HandlePatternAsync(user, u, ct);
+            await _statePatternManager.HandlePatternAsync(user, u, ct);
         }
     }
 }

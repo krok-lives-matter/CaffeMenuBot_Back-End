@@ -1,16 +1,20 @@
 ﻿using System;
+using CaffeMenuBot.Data.Models.Bot;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CaffeMenuBot.Data.Migrations
 {
-    public partial class IdentityJWT : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "app_users",
-                schema: "public");
+            migrationBuilder.EnsureSchema(
+                name: "public");
+
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:Enum:chat_state", "default_state,pending_comment")
+                .Annotation("Npgsql:Enum:rating", "rating_unrated,rating_bad,rating_ok,rating_good,rating_great,rating_excellent");
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
@@ -49,6 +53,59 @@ namespace CaffeMenuBot.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "bot_users",
+                schema: "public",
+                columns: table => new
+                {
+                    user_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_chat_state = table.Column<ChatState>(type: "chat_state", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_bot_users", x => x.user_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "categories",
+                schema: "public",
+                columns: table => new
+                {
+                    category_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    category_name = table.Column<string>(type: "text", nullable: false),
+                    ParentCategoryId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_categories", x => x.category_id);
+                    table.ForeignKey(
+                        name: "FK_categories_categories_ParentCategoryId",
+                        column: x => x.ParentCategoryId,
+                        principalSchema: "public",
+                        principalTable: "categories",
+                        principalColumn: "category_id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "schedule",
+                schema: "public",
+                columns: table => new
+                {
+                    schedule_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    order_index = table.Column<int>(type: "integer", nullable: false),
+                    weekday_name = table.Column<string>(type: "text", nullable: false),
+                    open_time = table.Column<string>(type: "text", nullable: false),
+                    close_time = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_schedule", x => x.schedule_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -157,6 +214,70 @@ namespace CaffeMenuBot.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "reviews",
+                schema: "public",
+                columns: table => new
+                {
+                    review_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    rating = table.Column<Rating>(type: "rating", nullable: false),
+                    review_comment = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_reviews", x => x.review_id);
+                    table.ForeignKey(
+                        name: "FK_reviews_bot_users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "public",
+                        principalTable: "bot_users",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "dishes",
+                schema: "public",
+                columns: table => new
+                {
+                    dish_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    dish_name = table.Column<string>(type: "text", nullable: false),
+                    description = table.Column<string>(type: "text", nullable: false),
+                    serving = table.Column<string>(type: "text", nullable: false),
+                    price = table.Column<decimal>(type: "numeric(5,2)", nullable: false),
+                    photo_url = table.Column<string>(type: "text", nullable: false),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_dishes", x => x.dish_id);
+                    table.ForeignKey(
+                        name: "FK_dishes_categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalSchema: "public",
+                        principalTable: "categories",
+                        principalColumn: "category_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "e4fc5c76-39fa-4f0a-aff7-bad8f934ed83", "admin", "ADMIN" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", 0, "be0e7c78-7f16-4244-8577-555026aaf4b5", "admin@caffemenubot.com", true, false, null, "ADMIN@CAFFEMENUBOT.COM", "ADMIN", "AQAAAAEAACcQAAAAEF5ItdAgR/OmPRS5LZy7D7v3D5FKJhkavzr2ztaWk5GF0eAszquy62UD1VHjvrB6Bw==", null, false, "", false, "admin" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "a18be9c0-aa65-4af8-bd17-00bd9344e575" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -193,6 +314,24 @@ namespace CaffeMenuBot.Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_categories_ParentCategoryId",
+                schema: "public",
+                table: "categories",
+                column: "ParentCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_dishes_CategoryId",
+                schema: "public",
+                table: "dishes",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_reviews_UserId",
+                schema: "public",
+                table: "reviews",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -213,28 +352,30 @@ namespace CaffeMenuBot.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "dishes",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "reviews",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "schedule",
+                schema: "public");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
-            migrationBuilder.CreateTable(
-                name: "app_users",
-                schema: "public",
-                columns: table => new
-                {
-                    user_id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    email = table.Column<string>(type: "text", nullable: false),
-                    password_hash = table.Column<string>(type: "text", nullable: false),
-                    user_role = table.Column<string>(type: "text", nullable: false),
-                    password_salt = table.Column<string>(type: "text", nullable: false),
-                    username = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_app_users", x => x.user_id);
-                });
+            migrationBuilder.DropTable(
+                name: "categories",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "bot_users",
+                schema: "public");
         }
     }
 }

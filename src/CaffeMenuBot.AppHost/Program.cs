@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using Serilog;
 using Serilog.Sinks.Loki;
 
@@ -29,8 +30,14 @@ namespace CaffeMenuBot.AppHost
 
 
                 if (context.Database.GetPendingMigrations().Any())
-                    context.Database.Migrate();
-
+                {              
+                    context.Database.Migrate();                
+                    using (var conn = (NpgsqlConnection)context.Database.GetDbConnection())
+                    {
+                        conn.Open();
+                        conn.ReloadTypes();
+                    }
+                }
                 await DatabaseSeeder.SeedDatabaseAsync(context);
             }
             await host.RunAsync();
