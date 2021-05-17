@@ -3,15 +3,17 @@ using System;
 using CaffeMenuBot.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CaffeMenuBot.Data.Migrations
 {
     [DbContext(typeof(CaffeMenuBotContext))]
-    partial class CaffeMenuBotContextModelSnapshot : ModelSnapshot
+    [Migration("20210517083638_AddedStateToBotUser")]
+    partial class AddedStateToBotUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

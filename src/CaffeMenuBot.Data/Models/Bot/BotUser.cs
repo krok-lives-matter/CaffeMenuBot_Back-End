@@ -11,5 +11,7 @@ namespace CaffeMenuBot.Data.Models.Bot
         public int Id { get; init; }
         [Column("user_phone", TypeName = "text")]
         public string? PhoneNumber { get; init; }
+        [Column("user_chat_state", TypeName = "text")]
+        public string State { get; set; } = "default";
     }
 }

@@ -1,20 +1,18 @@
 using System.Threading;
 using System.Threading.Tasks;
 using CaffeMenuBot.Bot.Commands;
-using CaffeMenuBot.Bot.Keyboards.Reply;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace CaffeMenuBot.Bot.Сommands
 {
-    public sealed class StartCommand : IChatAction
+    public sealed class MenuCommand : IChatAction
     {
         private ITelegramBotClient Client { get; }
 
-        private const string CommandName = "/start";
-        private const string messageTitle = "Натисніть на кнопки меню нижче для отримання необхідної інформації";
+        private const string CommandName = "Меню";
 
-        public StartCommand(ITelegramBotClient client)
+        public MenuCommand(ITelegramBotClient client)
         {
             Client = client;
         }
@@ -28,8 +26,7 @@ namespace CaffeMenuBot.Bot.Сommands
         {
             await Client.SendTextMessageAsync(
                 message.Chat.Id,
-                messageTitle,
-                replyMarkup: MenuKeyboard.MainMenu,
+                "Temp",
                 cancellationToken: ct);
         }
     }
