@@ -36,5 +36,6 @@ To shut the containers down and destroy all the data stored in a database, run:
 `docker-compose down -v`
 
 As soon as Docker containers are started, you are able to call the API on 5000 port:
-`http://localhost:5000/`.  
+`http://localhost:5000/`.
+For API documentation go to `http://localhost:5000/swagger`.
 There is no HTTPS configured for the local web-host.
