@@ -15,8 +15,10 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
         private CaffeMenuBotContext Context { get; }
         private ITelegramBotClient Client { get; }
 
-        private const ChatState stateType = ChatState.pending_comment;
-        private const string titleMessage = "Дякую за ваш відгук! Натисніть на будь-яку з опцій оцінювання для завершення операції";
+
+        // Contains uses this instead of COMMAND_NAME
+        private const ChatState STATE_TYPE = ChatState.pending_comment;
+        private const string MESSAGE_TITLE = "Дякую за ваш відгук! Натисніть на будь-яку з опцій оцінювання для завершення операції";
 
         public HandleCommentState(CaffeMenuBotContext context, ITelegramBotClient client)
         {
@@ -26,7 +28,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
 
         public bool Contains(BotUser user, Update update)
         {
-            return user.State == stateType;
+            return user.State == STATE_TYPE;
         }
 
         public async Task ExecuteAsync(BotUser user, Update update, CancellationToken ct)
@@ -53,7 +55,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
 
             await Client.SendTextMessageAsync(
                 update.Message.Chat.Id,
-                titleMessage,
+                MESSAGE_TITLE,
                 cancellationToken: ct);
         }
     }

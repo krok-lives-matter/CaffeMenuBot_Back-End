@@ -11,8 +11,8 @@ namespace CaffeMenuBot.Bot.Actions.Commands
     public class SendRatingMenuCommand : IChatAction
     {
         private readonly ITelegramBotClient _client;
-        private const string ratingTitleMessage = "<b>УВАГА!</b> При натисканні будь якої опції оцінки ваш відгук буде відправлено";
-        private const string commandName = "Оцінити роботу";
+        private const string MESSAGE_TITLE = "<b>УВАГА!</b> При натисканні будь якої опції оцінки ваш відгук буде відправлено";
+        private const string COMMAND_NAME = "Оцінити роботу";
 
         public SendRatingMenuCommand(ITelegramBotClient client)
         {
@@ -24,7 +24,7 @@ namespace CaffeMenuBot.Bot.Actions.Commands
             await _client.SendTextMessageAsync
             (
                 update.Message.From.Id,
-                ratingTitleMessage,
+                MESSAGE_TITLE,
                 Telegram.Bot.Types.Enums.ParseMode.Html,
                 replyMarkup: RateKeyboard.GetRateKeyboard
             );
@@ -32,7 +32,7 @@ namespace CaffeMenuBot.Bot.Actions.Commands
         public bool Contains(BotUser user, Update update)
         {
             if (update.CallbackQuery != null) return false;
-            return update.Message.Text.StartsWith(commandName);
+            return update.Message.Text.StartsWith(COMMAND_NAME);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
     {
         private ITelegramBotClient Client { get; }
 
-        private const string CommandName = "Меню";
+        private const string COMMAND_NAME = "Меню";
 
         public MenuCommand(ITelegramBotClient client)
         {
@@ -21,7 +21,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
         public bool Contains(BotUser user, Update update)
         {
             if (update.CallbackQuery != null) return false;
-            return update.Message.Text.StartsWith(CommandName);
+            return update.Message.Text.StartsWith(COMMAND_NAME);
         }
 
         public async Task ExecuteAsync(BotUser user, Update update, CancellationToken ct)

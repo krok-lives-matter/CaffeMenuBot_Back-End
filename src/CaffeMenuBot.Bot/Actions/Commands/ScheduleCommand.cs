@@ -15,8 +15,8 @@ namespace CaffeMenuBot.Bot.Actions.Commands
     {
         private readonly CaffeMenuBotContext _context;
         private readonly ITelegramBotClient _client;
-        private const string scheduleTitleMessage = "Завітайте до нас!";
-        private const string commandName = "Графік роботи";
+        private const string MESSAGE_TITLE = "Завітайте до нас!";
+        private const string COMMAND_NAME = "Графік роботи";
 
         public ScheduleCommand(CaffeMenuBotContext context, ITelegramBotClient client)
         {
@@ -33,7 +33,7 @@ namespace CaffeMenuBot.Bot.Actions.Commands
                            .ToListAsync();
 
             StringBuilder scheduleMessage = new StringBuilder();
-            scheduleMessage.Append(scheduleTitleMessage + "\n");
+            scheduleMessage.Append(MESSAGE_TITLE + "\n");
 
             foreach (var weekday in schedule)
             {
@@ -53,7 +53,7 @@ namespace CaffeMenuBot.Bot.Actions.Commands
         public bool Contains(BotUser user, Update update)
         {
             if (update.CallbackQuery != null) return false;
-            return update.Message.Text.StartsWith(commandName);
+            return update.Message.Text.StartsWith(COMMAND_NAME);
         }
     }
 }

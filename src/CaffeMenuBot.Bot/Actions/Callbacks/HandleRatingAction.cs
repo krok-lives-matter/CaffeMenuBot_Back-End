@@ -16,8 +16,9 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
         private CaffeMenuBotContext Context { get; }
         private ITelegramBotClient Client { get; }
         
+        // Contains uses this instead of COMMAND_NAME
         private const string CALLBACK_ID = "RRR";
-        private const string CALLBACK_ANSWER_MESSAGE = "Дякую за ваш відгук!";
+        private const string MESSAGE_TITLE = "Дякую за ваш відгук!";
 
         public HandleRatingAction(CaffeMenuBotContext context, ITelegramBotClient client)
         {
@@ -53,7 +54,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
 
             await Client.AnswerCallbackQueryAsync(
                 update.CallbackQuery.Id,
-                CALLBACK_ANSWER_MESSAGE,
+                MESSAGE_TITLE,
                 cancellationToken: ct);
 
             await Client.DeleteMessageAsync(
