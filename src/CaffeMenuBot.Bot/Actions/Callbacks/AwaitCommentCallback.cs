@@ -38,6 +38,10 @@ namespace CaffeMenuBot.Bot.Actions.Callbacks
 
             await Client.AnswerCallbackQueryAsync(
                 update.CallbackQuery.Id,
+                cancellationToken: ct);
+
+            await Client.SendTextMessageAsync(
+                update.CallbackQuery.From.Id,
                 MESSAGE_TITLE,
                 cancellationToken: ct);
         }

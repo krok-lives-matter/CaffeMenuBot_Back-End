@@ -131,11 +131,22 @@ namespace CaffeMenuBot.AppHost
 
         private void ConfigureBot(IServiceCollection services)
         {
+            try
+            {
+                services.AddSingleton<ITelegramBotClient>(
+                new TelegramBotClient(_configuration["BOT_TOKEN"]));
+            }
+            catch (ArgumentException)
+            {
+                Console.WriteLine("Skipping bot initialization, no bot token is provided");
+                return;
+            }
             services.AddLogging();
             services.AddSingleton<PatternManager<IChatAction>>();
             services.AddSingleton<PatternManager<IStateAction>>();
-            services.AddSingleton<ITelegramBotClient>(
-                new TelegramBotClient(_configuration["BOT_TOKEN"]));
+
+            
+
             services.AddSingleton<IUpdateHandler, BotHandler>();
             services.AddHostedService<BotHandlerService>();
 
