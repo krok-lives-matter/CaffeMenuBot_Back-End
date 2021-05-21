@@ -51,7 +51,7 @@ namespace CaffeMenuBot.Bot.Services
             {
                 { Type: UpdateType.CallbackQuery } => HandleMessageAsync(user, update, cancellationToken),
                 { Message: { Chat: { Type: ChatType.Private }, Text: { } } } => HandleMessageAsync(user, update, cancellationToken),
-                _ => Task.CompletedTask         
+                _ => Task.CompletedTask
             });
         }
 

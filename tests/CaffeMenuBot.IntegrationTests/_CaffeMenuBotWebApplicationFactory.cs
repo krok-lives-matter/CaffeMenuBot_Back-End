@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Linq;
 using CaffeMenuBot.AppHost.Configuration;
-using CaffeMenuBot.Bot.Actions.Interface;
-using CaffeMenuBot.Bot.Services;
 using CaffeMenuBot.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Telegram.Bot;
-using Telegram.Bot.Extensions.Polling;
 
 namespace CaffeMenuBot.IntegrationTests
 {
@@ -41,7 +37,7 @@ namespace CaffeMenuBot.IntegrationTests
 
                 //try
                 //{
-                //    //DatabaseSeeder.SeedDatabaseAsync(db).GetAwaiter().GetResult();
+                //    DatabaseSeeder.SeedDatabaseAsync(db).GetAwaiter().GetResult();
                 //}
                 //catch (Exception ex)
                 //{
