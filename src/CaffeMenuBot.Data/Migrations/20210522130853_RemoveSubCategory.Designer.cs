@@ -4,15 +4,17 @@ using CaffeMenuBot.Data;
 using CaffeMenuBot.Data.Models.Bot;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CaffeMenuBot.Data.Migrations
 {
     [DbContext(typeof(CaffeMenuBotContext))]
-    partial class CaffeMenuBotContextModelSnapshot : ModelSnapshot
+    [Migration("20210522130853_RemoveSubCategory")]
+    partial class RemoveSubCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,14 +54,10 @@ namespace CaffeMenuBot.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("category_name");
 
-                    b.Property<string>("CoverPhotoFileName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("cover_photo_filename");
-
                     b.Property<string>("CoverPhotoUrl")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("cover_photo_url");
 
                     b.Property<bool>("IsVisible")
                         .HasColumnType("boolean")
@@ -195,7 +193,7 @@ namespace CaffeMenuBot.Data.Migrations
                         new
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
-                            ConcurrencyStamp = "465e3dde-bc81-4650-9a9b-c00a072194f7",
+                            ConcurrencyStamp = "f0e8006a-f33b-4624-898f-4f14caaf8f1b",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         });
@@ -388,8 +386,7 @@ namespace CaffeMenuBot.Data.Migrations
 
                     b.Property<string>("ProfilePhotoFileName")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("profile_photo_filename");
+                        .HasColumnType("text");
 
                     b.HasDiscriminator().HasValue("DashboardUser");
 
@@ -398,13 +395,13 @@ namespace CaffeMenuBot.Data.Migrations
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ebbfc17a-bdf2-4173-b7be-cebdfa59f740",
+                            ConcurrencyStamp = "f14a588c-bcae-4466-a0da-398c116e54f9",
                             Email = "admin@caffemenubot.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@CAFFEMENUBOT.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBQbVHZwLTL/3HHo694zQRNHjoHhGvI2y3QFO1HOWVg6ZuqSkBFl1429qZD3S9KN3w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBnEYmB9JswRIU4jP1+igbsHmZ2e+K6l6gY6PB7m+S8UwmajFFIf6CqXh3+WKIRTtQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,

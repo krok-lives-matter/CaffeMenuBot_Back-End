@@ -83,6 +83,7 @@ namespace CaffeMenuBot.AppHost.Configuration
                 new Category
                 {
                     CategoryName = "Десерти",
+                    IsVisible = true,
                     Dishes = new List<Dish>
                     {
                         new()
@@ -97,6 +98,7 @@ namespace CaffeMenuBot.AppHost.Configuration
                 new Category
                 {
                     CategoryName = "М'ясо",
+                    IsVisible = true,
                     Dishes = new List<Dish>
                     {
                         new()

@@ -18,6 +18,9 @@ using CaffeMenuBot.AppHost.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using CaffeMenuBot.Bot.Actions.Interface;
+using CaffeMenuBot.Data.Models.Dashboard;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -44,15 +47,11 @@ namespace CaffeMenuBot.AppHost
                     });
             });
 
-            services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-                });
+            services.AddControllers();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            services.AddIdentity<DashboardUser, IdentityRole>(options =>
                 {
                     options.SignIn.RequireConfirmedAccount = true;
                     options.ClaimsIdentity.UserIdClaimType = "Id";
@@ -98,7 +97,7 @@ namespace CaffeMenuBot.AppHost
                 });
 
             services.AddSwaggerGen(c =>
-            {
+            {           
                 var securityScheme = new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.Http,
@@ -121,8 +120,20 @@ namespace CaffeMenuBot.AppHost
                     }
                 };
                 c.AddSecurityRequirement(securityRequirement);
-                
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Dashboard API", Version = "v1"});
+
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Dashboard API",
+                    Description = "An API for CaffeMenuBot Dashboard",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Vova Lantsov, Edvard Potapenko, Dmitriy Gurskiy",
+                        Email = "contact@vova-lantsov.dev, potapenkoes@krok.edu.ua, gurskiydv@krok.edu.ua",
+                        Url = new Uri("https://github.com/krok-lives-matter/CaffeMenuBot_Back-End"),
+                    }
+                });
+
                 c.EnableAnnotations();
                 c.SupportNonNullableReferenceTypes();
                 c.DescribeAllParametersInCamelCase();
@@ -173,10 +184,20 @@ namespace CaffeMenuBot.AppHost
             }
 
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DashboardAPI v1"));
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DashboardAPI v1");
+                c.InjectStylesheet("/content/custom_swagger.css");
+            });
 
             app.UseStaticFiles();
-            
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/content")),
+                RequestPath = "/content"
+            });
+
             app.UseCors(publicCorsPolicyName);
 
             app.UseRouting();

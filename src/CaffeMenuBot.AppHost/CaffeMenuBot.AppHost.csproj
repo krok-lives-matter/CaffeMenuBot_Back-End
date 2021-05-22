@@ -8,12 +8,20 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Content Remove="wwwroot\content\logo.png" />
+    </ItemGroup>
+
+    <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>CaffeMenuBot.UnitTests</_Parameter1>
         </AssemblyAttribute>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>CaffeMenuBot.IntegrationTests</_Parameter1>
         </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="wwwroot\content\logo.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -38,6 +46,11 @@
     <ItemGroup>
       <ProjectReference Include="..\CaffeMenuBot.Data\CaffeMenuBot.Data.csproj" />
       <ProjectReference Include="..\CaffeMenuBot.Bot\CaffeMenuBot.Bot.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\media\category_covers\" />
+      <Folder Include="wwwroot\media\profile_photos\" />
     </ItemGroup>
 
 </Project>

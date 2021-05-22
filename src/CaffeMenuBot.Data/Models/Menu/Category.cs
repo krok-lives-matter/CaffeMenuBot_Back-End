@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CaffeMenuBot.Data.Models.Menu
 {
@@ -11,13 +12,17 @@ namespace CaffeMenuBot.Data.Models.Menu
         public int Id { get; init; }
 
         [Required, Column("category_name", TypeName = "text")]
-        public string CategoryName { get; init; } = null!;
+        public string CategoryName { get; set; } = null!;
 
-        public int? ParentCategoryId { get; init; }
-        public Category? ParentCategory { get; init; }
-        
-        public IEnumerable<Category>? SubCategories { get; set; }
+        [JsonIgnore]
+        [Required, Column("cover_photo_filename", TypeName = "text")]
+        public string CoverPhotoFileName { get; set; } = "blank.jpg";
 
-        public List<Dish>? Dishes { get; init; }
+        [Required, Column("is_visible", TypeName = "boolean")]
+        public bool IsVisible { get; set; } = true;
+
+        public List<Dish>? Dishes { get; set; }
+
+        public string CoverPhotoUrl { get; set; } = null!;
     }
 }

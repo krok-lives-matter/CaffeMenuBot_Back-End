@@ -35,6 +35,8 @@ namespace CaffeMenuBot.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    ProfilePhotoFileName = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -266,12 +268,12 @@ namespace CaffeMenuBot.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "e4fc5c76-39fa-4f0a-aff7-bad8f934ed83", "admin", "ADMIN" });
+                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "b8b9cca2-b6b0-4f78-9984-dbec49a2ac79", "admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", 0, "be0e7c78-7f16-4244-8577-555026aaf4b5", "admin@caffemenubot.com", true, false, null, "ADMIN@CAFFEMENUBOT.COM", "ADMIN", "AQAAAAEAACcQAAAAEF5ItdAgR/OmPRS5LZy7D7v3D5FKJhkavzr2ztaWk5GF0eAszquy62UD1VHjvrB6Bw==", null, false, "", false, "admin" });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfilePhotoFileName", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", 0, "727a549f-3d4a-4cae-b7f4-52805d086c88", "DashboardUser", "admin@caffemenubot.com", true, false, null, "ADMIN@CAFFEMENUBOT.COM", "ADMIN", "AQAAAAEAACcQAAAAEBYUIdVzZ+2v/8OjLY5beMvTwHlU1QRtRLZvII+Cb1O3VMBw4BP2u1CE6+Zw9GLhnA==", null, false, "blank.jpg", "", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",

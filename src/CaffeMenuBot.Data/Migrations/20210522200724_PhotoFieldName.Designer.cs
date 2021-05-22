@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CaffeMenuBot.Data.Migrations
 {
     [DbContext(typeof(CaffeMenuBotContext))]
-    [Migration("20210517151810_Initial")]
-    partial class Initial
+    [Migration("20210522200724_PhotoFieldName")]
+    partial class PhotoFieldName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,12 +54,20 @@ namespace CaffeMenuBot.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("category_name");
 
-                    b.Property<int?>("ParentCategoryId")
-                        .HasColumnType("integer");
+                    b.Property<string>("CoverPhotoFileName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("cover_photo_filename");
+
+                    b.Property<string>("CoverPhotoUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_visible");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentCategoryId");
 
                     b.ToTable("categories", "public");
                 });
@@ -84,11 +92,6 @@ namespace CaffeMenuBot.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("dish_name");
-
-                    b.Property<string>("PhotoUrl")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("photo_url");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric(5,2)")
@@ -194,7 +197,7 @@ namespace CaffeMenuBot.Data.Migrations
                         new
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
-                            ConcurrencyStamp = "e4fc5c76-39fa-4f0a-aff7-bad8f934ed83",
+                            ConcurrencyStamp = "465e3dde-bc81-4650-9a9b-c00a072194f7",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         });
@@ -234,6 +237,10 @@ namespace CaffeMenuBot.Data.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -287,23 +294,7 @@ namespace CaffeMenuBot.Data.Migrations
 
                     b.ToTable("AspNetUsers");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "be0e7c78-7f16-4244-8577-555026aaf4b5",
-                            Email = "admin@caffemenubot.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@CAFFEMENUBOT.COM",
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEF5ItdAgR/OmPRS5LZy7D7v3D5FKJhkavzr2ztaWk5GF0eAszquy62UD1VHjvrB6Bw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "",
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        });
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -393,13 +384,35 @@ namespace CaffeMenuBot.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("CaffeMenuBot.Data.Models.Menu.Category", b =>
+            modelBuilder.Entity("CaffeMenuBot.Data.Models.Dashboard.DashboardUser", b =>
                 {
-                    b.HasOne("CaffeMenuBot.Data.Models.Menu.Category", "ParentCategory")
-                        .WithMany("SubCategories")
-                        .HasForeignKey("ParentCategoryId");
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Navigation("ParentCategory");
+                    b.Property<string>("ProfilePhotoFileName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("profile_photo_filename");
+
+                    b.HasDiscriminator().HasValue("DashboardUser");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ebbfc17a-bdf2-4173-b7be-cebdfa59f740",
+                            Email = "admin@caffemenubot.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@CAFFEMENUBOT.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBQbVHZwLTL/3HHo694zQRNHjoHhGvI2y3QFO1HOWVg6ZuqSkBFl1429qZD3S9KN3w==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            TwoFactorEnabled = false,
+                            UserName = "admin",
+                            ProfilePhotoFileName = "blank.jpg"
+                        });
                 });
 
             modelBuilder.Entity("CaffeMenuBot.Data.Models.Menu.Dish", b =>
@@ -476,8 +489,6 @@ namespace CaffeMenuBot.Data.Migrations
             modelBuilder.Entity("CaffeMenuBot.Data.Models.Menu.Category", b =>
                 {
                     b.Navigation("Dishes");
-
-                    b.Navigation("SubCategories");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,21 +15,118 @@ using CaffeMenuBot.AppHost.Models.DTO.Requests;
 using CaffeMenuBot.AppHost.Models.DTO.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Swashbuckle.AspNetCore.Annotations;
+using CaffeMenuBot.Data.Models.Dashboard;
+using Microsoft.AspNetCore.Hosting;
+using CaffeMenuBot.AppHost.Helpers;
+using CaffeMenuBot.Data;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
     [Route("api/auth")]
     [ApiController]
-    [Authorize(Roles = "admin")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly CaffeMenuBotContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly UserManager<DashboardUser> _userManager;
         private readonly JwtOptions _jwtConfig;
+        private const string MEDIA_SUBFOLDER = "profile_photos";
 
-        public AuthenticationController(UserManager<IdentityUser> userManager, IOptionsMonitor<JwtOptions> optionsMonitor)
+        public AuthenticationController
+            (
+            CaffeMenuBotContext context,
+            IWebHostEnvironment webHostEnvironment,
+            UserManager<DashboardUser> userManager,
+            IOptionsMonitor<JwtOptions> optionsMonitor
+            )
         {
+            _context = context;
+            _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
+        }
+        
+        [HttpGet]
+        [Route("me")]
+        [Authorize]
+        [SwaggerOperation("gets authenticated user object",
+            Tags = new[] { "Authentication" })]
+        [SwaggerResponse(200, "Successfully authorized user to get it's object", typeof(UserResponse))]
+        [SwaggerResponse(400, "Bad request data, read the response body for more information.")]
+        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
+        public async Task<ActionResult> Me()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (user == null)
+                return Unauthorized();
+
+            UserResponse response = new UserResponse()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
+            };
+
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("me")]
+        [Authorize]
+        [SwaggerOperation("updates authenticated user object",
+            Tags = new[] { "Authentication" })]
+        [SwaggerResponse(200, "Successfully authorized user to update it's object", typeof(UserResponse))]
+        [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
+        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
+        public async Task<ActionResult> Me([FromForm] UserUpdateRequest updatedUser)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (user == null)
+                return Unauthorized();
+
+            if(updatedUser == null)
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    Result = false,
+                    Errors = new List<string>
+                    {
+                        "Information to update user was not provided"
+                    }
+                });
+            }
+
+            if(!String.IsNullOrEmpty(updatedUser.UserName))
+            {
+                user.UserName = updatedUser.UserName;
+            }
+
+            if(updatedUser.ProfilePhoto != null)
+            {
+                string uniqueProfilePhotoFileName = 
+                    ImageHelper.SaveImage(updatedUser.ProfilePhoto, _webHostEnvironment, MEDIA_SUBFOLDER);
+
+                user.ProfilePhotoFileName = uniqueProfilePhotoFileName;
+            }
+
+            _context.Entry(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            UserResponse response = new UserResponse()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
+            };
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -41,7 +138,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
         [SwaggerResponse(404, "User with the specified email was not found.", typeof(ErrorResponse))]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
-        public async Task<ActionResult> Login([FromBody] UserLoginRequest user)
+        public async Task<ActionResult> Login([FromForm] UserLoginRequest user)
         {
             // check if the user with the same email exist
             var existingUser = await _userManager.FindByEmailAsync(user.Email);
@@ -71,7 +168,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                     User = new UserResponse
                     {
                         Id = existingUser.Id,
-                        Email = existingUser.NormalizedEmail,
+                        Email = existingUser.Email,
                         UserName = existingUser.UserName
                     },
                     Result = true,
@@ -93,6 +190,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         [HttpPost]
         [Route("register")]
+        [Authorize(Roles = "admin")]
         [SwaggerOperation("Registers a new user.", "Administration rights are required.",
             Tags = new[] {"Authentication"})]
         [SwaggerResponse(200, "Successfully registered a new user.", typeof(AuthResponse))]
@@ -100,7 +198,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(401, "Unauthorized.")]
         [SwaggerResponse(403, "User with the specified email already exists.", typeof(ErrorResponse))]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
-        public async Task<ActionResult> Register([FromBody] UserRegisterRequest user)
+        public async Task<ActionResult> Register([FromForm] UserRegisterRequest user)
         {
             // check if the user with the same email exist
             var existingUser = await _userManager.FindByEmailAsync(user.Email) ??
@@ -118,7 +216,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 });
             }
 
-            var newUser = new IdentityUser
+            var newUser = new DashboardUser
             {
                 Email = user.Email,
                 NormalizedEmail = user.NormalizedEmail ?? user.Email,
@@ -149,7 +247,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             }) {StatusCode = 500};
         }
 
-        private string GenerateJwtToken(IdentityUser user)
+        private string GenerateJwtToken(DashboardUser user)
         {
             // Now its time to define the jwt token which will be responsible of creating our tokens
             var jwtTokenHandler = new JwtSecurityTokenHandler();

@@ -6,6 +6,7 @@ using CaffeMenuBot.Data.Models.Bot;
 using CaffeMenuBot.Data.Models.Reviews;
 using CaffeMenuBot.Data.Models.Schedule;
 using Npgsql;
+using CaffeMenuBot.Data.Models.Dashboard;
 
 namespace CaffeMenuBot.Data
 {
@@ -47,7 +48,7 @@ namespace CaffeMenuBot.Data
             });
 
             var hasher = new PasswordHasher<IdentityUser>();
-            builder.Entity<IdentityUser>().HasData(new IdentityUser
+            builder.Entity<DashboardUser>().HasData(new DashboardUser
             {
                 Id = ADMIN_ID,
                 UserName = "admin",

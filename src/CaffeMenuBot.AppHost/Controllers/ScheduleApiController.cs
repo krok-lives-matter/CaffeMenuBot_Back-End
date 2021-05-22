@@ -26,7 +26,8 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //GET api/dashboard/schedule/
         [HttpGet]
-        [SwaggerOperation("Gets all schedule")]
+        [SwaggerOperation("Gets all schedule", Tags = new[] { "Schedule" })]
+        [SwaggerResponse(200, "Successfully find any schedule", typeof(IEnumerable<Schedule>))]
         public async Task<ActionResult<IEnumerable<Schedule>>> Get(CancellationToken cancellationToken)
         {
             var schedule = await _context
@@ -34,12 +35,30 @@ namespace CaffeMenuBot.AppHost.Controllers
                 .AsNoTracking()
                 .OrderBy(s => s.OrderIndex)
                 .ToListAsync(cancellationToken);
-            return schedule;
+            return Ok(schedule);
+        }
+
+        //GET api/dashboard/schedule/{id}
+        [HttpGet("{id:int:min(1)}")]
+        [SwaggerOperation("Gets review by id", Tags = new[] { "Schedule" })]
+        [SwaggerResponse(200, "Successfully found scheduke by specified id", typeof(Schedule))]
+        [SwaggerResponse(404, "Schedule was not found by specified id")]
+        public async Task<ActionResult<Schedule>> Get(int id, CancellationToken cancellationToken)
+        {
+            var schedule = await _context
+                .Schedule
+                .AsNoTracking()
+                .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
+
+            if (schedule == null)
+                return NotFound();
+
+            return Ok(schedule);
         }
 
         //DELETE api/dashboard/schedule/{id}
         [HttpDelete("{id:int:min(1)}")]
-        [SwaggerOperation("Deletes schedule by id")]
+        [SwaggerOperation("Deletes schedule by id", Tags = new[] { "Schedule" })]
         [SwaggerResponse(204, "Successfully schedule dish by specified id")]
         [SwaggerResponse(404, "Schedule was not found by specified id")]
         public async Task<ActionResult<Schedule>> Delete(int id, CancellationToken cancellationToken)
@@ -61,7 +80,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //POST api/dashboard/schedule/
         [HttpPost]
-        [SwaggerOperation("Creates schedule")]
+        [SwaggerOperation("Creates schedule", Tags = new[] { "Schedule" })]
         [SwaggerResponse(200, "Successfully created schedule with result of id of created schedule", typeof(Schedule))]
         [SwaggerResponse(402, "Bad request, bad data was specified")]
         public async Task<ActionResult<CreatedItemResult>> Post([FromBody] Schedule schedule,
@@ -71,12 +90,12 @@ namespace CaffeMenuBot.AppHost.Controllers
             _context.Schedule.Add(schedule);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return new CreatedItemResult {CreatedItemId = schedule.Id};
+            return Ok(schedule);
         }
 
         //PUT api/dashboard/schedule/
         [HttpPut]
-        [SwaggerOperation("Updates schedule")]
+        [SwaggerOperation("Updates schedule", Tags = new[] { "Schedule" })]
         [SwaggerResponse(200, "Successfully updated schedule with result of id of updated schedule", typeof(Schedule))]
         [SwaggerResponse(402, "Bad request, bad data was specified")]
         public async Task<ActionResult<CreatedItemResult>> Put([FromBody] Schedule schedule,
@@ -86,7 +105,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             _context.Schedule.Update(schedule);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return new CreatedItemResult { CreatedItemId = schedule.Id };
+            return Ok(schedule);
         }
 
     }

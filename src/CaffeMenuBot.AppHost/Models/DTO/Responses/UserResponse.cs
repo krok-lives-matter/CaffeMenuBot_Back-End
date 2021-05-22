@@ -9,6 +9,7 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Responses
         public string Id { get; init; } = null!;
         public string Email { get; init; } = null!;
         public string UserName { get; init; } = null!;
+        public string ProfilePhotoUrl { get; init; } = null!;
     }
 
     public sealed class UserResponseSchema : ISchemaFilter
@@ -17,7 +18,8 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Responses
         {
             ["id"] = new OpenApiString("141c164d-7dcf-4145-95e5-aff46266cac9"),
             ["email"] = new OpenApiString("admin@ca...com"),
-            ["userName"] = new OpenApiString("admin")
+            ["userName"] = new OpenApiString("admin"),
+            ["profilePhotoUrl"] = new OpenApiString("https://cmb-api.vova-lantsov.dev/media/profile_photos/blank.jpg")
         };
         
         public void Apply(OpenApiSchema schema, SchemaFilterContext context)

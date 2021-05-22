@@ -4,15 +4,17 @@ using CaffeMenuBot.Data;
 using CaffeMenuBot.Data.Models.Bot;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CaffeMenuBot.Data.Migrations
 {
     [DbContext(typeof(CaffeMenuBotContext))]
-    partial class CaffeMenuBotContextModelSnapshot : ModelSnapshot
+    [Migration("20210522112012_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,20 +54,12 @@ namespace CaffeMenuBot.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("category_name");
 
-                    b.Property<string>("CoverPhotoFileName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("cover_photo_filename");
-
-                    b.Property<string>("CoverPhotoUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsVisible")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_visible");
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentCategoryId");
 
                     b.ToTable("categories", "public");
                 });
@@ -90,6 +84,11 @@ namespace CaffeMenuBot.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("dish_name");
+
+                    b.Property<string>("PhotoUrl")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("photo_url");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric(5,2)")
@@ -195,7 +194,7 @@ namespace CaffeMenuBot.Data.Migrations
                         new
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
-                            ConcurrencyStamp = "465e3dde-bc81-4650-9a9b-c00a072194f7",
+                            ConcurrencyStamp = "b8b9cca2-b6b0-4f78-9984-dbec49a2ac79",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         });
@@ -388,8 +387,7 @@ namespace CaffeMenuBot.Data.Migrations
 
                     b.Property<string>("ProfilePhotoFileName")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("profile_photo_filename");
+                        .HasColumnType("text");
 
                     b.HasDiscriminator().HasValue("DashboardUser");
 
@@ -398,19 +396,28 @@ namespace CaffeMenuBot.Data.Migrations
                         {
                             Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ebbfc17a-bdf2-4173-b7be-cebdfa59f740",
+                            ConcurrencyStamp = "727a549f-3d4a-4cae-b7f4-52805d086c88",
                             Email = "admin@caffemenubot.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@CAFFEMENUBOT.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBQbVHZwLTL/3HHo694zQRNHjoHhGvI2y3QFO1HOWVg6ZuqSkBFl1429qZD3S9KN3w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBYUIdVzZ+2v/8OjLY5beMvTwHlU1QRtRLZvII+Cb1O3VMBw4BP2u1CE6+Zw9GLhnA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             ProfilePhotoFileName = "blank.jpg"
                         });
+                });
+
+            modelBuilder.Entity("CaffeMenuBot.Data.Models.Menu.Category", b =>
+                {
+                    b.HasOne("CaffeMenuBot.Data.Models.Menu.Category", "ParentCategory")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("ParentCategoryId");
+
+                    b.Navigation("ParentCategory");
                 });
 
             modelBuilder.Entity("CaffeMenuBot.Data.Models.Menu.Dish", b =>
@@ -487,6 +494,8 @@ namespace CaffeMenuBot.Data.Migrations
             modelBuilder.Entity("CaffeMenuBot.Data.Models.Menu.Category", b =>
                 {
                     b.Navigation("Dishes");
+
+                    b.Navigation("SubCategories");
                 });
 #pragma warning restore 612, 618
         }

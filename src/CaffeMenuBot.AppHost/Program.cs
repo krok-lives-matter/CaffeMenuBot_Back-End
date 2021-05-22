@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CaffeMenuBot.AppHost.Configuration;
 using CaffeMenuBot.Data;
+using CaffeMenuBot.Data.Models.Dashboard;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ namespace CaffeMenuBot.AppHost
             {
                 IServiceProvider provider   = scope.ServiceProvider;
                 CaffeMenuBotContext context = provider.GetRequiredService<CaffeMenuBotContext>();
-                UserManager<IdentityUser> userManager = provider.GetRequiredService<UserManager<IdentityUser>>();
+                UserManager<DashboardUser> userManager = provider.GetRequiredService<UserManager<DashboardUser>>();
                 RoleManager<IdentityRole> roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
 
 

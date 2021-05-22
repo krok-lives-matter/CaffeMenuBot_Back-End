@@ -1,0 +1,5 @@
+﻿.swagger-ui img {
+    content: url(logo.png);
+    width: 100px; /* width of your logo */
+    height: 100px; /* height of your logo */
+}

@@ -20,10 +20,7 @@ namespace CaffeMenuBot.Data.Models.Menu
         public string Serving { get; init; } = null!;
 
         [Required, Column("price", TypeName = "decimal(5, 2)")]
-        public decimal Price { get; init; }
-
-        [Required, Column("photo_url", TypeName = "text")]
-        public string PhotoUrl {get;set;} = "https://thumbs.dreamstime.com/b/no-image-available-icon-flat-vector-no-image-available-icon-flat-vector-illustration-132484032.jpg";
+        public decimal Price { get; init; }    
 
         public int CategoryId { get; init; }
         [JsonIgnore]
