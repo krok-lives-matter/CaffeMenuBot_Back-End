@@ -5,6 +5,10 @@ namespace CaffeMenuBot.Bot.Keyboards.Inline
 {
     public static class RateKeyboard
     {
+        /// <summary>
+        /// "RRR" identifier is used for tracking which callback should fire
+        /// Second parameter after space character in CallbackData is string representation of rating that user have selected
+        /// </summary>
         public static InlineKeyboardMarkup GetRateKeyboard =>
             new InlineKeyboardMarkup(new[]
             {

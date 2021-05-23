@@ -11,6 +11,9 @@ using CaffeMenuBot.Bot.Actions.Interface;
 
 namespace CaffeMenuBot.Bot.Actions.Commands
 {
+    /// <summary>
+    /// Handles schedule button press in menu
+    /// </summary>
     public class ScheduleCommand : IChatAction
     {
         private readonly CaffeMenuBotContext _context;
@@ -35,6 +38,7 @@ namespace CaffeMenuBot.Bot.Actions.Commands
             StringBuilder scheduleMessage = new StringBuilder();
             scheduleMessage.Append(MESSAGE_TITLE + "\n");
 
+            // Concat all weekdays info in one string message
             foreach (var weekday in schedule)
             {
                 scheduleMessage.Append

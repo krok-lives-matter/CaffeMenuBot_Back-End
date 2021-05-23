@@ -6,6 +6,9 @@ using Telegram.Bot.Extensions.Polling;
 
 namespace CaffeMenuBot.Bot.Services
 {
+    /// <summary>
+    /// Used as hosted service to run bot
+    /// </summary>
     public sealed class BotHandlerService : BackgroundService
     {
         private readonly ITelegramBotClient _client;

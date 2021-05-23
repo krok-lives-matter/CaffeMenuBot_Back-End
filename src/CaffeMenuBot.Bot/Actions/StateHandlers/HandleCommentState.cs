@@ -10,6 +10,9 @@ using Telegram.Bot.Types;
 
 namespace CaffeMenuBot.Bot.Actions.Сommands
 {
+    /// <summary>
+    /// Handles state when bot is waiting for user to comment in rating action
+    /// </summary>
     public sealed class HandleCommentState : IStateAction
     {
         private CaffeMenuBotContext Context { get; }
@@ -35,6 +38,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
         {
             var review = await Context.Reviews.FirstOrDefaultAsync(r => r.User.Id == user.Id);
 
+            // updates existing or creating new reviews with comment
             if (review == null)
             {
                 review = new Review()

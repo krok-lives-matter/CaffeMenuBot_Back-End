@@ -8,20 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Remove="wwwroot\content\logo.png" />
-    </ItemGroup>
-
-    <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>CaffeMenuBot.UnitTests</_Parameter1>
         </AssemblyAttribute>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>CaffeMenuBot.IntegrationTests</_Parameter1>
         </AssemblyAttribute>
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="wwwroot\content\logo.png" />
     </ItemGroup>
 
     <ItemGroup>

@@ -22,8 +22,8 @@ This project is powered by ASP.NET Core 5.
 3. Clone the project repository locally.
 4. Install the [Docker for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows/) on your PC (by pressing the _Get Docker_ button).
 5. Ensure that `SVM mode` / `hypervisor` is enabled in your motherboard's BIOS.
-6. Make sure you set bot token in botsettings.json. If you won't do this - bot initialization will be skipped and bot will run.
-7. To debug project in Visual Studio make docker-compose.dcproj a startup project and user file docker-compose.debug.yml to start debugging (you can achieve this by renaming it to docker-compose.yml)
+6. Make sure you set bot token in botsettings.json. If you won't do this - bot initialization will be skipped and bot will not run.
+7. To debug project in Visual Studio make docker-compose.dcproj a startup project and use file docker-compose.debug.yml to start debugging (you can achieve this by renaming it to docker-compose.yml)
 
 ### How To Run
 To run this project locally, open a terminal (for example, `cmd.exe` or `Git Bash`) and navigate to the project's root directory (where the `docker-compose.yml` file is located).  

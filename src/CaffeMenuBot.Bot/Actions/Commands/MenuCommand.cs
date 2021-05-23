@@ -7,6 +7,9 @@ using Telegram.Bot.Types;
 
 namespace CaffeMenuBot.Bot.Actions.Сommands
 {
+    /// <summary>
+    /// Handles menu button press in main menu keyboard
+    /// </summary>
     public sealed class MenuCommand : IChatAction
     {
         private ITelegramBotClient Client { get; }

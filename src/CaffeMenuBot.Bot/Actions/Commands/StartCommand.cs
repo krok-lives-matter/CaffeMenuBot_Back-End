@@ -8,6 +8,9 @@ using Telegram.Bot.Types;
 
 namespace CaffeMenuBot.Bot.Actions.Сommands
 {
+    /// <summary>
+    /// Handles start or restart command in bot
+    /// </summary>
     public sealed class StartCommand : IChatAction
     {
         private ITelegramBotClient Client { get; }

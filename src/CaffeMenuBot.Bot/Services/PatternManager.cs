@@ -10,6 +10,10 @@ using CaffeMenuBot.Bot.Actions.Interface;
 
 namespace CaffeMenuBot.Bot.Services
 {
+    /// <summary>
+    /// Handles pattern matching for state / command / callback actions
+    /// </summary>
+    /// <typeparam name="PatternT">Type of action, derived from IPatternAction</typeparam>
     public sealed class PatternManager<PatternT> where PatternT: IPatternAction 
     {
         private readonly IServiceProvider _provider;
@@ -21,6 +25,12 @@ namespace CaffeMenuBot.Bot.Services
             _loggerFactory = loggerFactory;
         }
 
+        /// <summary>
+        /// fires respective action based on matching pattern (callback id, command text, user state)
+        /// </summary>
+        /// <param name="user">user object</param>
+        /// <param name="update">update object</param>
+        /// <param name="ct">cancellation token</param>
         public async Task HandlePatternAsync(BotUser user, Update update, CancellationToken ct)
         {
             using var scope = _provider.CreateScope();

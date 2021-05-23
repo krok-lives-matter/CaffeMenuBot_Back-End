@@ -16,7 +16,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
         private CaffeMenuBotContext Context { get; }
         private ITelegramBotClient Client { get; }
         
-        // Contains uses this instead of COMMAND_NAME
+        // Contains uses this identifier instead of COMMAND_NAME
         private const string CALLBACK_ID = "RRR";
         private const string MESSAGE_TITLE = "Дякую за ваш відгук!";
 
@@ -38,6 +38,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
 
             var review = await Context.Reviews.FirstOrDefaultAsync(r => r.User.Id == user.Id);
 
+            // updates existing or created new review with rating applied
             if (review == null)
             {
                 review = new Review()

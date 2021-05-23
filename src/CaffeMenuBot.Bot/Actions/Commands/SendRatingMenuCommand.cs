@@ -8,6 +8,9 @@ using CaffeMenuBot.Bot.Actions.Interface;
 
 namespace CaffeMenuBot.Bot.Actions.Commands
 {
+    /// <summary>
+    /// Handles send rating menu button press in bot
+    /// </summary>
     public class SendRatingMenuCommand : IChatAction
     {
         private readonly ITelegramBotClient _client;
@@ -21,6 +24,7 @@ namespace CaffeMenuBot.Bot.Actions.Commands
 
         public async Task ExecuteAsync(BotUser user, Update update, CancellationToken ct)
         {
+            // Send inline rating keyboard to user
             await _client.SendTextMessageAsync
             (
                 update.Message.From.Id,

@@ -41,12 +41,14 @@ namespace CaffeMenuBot.Bot.Services
 
             var user = await HandleUser(context, update, cancellationToken);
 
+            // Check if user state isn't default and fire respective action
             if (user.State != Data.Models.Bot.ChatState.default_state)
             {
                 await HandleStateAsync(user, update, cancellationToken);
                 return;
             }
 
+            // if state is default - handle update as command or callback action
             await (update switch
             {
                 { Type: UpdateType.CallbackQuery } => HandleMessageAsync(user, update, cancellationToken),
@@ -55,12 +57,18 @@ namespace CaffeMenuBot.Bot.Services
             });
         }
 
+        /// <summary>
+        /// Logs error that occured while handling update
+        /// </summary>
         public Task HandleError(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             Console.WriteLine(exception);
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Use this to filter which update types bot can receive
+        /// </summary>
         public UpdateType[] AllowedUpdates => new[] {UpdateType.Message, UpdateType.CallbackQuery};
     }
 }

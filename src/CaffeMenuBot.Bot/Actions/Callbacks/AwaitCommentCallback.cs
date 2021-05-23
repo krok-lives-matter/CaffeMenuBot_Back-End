@@ -9,12 +9,15 @@ using Telegram.Bot.Types;
 
 namespace CaffeMenuBot.Bot.Actions.Callbacks
 {
+    /// <summary>
+    /// Handles inline rating keyboard comment button press
+    /// </summary>
     public sealed class AwaitCommentCallback : IChatAction
     {
         private CaffeMenuBotContext Context { get; }
         private ITelegramBotClient Client { get; }
         
-        // Contains uses this instead of COMMAND_NAME
+        // Contains uses this identifier instead of COMMAND_NAME
         private const string CALLBACK_ID = "CCC";
         private const string MESSAGE_TITLE = "Надішліть ваш відгук використовуючи поле для вводу повідомлення";
 
@@ -32,6 +35,7 @@ namespace CaffeMenuBot.Bot.Actions.Callbacks
 
         public async Task ExecuteAsync(BotUser user, Update update, CancellationToken ct)
         {
+            // set user state to pending_comment, so state handler could handle it
             user.State = ChatState.pending_comment;
             Context.Entry(user).State = EntityState.Modified;
             await Context.SaveChangesAsync();
