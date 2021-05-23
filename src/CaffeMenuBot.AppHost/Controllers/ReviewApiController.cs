@@ -82,7 +82,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerOperation("Creates review", Tags = new[] { "Reviews" })]
         [SwaggerResponse(200, "Successfully created review with result of id of created review", typeof(Review))]
         [SwaggerResponse(402, "Bad request, bad data was specified")]
-        public async Task<ActionResult<CreatedItemResult>> Post([FromForm] Review review,
+        public async Task<ActionResult<CreatedItemResult>> Post([FromBody] Review review,
             CancellationToken cancellationToken)
         {
             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -97,7 +97,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerOperation("Updates review", Tags = new[] { "Reviews" })]
         [SwaggerResponse(200, "Successfully updated review with result of id of updated review", typeof(Review))]
         [SwaggerResponse(402, "Bad request, bad data was specified")]
-        public async Task<ActionResult<CreatedItemResult>> Put([FromForm] Review review,
+        public async Task<ActionResult<CreatedItemResult>> Put([FromBody] Review review,
             CancellationToken cancellationToken)
         {
             // ReSharper disable once MethodHasAsyncOverloadWithCancellation

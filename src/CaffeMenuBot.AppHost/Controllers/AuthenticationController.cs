@@ -75,7 +75,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("me")]
         [Authorize]
         [SwaggerOperation("updates authenticated user object",
@@ -84,7 +84,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
         [SwaggerResponse(401, "User unathorized.")]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
-        public async Task<ActionResult> Me([FromForm] UserUpdateRequest updatedUser)
+        public async Task<ActionResult> Me([FromBody] UserUpdateRequest updatedUser)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
@@ -140,7 +140,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
         [SwaggerResponse(404, "User with the specified email was not found.", typeof(ErrorResponse))]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
-        public async Task<ActionResult> Login([FromForm] UserLoginRequest user)
+        public async Task<ActionResult> Login([FromBody] UserLoginRequest user)
         {
             // check if the user with the same email exist
             var existingUser = await _userManager.FindByEmailAsync(user.Email);
@@ -171,7 +171,8 @@ namespace CaffeMenuBot.AppHost.Controllers
                     {
                         Id = existingUser.Id,
                         Email = existingUser.Email,
-                        UserName = existingUser.UserName
+                        UserName = existingUser.UserName,
+                        ProfilePhotoUrl = existingUser.ProfilePhotoRelativeUrl
                     },
                     Result = true,
                     Token = jwtToken
@@ -200,7 +201,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(401, "Unauthorized.")]
         [SwaggerResponse(403, "User with the specified email already exists.", typeof(ErrorResponse))]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
-        public async Task<ActionResult> Register([FromForm] UserRegisterRequest user)
+        public async Task<ActionResult> Register([FromBody] UserRegisterRequest user)
         {
             // check if the user with the same email exist
             var existingUser = await _userManager.FindByEmailAsync(user.Email) ??

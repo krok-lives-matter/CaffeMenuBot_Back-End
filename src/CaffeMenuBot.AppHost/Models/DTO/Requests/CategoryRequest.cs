@@ -1,5 +1,4 @@
 ﻿using CaffeMenuBot.Data.Models.Menu;
-using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -13,7 +12,7 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
 
         public string CategoryName { get; init; } = null!;
 
-        public IFormFile? CoverPhoto { get; init; } = null;
+        public ImageModel? CoverPhoto { get; init; } = null;
 
         public bool IsVisible { get; set; } = true;
 
@@ -28,7 +27,11 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
             {
                 ["id"] = new OpenApiString("3"),
                 ["userName"] = new OpenApiString("Test category"),
-                ["coverPhoto"] = new OpenApiString("profile photo"),
+                ["coverPhoto"] = new OpenApiObject()
+                {
+                    ["contentType"] = new OpenApiString(".gif"),
+                    ["base64EncodedImage"] = new OpenApiString("R0lGODlhAQABAIAAAAAAAAAAACH5BAAAAAAALAAAAAABAAEAAAICTAEAOw==")
+                },
                 ["isVisible"] = new OpenApiBoolean(true),
                 ["dishes"] = new OpenApiArray() 
                 {
@@ -48,6 +51,11 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
                         ["price"] = new OpenApiFloat(500.7f),
                         ["serving"] = new OpenApiString("150гр."),
                     },
+                },
+                ["coverPhoto"] = new OpenApiObject()
+                {
+                    ["contentType"] = new OpenApiString(".jpg"),
+                    ["base64EncodedImage"] = new OpenApiString("R0lGODlhAQABAIAAAAAAAAAAACH5BAAAAAAALAAAAAABAAEAAAICTAEAOw==")
                 }
             };
         }

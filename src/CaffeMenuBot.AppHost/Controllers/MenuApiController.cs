@@ -90,7 +90,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerOperation("Creates dish", Tags = new[] { "Menu, Dishes" })]
         [SwaggerResponse(200, "Successfully created dish with result of id of created dish", typeof(Dish))]
         [SwaggerResponse(402, "Bad request, bad data was specified")]
-        public async Task<ActionResult<CreatedItemResult>> PostDish([FromForm] Dish dish, CancellationToken cancellationToken)
+        public async Task<ActionResult<CreatedItemResult>> PostDish([FromBody] Dish dish, CancellationToken cancellationToken)
         {
             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
             _context.Dishes.Add(dish);
@@ -104,7 +104,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerOperation("Updates dish", Tags = new[] { "Menu, Dishes" })]
         [SwaggerResponse(200, "Successfully updated dish with result of id of updated dish", typeof(Dish))]
         [SwaggerResponse(402, "Bad request, bad data was specified")]
-        public async Task<ActionResult<CreatedItemResult>> PutDish([FromForm] Dish dish, CancellationToken cancellationToken)
+        public async Task<ActionResult<CreatedItemResult>> PutDish([FromBody] Dish dish, CancellationToken cancellationToken)
         {
             _context.Dishes.Update(dish);
             await _context.SaveChangesAsync(cancellationToken);
@@ -175,7 +175,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerOperation("Creates category", Tags = new[] { "Menu, Categories" })]
         [SwaggerResponse(200, "Successfully created category with result of id of created category", typeof(Category))]
         [SwaggerResponse(402, "Bad request, bad data was specified")]
-        public async Task<ActionResult<CreatedItemResult>> PostCategory([FromForm] CategoryRequest addCategoryRequest,
+        public async Task<ActionResult<CreatedItemResult>> PostCategory([FromBody] CategoryRequest addCategoryRequest,
             CancellationToken cancellationToken)
         {
             var category = new Category()
@@ -206,7 +206,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(200, "Successfully category dish with result of id of category dish", typeof(Category))]
         [SwaggerResponse(404, "category you are trying to edit was not found, check Id that you are passing")]
         [SwaggerResponse(402, "Bad request, bad data was specified")]
-        public async Task<ActionResult<CreatedItemResult>> PutCategory([FromForm] CategoryRequest updateCategoryRequest,
+        public async Task<ActionResult<CreatedItemResult>> PutCategory([FromBody] CategoryRequest updateCategoryRequest,
             CancellationToken cancellationToken)
         {
             var category = await _context.Categories.FindAsync(updateCategoryRequest.Id);
