@@ -92,6 +92,13 @@ namespace CaffeMenuBot.AppHost.Configuration
                             Description = "Дуже смачно",
                             Price = 100.5m,
                             Serving = "200гр."
+                        },
+                        new()
+                        {
+                            DishName = "Пляцки Пляцки",
+                            Description = "Дуже Дуже",
+                            Price = 150.5m,
+                            Serving = "200гр."
                         }
                     }
                 },

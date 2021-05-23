@@ -122,9 +122,6 @@ namespace CaffeMenuBot.AppHost.Controllers
                                            .AsNoTracking()
                                            .ToListAsync(cancellationToken);
 
-            foreach (var c in categories)
-                c.CoverPhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{c.CoverPhotoFileName}";
-
             return Ok(categories);
         }
 
@@ -141,9 +138,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 .Include(c => c.Dishes)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
-
-            category.CoverPhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}";
-
+     
             if (category == null)
                 return NotFound();
 
@@ -195,7 +190,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 string categoryCoverFileName =
                     ImageHelper.SaveImage(addCategoryRequest.CoverPhoto, _webHostEnvironment, MEDIA_SUBFOLDER);
 
-                category.CoverPhotoFileName = categoryCoverFileName;
+                category.CoverPhotoRelativeUrl = categoryCoverFileName;
             }
                                 
             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -224,7 +219,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 string categoryCoverFileName =
                     ImageHelper.SaveImage(updateCategoryRequest.CoverPhoto, _webHostEnvironment, MEDIA_SUBFOLDER);
 
-                category.CoverPhotoFileName = categoryCoverFileName;
+                category.CoverPhotoRelativeUrl = categoryCoverFileName;
             }
 
             category.CategoryName = updateCategoryRequest.CategoryName;

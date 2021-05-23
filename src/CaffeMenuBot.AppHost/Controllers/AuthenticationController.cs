@@ -30,6 +30,8 @@ namespace CaffeMenuBot.AppHost.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<DashboardUser> _userManager;
         private readonly JwtOptions _jwtConfig;
+
+        // used to save profile photos of user while adding new user or updating him
         private const string MEDIA_SUBFOLDER = "profile_photos";
 
         public AuthenticationController
@@ -67,7 +69,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName,
-                ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
+                ProfilePhotoUrl = user.ProfilePhotoRelativeUrl
             };
 
             return Ok(response);
@@ -111,7 +113,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 string uniqueProfilePhotoFileName = 
                     ImageHelper.SaveImage(updatedUser.ProfilePhoto, _webHostEnvironment, MEDIA_SUBFOLDER);
 
-                user.ProfilePhotoFileName = uniqueProfilePhotoFileName;
+                user.ProfilePhotoRelativeUrl = uniqueProfilePhotoFileName;
             }
 
             _context.Entry(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
@@ -123,7 +125,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName,
-                ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
+                ProfilePhotoUrl = user.ProfilePhotoRelativeUrl
             };
 
             return Ok(response);

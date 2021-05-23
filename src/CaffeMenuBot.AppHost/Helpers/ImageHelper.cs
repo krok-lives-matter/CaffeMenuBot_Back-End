@@ -20,7 +20,7 @@ namespace CaffeMenuBot.AppHost.Helpers
             string mediaSubfolder
             )
         {
-            string? uniqueFileName = null!;
+            string uniqueFileName = null!;
 
             string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, $"media/{mediaSubfolder}");
             uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;

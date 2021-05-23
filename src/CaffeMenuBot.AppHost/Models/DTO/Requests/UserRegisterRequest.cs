@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
@@ -17,6 +18,7 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
         public string? NormalizedEmail { get; init; }
         [Required(AllowEmptyStrings = false)]
         public string UserName { get; init; } = null!;
+        public IFormFile? ProfilePhoto { get; init; } = null;
     }
 
     public sealed class UserRegisterRequestSchema : ISchemaFilter
@@ -28,7 +30,8 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
                 ["email"] = new OpenApiString("admin@caffemenubot.com"),
                 ["password"] = new OpenApiString("password here"),
                 ["normalizedEmail"] = new OpenApiString("admin@ca...com"),
-                ["userName"] = new OpenApiString("admin")
+                ["userName"] = new OpenApiString("admin"),
+                ["ProfilePhoto"] = new OpenApiString("profile photo")
             };
         }
     }
