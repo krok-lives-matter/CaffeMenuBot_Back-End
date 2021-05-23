@@ -194,8 +194,8 @@ namespace CaffeMenuBot.AppHost
             //app.UseStaticFiles(new StaticFileOptions()
             //{
             //    FileProvider = new PhysicalFileProvider(
-            //    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/content")),
-            //    RequestPath = "/content"
+            //    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Content")),
+            //    RequestPath = "/Content"
             //});
 
             app.UseCors(publicCorsPolicyName);
