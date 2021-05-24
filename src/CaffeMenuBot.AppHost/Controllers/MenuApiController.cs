@@ -131,7 +131,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerOperation("Gets category by id", Tags = new[] { "Menu, Categories" })]
         [SwaggerResponse(200, "Successfully found category by specified id", typeof(Category))]
         [SwaggerResponse(404, "Category was not found by specified id")]
-        public async Task<ActionResult<Category>> GetCategory(int id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Category>> GetCategory(int id, CancellationToken cancellationToken, [FromServices] CaffeMenuBotContext context)
         {
             var category = await _context
                 .Categories

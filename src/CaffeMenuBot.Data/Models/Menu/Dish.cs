@@ -11,18 +11,18 @@ namespace CaffeMenuBot.Data.Models.Menu
         public int Id { get; init; }
 
         [Required, Column("dish_name", TypeName = "text")]
-        public string DishName { get; init; } = null!;
+        public string DishName { get; set; } = null!;
 
         [Required, Column("description", TypeName = "text")]
-        public string Description { get; init; } = null!;
+        public string Description { get; set; } = null!;
 
         [Required, Column("serving", TypeName = "text")]
-        public string Serving { get; init; } = null!;
+        public string Serving { get; set; } = null!;
 
         [Required, Column("price", TypeName = "decimal(5, 2)")]
-        public decimal Price { get; init; }    
+        public decimal Price { get; set; }    
 
-        public int CategoryId { get; init; }
+        public int CategoryId { get; set; }
         [JsonIgnore]
         public Category? Category { get; init; } = null!;
     }
