@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using CaffeMenuBot.AppHost;
 using CaffeMenuBot.AppHost.Models.DTO.Responses;
 using CaffeMenuBot.Data.Models.Menu;
+using CaffeMenuBot.Data.Models.Reviews;
 using Xunit;
 
 namespace CaffeMenuBot.IntegrationTests
@@ -208,6 +209,96 @@ namespace CaffeMenuBot.IntegrationTests
             HttpResponseMessage deleteResult = await _authorizedClient.DeleteAsync($"api/dashboard/menu/categories/1");
             Assert.True(deleteResult.IsSuccessStatusCode);
         }
+
+        #endregion
+
+        #region ScheduleApiTests
+        #endregion
+
+        #region ReviewApiTest
+        [Fact]
+        public async Task ListAllReviews_SuccessStatusCode()
+        {
+            HttpResponseMessage result = await _authorizedClient.GetAsync($"api/dashboard/reviews");
+            List<Review> reviewsEncapsulated = await result.Content.ReadFromJsonAsync<List<Review>>();
+
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("My updated comment")]
+        public async Task CrudReview_SucessStatusCode_NotNull_UpdatedCommentEquals(string comment)
+        {
+            await PostReview();
+            int review_id = await UpdateReview(comment);
+            await GetReviewById(review_id);
+            await DeleteReviewById(review_id);
+        }
+
+        private async Task PostReview()
+        {
+            // create new review
+
+            Review review = new Review()
+            {
+                Rating = Data.Models.Bot.Rating.rating_excellent,
+                ReviewComment = "This is test review",
+                User = new Data.Models.Bot.BotUser()
+                {
+                    Id = 67123616,
+                    State = Data.Models.Bot.ChatState.default_state
+                }
+            };
+
+            // post new review
+            string json = JsonSerializer.Serialize(review);
+            using StringContent reviewContent = new(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage postResult = await _authorizedClient.PostAsync($"api/dashboard/reviews", reviewContent);
+
+            // make sure posted
+            Assert.Equal(HttpStatusCode.OK, postResult.StatusCode);
+        }
+
+        private async Task<int> UpdateReview(string comment)
+        {
+            // get all reviews
+            HttpResponseMessage result = await _authorizedClient.GetAsync($"api/dashboard/reviews");
+            List<Review> reviewsEncapsulated = await result.Content.ReadFromJsonAsync<List<Review>>();
+
+            // update review
+            reviewsEncapsulated[0].ReviewComment = comment;
+
+            // put updated review
+            string json = JsonSerializer.Serialize(reviewsEncapsulated[0]);
+            using StringContent updateReviewContent = new(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage updatedResult = await _authorizedClient.PutAsync($"api/dashboard/reviews", updateReviewContent);
+            // get updated result
+            Review reviewEncapsulated = await updatedResult.Content.ReadFromJsonAsync<Review>();
+
+            // make sure comment was updated
+            Assert.Equal(reviewEncapsulated.ReviewComment, comment);
+
+            return reviewEncapsulated.Id;
+        }
+
+        private async Task GetReviewById(int id)
+        {
+            // get review
+            HttpResponseMessage result = await _authorizedClient.GetAsync($"api/dashboard/reviews/{id}");
+            Review reviewEncapsulated = await result.Content.ReadFromJsonAsync<Review>();
+
+            Assert.True(result.IsSuccessStatusCode, "Success get review by id");
+            Assert.NotNull(reviewEncapsulated);
+        }
+
+        private async Task DeleteReviewById(int id)
+        {
+            // delete review
+            HttpResponseMessage result = await _authorizedClient.DeleteAsync($"api/dashboard/reviews/{id}");
+
+            Assert.True(result.IsSuccessStatusCode, "Success delete review by id");
+        }
+
 
         #endregion
     }

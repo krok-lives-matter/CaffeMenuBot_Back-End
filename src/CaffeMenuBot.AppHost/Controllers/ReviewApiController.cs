@@ -31,6 +31,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         {
             var reviews = await _context
                 .Reviews
+                .Include(r => r.User)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
@@ -46,6 +47,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         {
             var review = await _context
                 .Reviews
+                .Include(r => r.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
             

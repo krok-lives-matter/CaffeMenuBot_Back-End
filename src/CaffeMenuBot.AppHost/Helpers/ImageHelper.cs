@@ -8,7 +8,7 @@ namespace CaffeMenuBot.AppHost.Helpers
     public static class ImageHelper
     {
         /// <summary>
-        /// saved IFormFile image to desired path inside media folder
+        /// saves base64 image to desired path inside media folder
         /// </summary>
         /// <param name="webHostEnvironment">to get app root folder</param>
         /// <param name="mediaSubfolder">subfolder inside media folder</param>
