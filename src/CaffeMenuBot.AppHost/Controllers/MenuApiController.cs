@@ -11,6 +11,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using CaffeMenuBot.AppHost.Models.DTO.Requests;
 using CaffeMenuBot.AppHost.Helpers;
+using System.Linq;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -30,50 +31,54 @@ namespace CaffeMenuBot.AppHost.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        //GET api/dashboard/menu/dishes
-        [HttpGet("dishes")]
-        [SwaggerOperation("Gets all dishes", Tags = new[] { "Menu, Dishes" })]
-        public async Task<ActionResult<IEnumerable<Dish>>> GetDishes(CancellationToken cancellationToken)
-        {
-            var dishes = await _context
-                .Dishes
-                .Include(d => d.Category)
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
-            return dishes;
-        }
-
-
-        //GET api/dashboard/menu/dishes/{id}
-        [HttpGet("dishes/{id:int:min(1)}")]
+        //GET api/dashboard/menu/dish?dish_id=1
+        [HttpGet("dish")]
         [SwaggerOperation("Gets dish by id", Tags = new[] { "Menu, Dishes" })]
         [SwaggerResponse(200, "Successfully found dish by specified id", typeof(Dish))]
         [SwaggerResponse(404, "Dish was not found by specified id")]
-        public async Task<ActionResult<Dish>> GetDish(int id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dish>> GetDish(int dish_id, CancellationToken cancellationToken)
         {
             var dish = await _context
                 .Dishes
-                .Include(d => d.Category)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
+                .FirstOrDefaultAsync(d => d.Id == dish_id, cancellationToken);
             
             if (dish == null)
                 return NotFound();
             
-            return dish;
+            return Ok(dish);
         }
 
-        //DELETE api/dashboard/menu/dishes/{id}
-        [HttpDelete("dishes/{id:int:min(1)}")]
+        //GET api/dashboard/menu/dishes?category_id=1
+        [HttpGet("dishes")]
+        [SwaggerOperation("Gets all dishes by category_id", Tags = new[] { "Menu, Dishes" })]
+        [SwaggerResponse(200, "Successfully found all dishes by specified category_id", typeof(Dish))]
+        [SwaggerResponse(404, "Dishes was not found by specified category_id")]
+        public async Task<ActionResult<List<Dish>>> GetDishesByCategoryId(int category_id, CancellationToken cancellationToken)
+        {
+            var dishes = await _context
+                .Dishes
+                .AsNoTracking()
+                .Where(d => d.CategoryId == category_id)
+                .ToListAsync(cancellationToken);
+
+            if (dishes.Count == 0)
+                return NotFound();
+
+            return Ok(dishes);
+        }
+
+        //DELETE api/dashboard/menu/dishes?dish_id=1
+        [HttpDelete("dishes")]
         [SwaggerOperation("Deletes dish by id", Tags = new[] { "Menu, Dishes" })]
         [SwaggerResponse(204, "Successfully deleted dish by specified id")]
         [SwaggerResponse(404, "Dish was not found by specified id")]
-        public async Task<ActionResult<Dish>> DeleteDish(int id, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dish>> DeleteDish(int dish_id, CancellationToken cancellationToken)
         {
             var dishToDelete = await _context
                 .Dishes
                 .AsNoTracking()
-                .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
+                .FirstOrDefaultAsync(d => d.Id == dish_id, cancellationToken);
 
             if (dishToDelete == null)
                 return NotFound();
@@ -143,7 +148,6 @@ namespace CaffeMenuBot.AppHost.Controllers
         {
             var category = await _context
                 .Categories
-                .Include(c => c.Dishes)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
      
@@ -185,13 +189,12 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerOperation("Creates category", Tags = new[] { "Menu, Categories" })]
         [SwaggerResponse(200, "Successfully created category with result of id of created category", typeof(Category))]
         [SwaggerResponse(402, "Bad request, bad data was specified")]
-        public async Task<ActionResult<CreatedItemResult>> PostCategory([FromBody] CategoryRequest addCategoryRequest,
+        public async Task<ActionResult<CreatedItemResult>> PostCategory(CategoryRequest addCategoryRequest,
             CancellationToken cancellationToken)
         {
             var category = new Category()
             {
                 CategoryName = addCategoryRequest.CategoryName,
-                Dishes = addCategoryRequest.Dishes,
                 IsVisible = addCategoryRequest.IsVisible
             };
 
@@ -216,7 +219,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(200, "Successfully category dish with result of id of category dish", typeof(Category))]
         [SwaggerResponse(404, "category you are trying to edit was not found, check Id that you are passing")]
         [SwaggerResponse(402, "Bad request, bad data was specified")]
-        public async Task<ActionResult<CreatedItemResult>> PutCategory([FromBody] CategoryRequest updateCategoryRequest,
+        public async Task<ActionResult<CreatedItemResult>> PutCategory(CategoryRequest updateCategoryRequest,
             CancellationToken cancellationToken)
         {
             var category = await _context.Categories.FindAsync(updateCategoryRequest.Id);
@@ -233,7 +236,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             }
 
             category.CategoryName = updateCategoryRequest.CategoryName;
-            category.Dishes = updateCategoryRequest.Dishes;
+
             category.IsVisible = updateCategoryRequest.IsVisible;
 
             _context.Entry(category).State = EntityState.Modified;

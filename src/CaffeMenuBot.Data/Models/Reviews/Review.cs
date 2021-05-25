@@ -17,6 +17,6 @@ namespace CaffeMenuBot.Data.Models.Reviews
         public string ReviewComment { get; set; } = null!;
 
         [Required, Column("bot_user")]
-        public virtual BotUser User {get;init;} = null!;
+        public BotUser User {get;init;} = null!;
     }
 }

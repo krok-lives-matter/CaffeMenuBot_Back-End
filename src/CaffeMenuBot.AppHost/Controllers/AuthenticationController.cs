@@ -19,6 +19,7 @@ using CaffeMenuBot.Data.Models.Dashboard;
 using Microsoft.AspNetCore.Hosting;
 using CaffeMenuBot.AppHost.Helpers;
 using CaffeMenuBot.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -281,8 +282,9 @@ namespace CaffeMenuBot.AppHost.Controllers
             };
 
             // add roles
+            _context.UserRoles.Include(r => r.Role).FirstOrDefault(r => r.UserId == user.Id);
 
-            if(user.Roles.Count() != 0)
+            if (user.Roles.Count() != 0)
             {
                 string roles = "";
 

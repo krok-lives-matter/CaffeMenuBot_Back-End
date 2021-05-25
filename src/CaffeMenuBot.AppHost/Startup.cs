@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using CaffeMenuBot.Bot.Actions.Interface;
 using CaffeMenuBot.Data.Models.Dashboard;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -64,8 +63,7 @@ namespace CaffeMenuBot.AppHost
                 options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
                     builder.EnableRetryOnFailure()
                            .MigrationsAssembly("CaffeMenuBot.Data")
-                           .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName))
-                           .UseLazyLoadingProxies());
+                           .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
 
             services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
 

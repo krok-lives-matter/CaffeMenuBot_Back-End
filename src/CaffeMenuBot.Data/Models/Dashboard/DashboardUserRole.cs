@@ -4,8 +4,8 @@ namespace CaffeMenuBot.Data.Models.Dashboard
 {
     public class DashboardUserRole : IdentityUserRole<string>
     {
-        public virtual DashboardUser User { get; set; } = null!;
+        public DashboardUser User { get; set; } = null!;
 
-        public virtual IdentityRole Role { get; set; } = null!;
+        public IdentityRole Role { get; set; } = null!;
     }
 }

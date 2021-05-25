@@ -37,7 +37,8 @@ namespace CaffeMenuBot.AppHost.Configuration
                 var adminUser = new DashboardUser
                 {
                     UserName = "admin",
-                    Email = "admin@caffemenubot.com"
+                    Email = "admin@caffemenubot.com",
+                    ProfilePhotoFileName = "blank.jpg"
                 };
                 var result = await userManager.CreateAsync(adminUser, "_Change$ThisPlease3");
                 await userManager.AddToRoleAsync(adminUser, adminRole.Name);

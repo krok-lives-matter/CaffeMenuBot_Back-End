@@ -125,14 +125,13 @@ namespace CaffeMenuBot.IntegrationTests
 
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.True(categoriesResultEncapsulated.Count() != 0, "Categories are not 0 count");
-            Assert.True(categoriesResultEncapsulated[0].Dishes.Count() != 0, "Categories index 0 dishes are not 0 count");
         }
 
         [Theory]
         [InlineData("Updated name", "name to update")]
         public async Task UpdateDish(string name, string description)
         {
-            HttpResponseMessage result = await _authorizedClient.GetAsync($"api/dashboard/menu/dishes");
+            HttpResponseMessage result = await _authorizedClient.GetAsync($"api/dashboard/menu/dishes?category_id=1");
             List<Dish> dishesResultEncapsulated = await result.Content.ReadFromJsonAsync<List<Dish>>();
             dishesResultEncapsulated[0].DishName = name;
 
@@ -146,7 +145,7 @@ namespace CaffeMenuBot.IntegrationTests
         [Fact]
         public async Task DeleteDishById_SuccessStatusCode()
         {
-            HttpResponseMessage deleteResult = await _authorizedClient.DeleteAsync($"api/dashboard/menu/dishes/1");
+            HttpResponseMessage deleteResult = await _authorizedClient.DeleteAsync($"api/dashboard/menu/dishes?dish_id=1");
             Assert.True(deleteResult.IsSuccessStatusCode);
         }
 
@@ -195,13 +194,6 @@ namespace CaffeMenuBot.IntegrationTests
             dish = await dishResult.Content.ReadFromJsonAsync<Dish>();
 
             Assert.True(dishResult.IsSuccessStatusCode, "dish added");
-
-
-            // update category object
-            categoryAddResult = await _authorizedClient.GetAsync($"api/dashboard/menu/categories/{categoryResultEncapsulated.Id}");
-            categoryResultEncapsulated = await categoryAddResult.Content.ReadFromJsonAsync<Category>();
-
-            Assert.True(categoryResultEncapsulated.Dishes.Any(d => d.Id == dish.Id), "category includes new dish");
         }
 
         [Fact]

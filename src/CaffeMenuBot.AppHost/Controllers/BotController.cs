@@ -40,6 +40,26 @@ namespace CaffeMenuBot.AppHost.Controllers
         }
 
         [HttpGet]
+        [Route("start")]
+        [SwaggerOperation("Starts the bot service",
+            Tags = new[] { "Bot" })]
+        [SwaggerResponse(200, "Started bot")]
+        [SwaggerResponse(500, "Internal server error.")]
+        public async Task<ActionResult> Start(CancellationToken ct)
+        {
+            var user = HttpContext.User;
+            try
+            {
+                await _botService.StartAsync(ct);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok();
+        }
+
+        [HttpGet]
         [Route("restart")]
         [SwaggerOperation("Restarts the bot service",
             Tags = new[] { "Bot" })]

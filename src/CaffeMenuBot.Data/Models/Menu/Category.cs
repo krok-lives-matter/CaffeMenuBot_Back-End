@@ -25,6 +25,7 @@ namespace CaffeMenuBot.Data.Models.Menu
         [Required, Column("is_visible", TypeName = "boolean")]
         public bool IsVisible { get; set; } = true;
 
-        public virtual List<Dish> Dishes { get; set; } = new List<Dish>();
+        [JsonIgnore]
+        public List<Dish> Dishes { get; set; } = new List<Dish>();
     }
 }

@@ -15,6 +15,6 @@ namespace CaffeMenuBot.Data.Models.Dashboard
         [NotMapped]
         public string? ProfilePhotoUrl { get; set; } 
 
-        public virtual ICollection<DashboardUserRole> Roles { get; set; }  = new List<DashboardUserRole>();
+        public ICollection<DashboardUserRole> Roles { get; set; }  = new List<DashboardUserRole>();
     }
 }

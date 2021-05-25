@@ -24,6 +24,6 @@ namespace CaffeMenuBot.Data.Models.Menu
 
         public int CategoryId { get; set; }
         [JsonIgnore]
-        public virtual Category? Category { get; init; } = null!;
+        public Category? Category { get; init; } = null!;
     }
 }
