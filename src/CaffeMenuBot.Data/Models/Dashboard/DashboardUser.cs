@@ -10,7 +10,7 @@ namespace CaffeMenuBot.Data.Models.Dashboard
     {
         [JsonIgnore]
         [Required, Column("profile_photo_filename", TypeName = "text")]
-        public string ProfilePhotoFileName { get; set; } = null!;
+        public string ProfilePhotoFileName { get; set; } = "blank.jpg";
 
         [NotMapped]
         public string? ProfilePhotoUrl { get; set; } 

@@ -17,7 +17,7 @@ namespace CaffeMenuBot.Data.Models.Menu
 
         [JsonIgnore]
         [Required, Column("cover_photo_filename", TypeName = "text")]
-        public string CoverPhotoFileName { get; set; } = null!;
+        public string CoverPhotoFileName { get; set; } = "blank.jpg";
 
         [NotMapped]
         public string? CoverPhotoUrl { get; set; }
