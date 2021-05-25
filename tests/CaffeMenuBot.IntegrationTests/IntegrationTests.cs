@@ -12,6 +12,7 @@ using CaffeMenuBot.AppHost;
 using CaffeMenuBot.AppHost.Models.DTO.Responses;
 using CaffeMenuBot.Data.Models.Menu;
 using CaffeMenuBot.Data.Models.Reviews;
+using CaffeMenuBot.Data.Models.Schedule;
 using Xunit;
 
 namespace CaffeMenuBot.IntegrationTests
@@ -213,6 +214,74 @@ namespace CaffeMenuBot.IntegrationTests
         #endregion
 
         #region ScheduleApiTests
+        [Fact]
+        public async Task GetAllSchedules_Success()
+        {
+            HttpResponseMessage getResult = await _authorizedClient.GetAsync($"api/dashboard/schedule/");
+            List<Schedule> scheduleEncapsulated = await getResult.Content.ReadFromJsonAsync<List<Schedule>>();
+
+            Assert.True(getResult.IsSuccessStatusCode);
+            Assert.True(scheduleEncapsulated.Count() != 0);
+        }
+
+        [Theory]
+        [InlineData(Int32.MaxValue, "missing ID has passed")]
+        public async Task GetScheduleById_MissingIdShouldReturnNotFound(int id, string description)
+        {
+            HttpResponseMessage getResult = await _authorizedClient.GetAsync($"api/dashboard/schedule/{id}");
+
+            Assert.Equal(HttpStatusCode.NotFound, getResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetScheduleById_Success()
+        {
+            HttpResponseMessage getResult = await _authorizedClient.GetAsync($"api/dashboard/schedule/1");
+            var scheduleEncapsulated = await getResult.Content.ReadFromJsonAsync<Schedule>();
+
+            Assert.NotNull(scheduleEncapsulated);
+            Assert.True(getResult.IsSuccessStatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteScheduleById_Success()
+        {
+            HttpResponseMessage deleteResult = await _authorizedClient.DeleteAsync($"api/dashboard/schedule/1");
+            Assert.True(deleteResult.IsSuccessStatusCode);
+        }
+
+        [Theory]
+        [InlineData("Updated weekday name", "name to update")]
+        public async Task UpdateSchedule(string wdName, string description)
+        {
+            HttpResponseMessage result = await _authorizedClient.GetAsync($"api/dashboard/schedule/");
+            List<Schedule> schedulesResultEncapsulated = await result.Content.ReadFromJsonAsync<List<Schedule>>();
+            schedulesResultEncapsulated[0].WeekdayName = wdName;
+
+            using StringContent scheduleUpdateContent = new(JsonSerializer.Serialize(schedulesResultEncapsulated[0]), Encoding.UTF8, "application/json");
+            HttpResponseMessage scheduleUpdateResult = await _authorizedClient.PutAsync($"api/dashboard/schedule/", scheduleUpdateContent);
+            Schedule scheduleResultEncapsulated = await scheduleUpdateResult.Content.ReadFromJsonAsync<Schedule>();
+
+            Assert.Equal(scheduleResultEncapsulated.WeekdayName, wdName);
+        }
+
+        [Fact]
+        public async Task CreateSchedule_Success()
+        {
+            Schedule schedule = new Schedule()
+            {
+                OrderIndex = 8,
+                WeekdayName = "Wednesday",
+                OpenTime = "00:00",
+                CloseTime = "00:01"
+
+            };
+            using StringContent scheduleAddContent = new(JsonSerializer.Serialize(schedule), Encoding.UTF8, "application/json");
+            HttpResponseMessage scheduleAddResult = await _authorizedClient.PostAsync($"api/dashboard/schedule", scheduleAddContent);
+            Schedule scheduleResultEncapsulated = await scheduleAddResult.Content.ReadFromJsonAsync<Schedule>();
+
+            Assert.True(scheduleAddResult.IsSuccessStatusCode, "Schedule created");
+        }
         #endregion
 
         #region ReviewApiTest
