@@ -69,7 +69,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName,
-                ProfilePhotoUrl = user.ProfilePhotoRelativeUrl
+                ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
             };
 
             return Ok(response);
@@ -113,7 +113,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 string uniqueProfilePhotoFileName = 
                     ImageHelper.SaveImage(updatedUser.ProfilePhoto, _webHostEnvironment, MEDIA_SUBFOLDER);
 
-                user.ProfilePhotoRelativeUrl = uniqueProfilePhotoFileName;
+                user.ProfilePhotoFileName = uniqueProfilePhotoFileName;
             }
 
             _context.Entry(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
@@ -125,7 +125,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName,
-                ProfilePhotoUrl = user.ProfilePhotoRelativeUrl
+                ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
             };
 
             return Ok(response);
@@ -172,7 +172,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                         Id = existingUser.Id,
                         Email = existingUser.Email,
                         UserName = existingUser.UserName,
-                        ProfilePhotoUrl = existingUser.ProfilePhotoRelativeUrl
+                        ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{existingUser.ProfilePhotoFileName}"
                     },
                     Result = true,
                     Token = jwtToken
@@ -268,10 +268,10 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim("Id", user.Id),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                    new Claim("Username", user.UserName),
+                    new Claim("Email", user.Email),
                     // the JTI is used for our refresh token which we will be converting in the next video
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())             
                 }),
                 // the life span of the token needs to be shorter and utilise refresh token to keep the user signedin
                 // but since this is a demo app we can extend it to fit our current need
@@ -280,6 +280,22 @@ namespace CaffeMenuBot.AppHost.Controllers
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
             };
 
+            // add roles
+
+            if(user.Roles.Count() != 0)
+            {
+                string roles = "";
+
+                foreach (var role in user.Roles)
+                    roles += role.Role.Name + ",";
+
+                // remove comma in the end
+                roles = roles.Remove(roles.Length - 1, 1);
+
+                var claim = new Claim("Roles", roles);
+                tokenDescriptor.Subject.AddClaim(claim);
+            }
+            
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
 
             var jwtToken = jwtTokenHandler.WriteToken(token);

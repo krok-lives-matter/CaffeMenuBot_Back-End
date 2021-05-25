@@ -1,22 +1,20 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
+using System.Text.Json.Serialization;
 
 namespace CaffeMenuBot.Data.Models.Dashboard
 {
-    public sealed class DashboardUser : IdentityUser
+    public class DashboardUser : IdentityUser
     {
-        // used to save profile photos of user while adding new user or updating him
-        private const string MEDIA_SUBFOLDER = "/media/profile_photos";
+        [JsonIgnore]
+        [Required, Column("profile_photo_filename", TypeName = "text")]
+        public string ProfilePhotoFileName { get; set; } = null!;
 
-        private string profilePhotoRelativeUrl = Path.Combine(MEDIA_SUBFOLDER, "blank.jpg");
+        [NotMapped]
+        public string? ProfilePhotoUrl { get; set; } 
 
-        [Required, Column("profile_photo_relative_url", TypeName = "text")]
-        public string ProfilePhotoRelativeUrl
-        {
-            get { return profilePhotoRelativeUrl; }
-            set { profilePhotoRelativeUrl = Path.Combine(MEDIA_SUBFOLDER, value); }
-        }
+        public virtual ICollection<DashboardUserRole> Roles { get; set; }  = new List<DashboardUserRole>();
     }
 }

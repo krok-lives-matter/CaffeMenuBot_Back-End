@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
+using System.Text.Json.Serialization;
 
 namespace CaffeMenuBot.Data.Models.Menu
 {
     [Table("categories", Schema = CaffeMenuBotContext.SchemaName)]
-    public sealed record Category
+    public record Category
     {
-        // used to save images of category covers while adding new category or updating it
-        private const string MEDIA_SUBFOLDER = "/media/category_covers";
 
         [Key, Required, Column("category_id", TypeName = "integer")]
         public int Id { get; init; }
@@ -17,19 +15,16 @@ namespace CaffeMenuBot.Data.Models.Menu
         [Required, Column("category_name", TypeName = "text")]
         public string CategoryName { get; set; } = null!;
 
+        [JsonIgnore]
+        [Required, Column("cover_photo_filename", TypeName = "text")]
+        public string CoverPhotoFileName { get; set; } = null!;
 
-        private string coverPhotoRelativeUrl = Path.Combine(MEDIA_SUBFOLDER, "blank.jpg");
-
-        [Required, Column("cover_photo_relative_url", TypeName = "text")]
-        public string CoverPhotoRelativeUrl
-        {
-            get { return coverPhotoRelativeUrl; }
-            set { coverPhotoRelativeUrl = Path.Combine(MEDIA_SUBFOLDER, value); }
-        }
+        [NotMapped]
+        public string? CoverPhotoUrl { get; set; }
 
         [Required, Column("is_visible", TypeName = "boolean")]
         public bool IsVisible { get; set; } = true;
 
-        public List<Dish>? Dishes { get; set; }
+        public virtual List<Dish> Dishes { get; set; } = new List<Dish>();
     }
 }

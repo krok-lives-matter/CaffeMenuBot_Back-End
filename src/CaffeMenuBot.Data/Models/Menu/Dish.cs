@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace CaffeMenuBot.Data.Models.Menu
 {
     [Table("dishes", Schema = CaffeMenuBotContext.SchemaName)]
-    public sealed record Dish
+    public record Dish
     {
         [Key, Required, Column("dish_id", TypeName = "integer")]
         public int Id { get; init; }
@@ -24,6 +24,6 @@ namespace CaffeMenuBot.Data.Models.Menu
 
         public int CategoryId { get; set; }
         [JsonIgnore]
-        public Category? Category { get; init; } = null!;
+        public virtual Category? Category { get; init; } = null!;
     }
 }

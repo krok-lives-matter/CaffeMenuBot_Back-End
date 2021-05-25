@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CaffeMenuBot.Data.Models.Schedule
 {
     [Table("schedule", Schema = CaffeMenuBotContext.SchemaName)]
-    public sealed record Schedule
+    public record Schedule
     {
         [Key, Required, Column("schedule_id", TypeName = "integer")]
         public int Id { get; init; }

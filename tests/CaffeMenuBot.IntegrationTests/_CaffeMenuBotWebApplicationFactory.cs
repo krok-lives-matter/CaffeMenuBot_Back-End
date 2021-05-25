@@ -2,7 +2,9 @@
 using System.Linq;
 using CaffeMenuBot.AppHost.Configuration;
 using CaffeMenuBot.Data;
+using CaffeMenuBot.Data.Models.Dashboard;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +32,8 @@ namespace CaffeMenuBot.IntegrationTests
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
                 var db = scopedServices.GetRequiredService<CaffeMenuBotContext>();
+                UserManager<DashboardUser> userManager = scopedServices.GetRequiredService<UserManager<DashboardUser>>();
+                RoleManager<IdentityRole> roleManager = scopedServices.GetRequiredService<RoleManager<IdentityRole>>();
                 var logger = scopedServices
                     .GetRequiredService<ILogger<CaffeMenuBotWebApplicationFactory<TStartup>>>();
 
@@ -37,7 +41,7 @@ namespace CaffeMenuBot.IntegrationTests
 
                 try
                 {
-                    DatabaseSeeder.SeedDatabaseAsync(db).GetAwaiter().GetResult();
+                    DatabaseSeeder.SeedDatabaseAsync(db, userManager, roleManager).GetAwaiter().GetResult();
                 }
                 catch (Exception ex)
                 {

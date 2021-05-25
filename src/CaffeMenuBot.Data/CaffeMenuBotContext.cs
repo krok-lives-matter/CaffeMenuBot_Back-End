@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using CaffeMenuBot.Data.Models.Menu;
 using CaffeMenuBot.Data.Models.Bot;
@@ -7,10 +6,16 @@ using CaffeMenuBot.Data.Models.Reviews;
 using CaffeMenuBot.Data.Models.Schedule;
 using Npgsql;
 using CaffeMenuBot.Data.Models.Dashboard;
+using Microsoft.AspNetCore.Identity;
 
 namespace CaffeMenuBot.Data
 {
-    public sealed class CaffeMenuBotContext : IdentityDbContext
+    public sealed class CaffeMenuBotContext :
+        IdentityDbContext
+        <
+            DashboardUser, IdentityRole, string, IdentityUserClaim<string>, DashboardUserRole, IdentityUserLogin<string>,
+            IdentityRoleClaim<string>, IdentityUserToken<string>
+        >
     {
         public const string SchemaName = "public";
 
@@ -36,35 +41,15 @@ namespace CaffeMenuBot.Data
             builder.HasPostgresEnum<ChatState>();
             builder.HasPostgresEnum<Rating>();
 
-            // any guid
-            const string ADMIN_ID = "a18be9c0-aa65-4af8-bd17-00bd9344e575";
-            // any guid, but nothing is against to use the same one
-            const string ROLE_ID = ADMIN_ID;
-            builder.Entity<IdentityRole>().HasData(new IdentityRole
-            {
-                Id = ROLE_ID,
-                Name = "admin",
-                NormalizedName = "ADMIN"
-            });
+            builder.Entity<DashboardUser>().HasMany(u => u.Roles).WithOne().HasForeignKey(r => r.UserId)
+                .IsRequired().OnDelete(DeleteBehavior.Cascade);
 
-            var hasher = new PasswordHasher<IdentityUser>();
-            builder.Entity<DashboardUser>().HasData(new DashboardUser
-            {
-                Id = ADMIN_ID,
-                UserName = "admin",
-                NormalizedUserName = "ADMIN",
-                Email = "admin@caffemenubot.com",
-                NormalizedEmail = "ADMIN@CAFFEMENUBOT.COM",
-                EmailConfirmed = true,
-                PasswordHash = hasher.HashPassword(null!, "_Change$ThisPlease3"),
-                SecurityStamp = string.Empty
-            });
-
-            builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
-            {
-                RoleId = ROLE_ID,
-                UserId = ADMIN_ID
-            });
+            builder.Entity<DashboardUserRole>()
+                   .HasOne(e => e.Role)
+                   .WithMany()
+                   .HasForeignKey(e => e.RoleId)
+                   .IsRequired()
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

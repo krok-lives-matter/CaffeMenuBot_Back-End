@@ -122,6 +122,14 @@ namespace CaffeMenuBot.AppHost.Controllers
                                            .AsNoTracking()
                                            .ToListAsync(cancellationToken);
 
+            if(categories != null)
+            {
+                foreach(var category in categories)
+                    category.CoverPhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}";
+            }
+
+
+
             return Ok(categories);
         }
 
@@ -131,7 +139,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerOperation("Gets category by id", Tags = new[] { "Menu, Categories" })]
         [SwaggerResponse(200, "Successfully found category by specified id", typeof(Category))]
         [SwaggerResponse(404, "Category was not found by specified id")]
-        public async Task<ActionResult<Category>> GetCategory(int id, CancellationToken cancellationToken, CaffeMenuBotContext context)
+        public async Task<ActionResult<Category>> GetCategory(int id, CancellationToken cancellationToken)
         {
             var category = await _context
                 .Categories
@@ -141,6 +149,8 @@ namespace CaffeMenuBot.AppHost.Controllers
      
             if (category == null)
                 return NotFound();
+
+            category.CoverPhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}";
 
             return Ok(category);
         }
@@ -190,7 +200,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 string categoryCoverFileName =
                     ImageHelper.SaveImage(addCategoryRequest.CoverPhoto, _webHostEnvironment, MEDIA_SUBFOLDER);
 
-                category.CoverPhotoRelativeUrl = categoryCoverFileName;
+                category.CoverPhotoFileName = categoryCoverFileName;
             }
                                 
             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -219,7 +229,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 string categoryCoverFileName =
                     ImageHelper.SaveImage(updateCategoryRequest.CoverPhoto, _webHostEnvironment, MEDIA_SUBFOLDER);
 
-                category.CoverPhotoRelativeUrl = categoryCoverFileName;
+                category.CoverPhotoFileName = categoryCoverFileName;
             }
 
             category.CategoryName = updateCategoryRequest.CategoryName;

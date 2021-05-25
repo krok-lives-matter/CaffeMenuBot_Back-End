@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using CaffeMenuBot.Bot.Services;
 using CaffeMenuBot.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,8 +18,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using CaffeMenuBot.Bot.Actions.Interface;
 using CaffeMenuBot.Data.Models.Dashboard;
-using Microsoft.Extensions.FileProviders;
-using System.IO;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -55,17 +53,19 @@ namespace CaffeMenuBot.AppHost
                 {
                     options.SignIn.RequireConfirmedAccount = true;
                     options.ClaimsIdentity.UserIdClaimType = "Id";
+                    options.ClaimsIdentity.UserNameClaimType = "Username";
+                    options.ClaimsIdentity.RoleClaimType = "Roles";
                 })
                 .AddRoles<IdentityRole>()
                 .AddRoleManager<RoleManager<IdentityRole>>()
                 .AddEntityFrameworkStores<CaffeMenuBotContext>();
 
-
             services.AddDbContext<CaffeMenuBotContext>(options =>
                 options.UseNpgsql(_configuration.GetConnectionString("CaffeMenuBotDb"), builder =>
                     builder.EnableRetryOnFailure()
                            .MigrationsAssembly("CaffeMenuBot.Data")
-                           .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
+                           .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName))
+                           .UseLazyLoadingProxies());
 
             services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
 
@@ -92,7 +92,9 @@ namespace CaffeMenuBot.AppHost
                         ValidateIssuer = false,
                         ValidateAudience = false,
                         RequireExpirationTime = false,
-                        ValidateLifetime = true
+                        ValidateLifetime = true,
+                        RoleClaimType = "Roles",
+                        NameClaimType = "Username"
                     };
                 });
 
@@ -155,11 +157,9 @@ namespace CaffeMenuBot.AppHost
             services.AddLogging();
             services.AddSingleton<PatternManager<IChatAction>>();
             services.AddSingleton<PatternManager<IStateAction>>();
-
-            
-
             services.AddSingleton<IUpdateHandler, BotHandler>();
-            services.AddHostedService<BotHandlerService>();
+            services.AddSingleton<BotHandlerService>();
+            services.AddHostedService(sp => sp.GetRequiredService<BotHandlerService>());
 
             var baseType = typeof(IChatAction);
             
@@ -187,7 +187,6 @@ namespace CaffeMenuBot.AppHost
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "DashboardAPI v1");
-                c.InjectStylesheet("/content/custom_swagger.css");
             });
 
             app.UseStaticFiles();

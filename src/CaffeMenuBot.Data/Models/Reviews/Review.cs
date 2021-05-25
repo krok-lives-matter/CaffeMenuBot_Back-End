@@ -5,7 +5,7 @@ using CaffeMenuBot.Data.Models.Bot;
 namespace CaffeMenuBot.Data.Models.Reviews
 {
     [Table("reviews", Schema = CaffeMenuBotContext.SchemaName)]
-    public sealed record Review
+    public record Review
     {
         [Key, Required, Column("review_id", TypeName = "integer")]
         public int Id { get; init; }
@@ -17,6 +17,6 @@ namespace CaffeMenuBot.Data.Models.Reviews
         public string ReviewComment { get; set; } = null!;
 
         [Required, Column("bot_user")]
-        public BotUser User {get;init;} = null!;
+        public virtual BotUser User {get;init;} = null!;
     }
 }

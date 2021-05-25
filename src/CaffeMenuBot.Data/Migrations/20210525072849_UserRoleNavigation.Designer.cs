@@ -4,15 +4,17 @@ using CaffeMenuBot.Data;
 using CaffeMenuBot.Data.Models.Bot;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CaffeMenuBot.Data.Migrations
 {
     [DbContext(typeof(CaffeMenuBotContext))]
-    partial class CaffeMenuBotContextModelSnapshot : ModelSnapshot
+    [Migration("20210525072849_UserRoleNavigation")]
+    partial class UserRoleNavigation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,7 +83,7 @@ namespace CaffeMenuBot.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("ProfilePhotoFileName")
+                    b.Property<string>("ProfilePhotoFilename")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("profile_photo_filename");
@@ -146,10 +148,10 @@ namespace CaffeMenuBot.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("category_name");
 
-                    b.Property<string>("CoverPhotoFileName")
+                    b.Property<string>("CoverPhotoRelativeUrl")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("cover_photo_filename");
+                        .HasColumnName("cover_photo_relative_url");
 
                     b.Property<bool>("IsVisible")
                         .HasColumnType("boolean")

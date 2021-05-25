@@ -33,7 +33,7 @@ namespace CaffeMenuBot.AppHost
                 if (context.Database.GetPendingMigrations().Any())
                 {              
                     context.Database.Migrate();
-                    await DatabaseSeeder.SeedDatabaseAsync(context); // if you do this later - connection will be disposed after ReloadTypes()
+                    await DatabaseSeeder.SeedDatabaseAsync(context, userManager, roleManager); // if you do this later - connection will be disposed after ReloadTypes()
                     using (var conn = (NpgsqlConnection)context.Database.GetDbConnection())
                     {
                         conn.Open();
@@ -41,7 +41,7 @@ namespace CaffeMenuBot.AppHost
                     }
                 }
                 else
-                    await DatabaseSeeder.SeedDatabaseAsync(context); 
+                    await DatabaseSeeder.SeedDatabaseAsync(context, userManager, roleManager);
             }
             await host.RunAsync();
         }

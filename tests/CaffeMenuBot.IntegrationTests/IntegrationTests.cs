@@ -236,7 +236,7 @@ namespace CaffeMenuBot.IntegrationTests
         [Fact]
         public async Task GetScheduleById_Success()
         {
-            HttpResponseMessage getResult = await _authorizedClient.GetAsync($"api/dashboard/schedule/1");
+            HttpResponseMessage getResult = await _authorizedClient.GetAsync($"api/dashboard/schedule/2");
             var scheduleEncapsulated = await getResult.Content.ReadFromJsonAsync<Schedule>();
 
             Assert.NotNull(scheduleEncapsulated);
