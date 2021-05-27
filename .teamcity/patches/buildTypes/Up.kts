@@ -1,6 +1,7 @@
 package patches.buildTypes
 
 import jetbrains.buildServer.configs.kotlin.v2018_1.*
+import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.ExecBuildStep
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.exec
 import jetbrains.buildServer.configs.kotlin.v2018_1.ui.*
 
@@ -56,8 +57,14 @@ changeBuildType(RelativeId("Up")) {
                       host:
                         environment:
                           - ASPNETCORE_ENVIRONMENT=%env.ASPNETCORE_ENVIRONMENT%
+                        volumes:
+                          - media_volume:/app/wwwroot/media
                         networks:
                           - caffe_menu_bot_network
+                    
+                    volumes:
+                      media_volume:
+                        name: caffe_menu_bot_media_volume
                     
                     networks:
                       caffe_menu_bot_network:
@@ -111,6 +118,20 @@ changeBuildType(RelativeId("Up")) {
                         "BOT_TOKEN": "%env.BOT_TOKEN%"
                     }
                 """.trimIndent())
+            }
+        }
+        update<ExecBuildStep>(4) {
+            clearConditions()
+
+            conditions {
+                contains("teamcity.agent.jvm.os.name", "Windows")
+            }
+        }
+        update<ExecBuildStep>(5) {
+            clearConditions()
+
+            conditions {
+                doesNotContain("teamcity.agent.jvm.os.name", "Windows")
             }
         }
     }
