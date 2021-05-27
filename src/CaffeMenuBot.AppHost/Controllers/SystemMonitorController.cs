@@ -16,6 +16,8 @@ namespace CaffeMenuBot.AppHost.Controllers
         [Route("loadavg")]
         [SwaggerOperation("Load average figures giving the number of jobs in the run queue (state R) or waiting for disk I/O (state D) averaged over 1, 5, and 15 minutes.",
             Tags = new[] { "System Monitor, Administration rights are required." })]
+        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(403, "Role not allowed.")]
         [SwaggerResponse(200, "Successfully got system load info", typeof(LoadAvgResponse))]
         [SwaggerResponse(500, "Internal server error.")]
         public ActionResult GetLoadInfo(CancellationToken ct)
