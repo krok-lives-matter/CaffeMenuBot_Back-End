@@ -6,18 +6,17 @@ using System.Text.Json.Serialization;
 namespace CaffeMenuBot.Data.Models.Menu
 {
     [Table("categories", Schema = CaffeMenuBotContext.SchemaName)]
-    public record Category
+    public class Category
     {
-
         [Key, Required, Column("category_id", TypeName = "integer")]
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         [Required, Column("category_name", TypeName = "text")]
         public string CategoryName { get; set; } = null!;
 
         [JsonIgnore]
         [Column("cover_photo_filename", TypeName = "text")]
-        public string CoverPhotoFileName { get; set; } = "blank.jpg";
+        public string? CoverPhotoFileName { get; set; }
 
         [NotMapped]
         public string? CoverPhotoUrl { get; set; }
