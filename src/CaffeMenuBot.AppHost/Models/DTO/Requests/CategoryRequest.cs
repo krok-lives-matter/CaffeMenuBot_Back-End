@@ -25,7 +25,7 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
         {
             schema.Example = new OpenApiObject
             {
-                ["id"] = new OpenApiString("3"),
+                ["id"] = new OpenApiInteger(3),
                 ["categoryName"] = new OpenApiString("Test category"),
                 ["isVisible"] = new OpenApiBoolean(true),
                 ["dishes"] = new OpenApiArray() 
@@ -46,12 +46,12 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
                         ["price"] = new OpenApiFloat(500.7f),
                         ["serving"] = new OpenApiString("150гр."),
                     },
-                },
+                }/*,
                 ["coverPhoto"] = new OpenApiObject()
                 {
                     ["contentType"] = new OpenApiString(".jpg"),
                     ["base64EncodedImage"] = new OpenApiString("R0lGODlhAQABAIAAAAAAAAAAACH5BAAAAAAALAAAAAABAAEAAAICTAEAOw==")
-                }
+                }*/
             };
         }
     }
