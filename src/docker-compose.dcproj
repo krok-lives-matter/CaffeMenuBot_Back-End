@@ -4,9 +4,14 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>8821e521-6517-4450-b34d-0d4833bf38a1</ProjectGuid>
+    <DockerComposeProjectName>caffe-menu-bot</DockerComposeProjectName>
+    <AdditionalComposeFilePaths>docker-compose.debug.yml</AdditionalComposeFilePaths>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
+    <None Include="docker-compose.debug.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </None>
   </ItemGroup>
 </Project>
