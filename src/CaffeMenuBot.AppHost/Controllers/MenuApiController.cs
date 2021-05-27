@@ -132,7 +132,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             {
                 foreach(var category in categories)
                     if (!string.IsNullOrEmpty(category.CoverPhotoFileName))
-                        category.CoverPhotoUrl = $"/media/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}";
+                        category.CoverPhotoUrl = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}";
             }
 
             return Ok(categories);
@@ -155,7 +155,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 return NotFound();
 
             if (!string.IsNullOrEmpty(category.CoverPhotoFileName))
-                category.CoverPhotoUrl = $"/media/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}";
+                category.CoverPhotoUrl = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}";
 
             return Ok(category);
         }
@@ -231,7 +231,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 
             return new CreateItemLinkResult
             {
-                ImageLink = $"/media/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}"
+                ImageLink = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}"
             };
         }
 

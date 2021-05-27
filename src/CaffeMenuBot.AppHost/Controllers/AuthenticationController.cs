@@ -74,7 +74,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Email = user.Email,
                 UserName = user.UserName,
                 Roles = this.ConvertRolesToJwtFormat(user.Roles),
-                ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
+                ProfilePhotoUrl = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
             };
 
             return Ok(response);
@@ -134,7 +134,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Email = user.Email,
                 UserName = user.UserName,
                 Roles = this.ConvertRolesToJwtFormat(user.Roles),
-                ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
+                ProfilePhotoUrl = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
             };
 
             return Ok(response);
@@ -186,7 +186,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                         Email = existingUser.Email,
                         UserName = existingUser.UserName,
                         Roles = this.ConvertRolesToJwtFormat(existingUser.Roles),
-                        ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{existingUser.ProfilePhotoFileName}"
+                        ProfilePhotoUrl = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{existingUser.ProfilePhotoFileName}"
                     },
                     Result = true,
                     Token = jwtToken

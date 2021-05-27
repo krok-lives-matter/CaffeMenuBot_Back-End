@@ -23,6 +23,8 @@ namespace CaffeMenuBot.AppHost
 {
     public sealed class Startup
     {
+        public const string BaseImageUrl = "https://cmb-api.vova-lantsov.dev/media";
+        
         const string publicCorsPolicyName = "publicCORS";
         private readonly IConfiguration _configuration;
 
