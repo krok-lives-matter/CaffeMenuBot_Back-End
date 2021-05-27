@@ -207,7 +207,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         [HttpPost("categories/setCoverPhoto")]
         [SwaggerOperation("Sets category's cover photo.", Tags = new[] { "Menu, Categories" })]
-        [SwaggerResponse(200, "Successfully set category and returned a link to it.", typeof(Category))]
+        [SwaggerResponse(200, "Successfully set category and returned a link to it.", typeof(CreateItemLinkResult))]
         [SwaggerResponse(400, "Bad request.")]
         public async Task<ActionResult<CreateItemLinkResult>> SetCategoryCoverPhoto([FromForm] SetCoverPhotoRequest request,
             CancellationToken cancellationToken)
