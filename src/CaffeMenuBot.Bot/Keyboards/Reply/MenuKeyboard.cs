@@ -20,6 +20,10 @@ namespace CaffeMenuBot.Bot.Keyboards.Reply
                 },
                 new[]
                 {
+                    new KeyboardButton("Відгуки")
+                },
+                new[]
+                {
                     new KeyboardButton("Оцінити роботу")
                 }
             })
