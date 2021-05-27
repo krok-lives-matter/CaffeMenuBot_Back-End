@@ -1,11 +1,13 @@
 ﻿using CaffeMenuBot.Data.Models.Menu;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 
 namespace CaffeMenuBot.AppHost.Models.DTO.Requests
 {
+    [SwaggerSchemaFilter(typeof(CategoryRequestSchema))]
     public sealed record CategoryRequest 
     {
         public int Id { get; init; } = 0;

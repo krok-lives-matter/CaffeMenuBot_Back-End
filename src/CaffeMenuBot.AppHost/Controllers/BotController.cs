@@ -22,7 +22,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [HttpGet]
         [Route("stop")]
         [SwaggerOperation("Restarts the bot service",
-            Tags = new[] { "Bot" })]
+            Tags = new[] { "Bot, Administration rights are required." })]
         [SwaggerResponse(200, "Restart bot started")]
         [SwaggerResponse(500, "Internal server error.")]
         public async Task<ActionResult> Stop(CancellationToken ct)
@@ -42,7 +42,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [HttpGet]
         [Route("start")]
         [SwaggerOperation("Starts the bot service",
-            Tags = new[] { "Bot" })]
+            Tags = new[] { "Bot, Administration rights are required." })]
         [SwaggerResponse(200, "Started bot")]
         [SwaggerResponse(500, "Internal server error.")]
         public async Task<ActionResult> Start(CancellationToken ct)
@@ -62,7 +62,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [HttpGet]
         [Route("restart")]
         [SwaggerOperation("Restarts the bot service",
-            Tags = new[] { "Bot" })]
+            Tags = new[] { "Bot, Administration rights are required." })]
         [SwaggerResponse(200, "Restart bot started")]
         [SwaggerResponse(500, "Internal server error.")]
         public async Task<ActionResult> Restart(CancellationToken ct)

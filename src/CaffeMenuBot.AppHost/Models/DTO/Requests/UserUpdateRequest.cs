@@ -1,9 +1,11 @@
 ﻿using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace CaffeMenuBot.AppHost.Models.DTO.Requests
 {
+    [SwaggerSchemaFilter(typeof(UserUpdateRequestSchema))]
     public sealed record UserUpdateRequest
     {
         public string Id { get; init; } = null!;

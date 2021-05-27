@@ -62,6 +62,9 @@ namespace CaffeMenuBot.AppHost.Controllers
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
+            // add roles
+            _context.UserRoles.Include(r => r.Role).FirstOrDefault(r => r.UserId == user.Id);
+
             if (user == null)
                 return Unauthorized();
 
@@ -70,6 +73,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName,
+                Roles = this.ConvertRolesToJwtFormat(user.Roles),
                 ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
             };
 
@@ -88,6 +92,9 @@ namespace CaffeMenuBot.AppHost.Controllers
         public async Task<ActionResult> Me([FromBody] UserUpdateRequest updatedUser)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            // add roles
+            _context.UserRoles.Include(r => r.Role).FirstOrDefault(r => r.UserId == user.Id);
 
             if (user == null)
                 return Unauthorized();
@@ -126,6 +133,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName,
+                Roles = this.ConvertRolesToJwtFormat(user.Roles),
                 ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
             };
 
@@ -158,12 +166,16 @@ namespace CaffeMenuBot.AppHost.Controllers
                     }
                 });
             }
+            
 
             // Now we need to check if the user has filled the right password
             var isCorrect = await _userManager.CheckPasswordAsync(existingUser, user.Password);
 
             if (isCorrect)
             {
+                // add roles
+                _context.UserRoles.Include(r => r.Role).FirstOrDefault(r => r.UserId == existingUser.Id);
+
                 var jwtToken = GenerateJwtToken(existingUser);
 
                 return Ok(new AuthResponse
@@ -173,6 +185,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                         Id = existingUser.Id,
                         Email = existingUser.Email,
                         UserName = existingUser.UserName,
+                        Roles = this.ConvertRolesToJwtFormat(existingUser.Roles),
                         ProfilePhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{existingUser.ProfilePhotoFileName}"
                     },
                     Result = true,
@@ -284,16 +297,10 @@ namespace CaffeMenuBot.AppHost.Controllers
             // add roles
             _context.UserRoles.Include(r => r.Role).FirstOrDefault(r => r.UserId == user.Id);
 
-            if (user.Roles.Count() != 0)
+            string? roles = this.ConvertRolesToJwtFormat(user.Roles);
+
+            if(roles != null)
             {
-                string roles = "";
-
-                foreach (var role in user.Roles)
-                    roles += role.Role.Name + ",";
-
-                // remove comma in the end
-                roles = roles.Remove(roles.Length - 1, 1);
-
                 var claim = new Claim("Roles", roles);
                 tokenDescriptor.Subject.AddClaim(claim);
             }
@@ -303,6 +310,22 @@ namespace CaffeMenuBot.AppHost.Controllers
             var jwtToken = jwtTokenHandler.WriteToken(token);
 
             return jwtToken;
+        }
+
+        private string? ConvertRolesToJwtFormat(ICollection<DashboardUserRole> userRoles)
+        {
+            if(userRoles.Count == 0)
+                return null;
+            
+            string roles = "";
+
+                foreach (var role in userRoles)
+                    roles += role.Role.Name + ",";
+
+                // remove comma in the end
+                roles = roles.Remove(roles.Length - 1, 1);
+            
+            return roles;
         }
     }
 
