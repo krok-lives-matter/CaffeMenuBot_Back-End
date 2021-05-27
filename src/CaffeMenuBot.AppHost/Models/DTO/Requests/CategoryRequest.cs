@@ -26,7 +26,7 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
             schema.Example = new OpenApiObject
             {
                 ["id"] = new OpenApiString("3"),
-                ["userName"] = new OpenApiString("Test category"),
+                ["categoryName"] = new OpenApiString("Test category"),
                 ["isVisible"] = new OpenApiBoolean(true),
                 ["dishes"] = new OpenApiArray() 
                 {
