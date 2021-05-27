@@ -20,14 +20,24 @@ namespace CaffeMenuBot.AppHost.Controllers
         }
 
         [HttpGet]
+        [Route("status")]
+        [SwaggerOperation("Gets bot status",
+            Tags = new[] { "Bot, Administration rights are required." })]
+        [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]
+        [SwaggerResponse(500, "Internal server error.")]
+        public ActionResult<Boolean> Status(CancellationToken ct)
+        {
+            return Ok(_botService.IsBotRunning());
+        }
+
+        [HttpGet]
         [Route("stop")]
         [SwaggerOperation("Restarts the bot service",
             Tags = new[] { "Bot, Administration rights are required." })]
-        [SwaggerResponse(200, "Restart bot started")]
+        [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]
         [SwaggerResponse(500, "Internal server error.")]
-        public async Task<ActionResult> Stop(CancellationToken ct)
+        public async Task<ActionResult<Boolean>> Stop(CancellationToken ct)
         {
-            var user = HttpContext.User;
             try
             {
                 await _botService.StopAsync(ct);
@@ -36,16 +46,16 @@ namespace CaffeMenuBot.AppHost.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            return Ok();
+            return Ok(_botService.IsBotRunning());
         }
 
         [HttpGet]
         [Route("start")]
         [SwaggerOperation("Starts the bot service",
             Tags = new[] { "Bot, Administration rights are required." })]
-        [SwaggerResponse(200, "Started bot")]
+        [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]
         [SwaggerResponse(500, "Internal server error.")]
-        public async Task<ActionResult> Start(CancellationToken ct)
+        public async Task<ActionResult<Boolean>> Start(CancellationToken ct)
         {
             var user = HttpContext.User;
             try
@@ -56,16 +66,16 @@ namespace CaffeMenuBot.AppHost.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            return Ok();
+            return Ok(_botService.IsBotRunning());
         }
 
         [HttpGet]
         [Route("restart")]
         [SwaggerOperation("Restarts the bot service",
             Tags = new[] { "Bot, Administration rights are required." })]
-        [SwaggerResponse(200, "Restart bot started")]
+        [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]
         [SwaggerResponse(500, "Internal server error.")]
-        public async Task<ActionResult> Restart(CancellationToken ct)
+        public async Task<ActionResult<Boolean>> Restart(CancellationToken ct)
         {
             try
             {
@@ -76,7 +86,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            return Ok();
+            return Ok(_botService.IsBotRunning());
         }
 
     }

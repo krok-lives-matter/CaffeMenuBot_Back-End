@@ -13,6 +13,7 @@ namespace CaffeMenuBot.Bot.Services
     {
         private readonly ITelegramBotClient _client;
         private readonly IUpdateHandler _updateHandler;
+        private bool _isReceiving = false;
 
         public BotHandlerService(ITelegramBotClient client, IUpdateHandler updateHandler)
         {
@@ -20,9 +21,21 @@ namespace CaffeMenuBot.Bot.Services
             _updateHandler = updateHandler;
         }
 
+        public bool IsBotRunning()
+        {
+            return this._isReceiving;
+        }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _client.ReceiveAsync(_updateHandler, stoppingToken);
+            _isReceiving = true;
+            await _client.ReceiveAsync(_updateHandler, stoppingToken);       
+        }
+
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+             _isReceiving = false;
+             await base.StopAsync(cancellationToken);
         }
     }
 }
