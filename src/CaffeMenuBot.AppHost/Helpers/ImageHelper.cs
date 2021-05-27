@@ -25,7 +25,8 @@ namespace CaffeMenuBot.AppHost.Helpers
             string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, $"media/{mediaSubfolder}");
             string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-            File.WriteAllBytes(filePath, Convert.FromBase64String(image.Base64EncodedImage));
+            using var fileStream = File.Create(filePath);
+            image.ImageStream.CopyTo(fileStream);
 
             return uniqueFileName;
         }      
