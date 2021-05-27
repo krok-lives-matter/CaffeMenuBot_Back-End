@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using CaffeMenuBot.AppHost.Models;
@@ -223,7 +224,8 @@ namespace CaffeMenuBot.AppHost.Controllers
                 ImageHelper.SaveImage(new ImageModel
                 {
                     ContentType = request.File.ContentType,
-                    ImageStream = request.File.OpenReadStream()
+                    ImageStream = request.File.OpenReadStream(),
+                    FileExtension = Path.GetExtension(request.File.FileName)
                 }, _webHostEnvironment, MEDIA_SUBFOLDER);
             await _context.SaveChangesAsync(cancellationToken);
 

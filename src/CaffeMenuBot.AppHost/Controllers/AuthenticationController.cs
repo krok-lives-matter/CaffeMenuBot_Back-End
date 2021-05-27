@@ -116,13 +116,13 @@ namespace CaffeMenuBot.AppHost.Controllers
                 user.UserName = updatedUser.UserName;
             }
 
-            if(updatedUser.ProfilePhoto != null)
+            /*if(updatedUser.ProfilePhoto != null)
             {
                 string uniqueProfilePhotoFileName = 
                     ImageHelper.SaveImage(updatedUser.ProfilePhoto, _webHostEnvironment, MEDIA_SUBFOLDER);
 
                 user.ProfilePhotoFileName = uniqueProfilePhotoFileName;
-            }
+            }*/
 
             _context.Entry(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 
