@@ -14,9 +14,7 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
 
         public string CategoryName { get; init; } = null!;
 
-        public ImageModel? CoverPhoto { get; init; } = null;
-
-        public bool IsVisible { get; set; } = true;
+        public bool IsVisible { get; init; } = true;
 
         public List<Dish>? Dishes { get; init; }
     }
@@ -29,11 +27,6 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
             {
                 ["id"] = new OpenApiString("3"),
                 ["userName"] = new OpenApiString("Test category"),
-                ["coverPhoto"] = new OpenApiObject()
-                {
-                    ["contentType"] = new OpenApiString(".gif"),
-                    ["base64EncodedImage"] = new OpenApiString("R0lGODlhAQABAIAAAAAAAAAAACH5BAAAAAAALAAAAAABAAEAAAICTAEAOw==")
-                },
                 ["isVisible"] = new OpenApiBoolean(true),
                 ["dishes"] = new OpenApiArray() 
                 {

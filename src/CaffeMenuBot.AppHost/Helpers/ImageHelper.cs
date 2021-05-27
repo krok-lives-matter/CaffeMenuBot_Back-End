@@ -20,12 +20,14 @@ namespace CaffeMenuBot.AppHost.Helpers
             string mediaSubfolder
             )
         {
-            string uniqueFileName = Guid.NewGuid().ToString() + image.ContentType;
+            string uniqueFileName = Guid.NewGuid().ToString();
 
-            string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, $"media/{mediaSubfolder}");
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            string uploadsFolder = Path.Combine(webHostEnvironment.ContentRootPath, $"media/{mediaSubfolder}");
+            Directory.CreateDirectory(uploadsFolder);
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName + image.FileExtension);
 
-            File.WriteAllBytes(filePath, Convert.FromBase64String(image.Base64EncodedImage));
+            using var fileStream = File.Create(filePath);
+            image.ImageStream.CopyTo(fileStream);
 
             return uniqueFileName;
         }      

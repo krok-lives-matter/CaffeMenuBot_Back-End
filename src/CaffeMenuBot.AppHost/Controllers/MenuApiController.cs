@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using CaffeMenuBot.AppHost.Models;
@@ -85,7 +86,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 
             _context.Remove(dishToDelete);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return NoContent();
         }
@@ -130,10 +131,9 @@ namespace CaffeMenuBot.AppHost.Controllers
             if(categories != null)
             {
                 foreach(var category in categories)
-                    category.CoverPhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}";
+                    if (!string.IsNullOrEmpty(category.CoverPhotoFileName))
+                        category.CoverPhotoUrl = $"/media/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}";
             }
-
-
 
             return Ok(categories);
         }
@@ -154,7 +154,8 @@ namespace CaffeMenuBot.AppHost.Controllers
             if (category == null)
                 return NotFound();
 
-            category.CoverPhotoUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}/media/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}";
+            if (!string.IsNullOrEmpty(category.CoverPhotoFileName))
+                category.CoverPhotoUrl = $"/media/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}";
 
             return Ok(category);
         }
@@ -178,7 +179,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 
             _context.Remove(categoryToDelete);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return NoContent();
         }
@@ -197,20 +198,41 @@ namespace CaffeMenuBot.AppHost.Controllers
                 CategoryName = addCategoryRequest.CategoryName,
                 IsVisible = addCategoryRequest.IsVisible
             };
-
-            if (addCategoryRequest.CoverPhoto != null)
-            {
-                string categoryCoverFileName =
-                    ImageHelper.SaveImage(addCategoryRequest.CoverPhoto, _webHostEnvironment, MEDIA_SUBFOLDER);
-
-                category.CoverPhotoFileName = categoryCoverFileName;
-            }
                                 
             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
             _context.Categories.Add(category);
             await _context.SaveChangesAsync(cancellationToken);
 
             return Ok(category);
+        }
+
+        [HttpPost("categories/setCoverPhoto")]
+        [SwaggerOperation("Sets category's cover photo.", Tags = new[] { "Menu, Categories" })]
+        [SwaggerResponse(200, "Successfully set category and returned a link to it.", typeof(CreateItemLinkResult))]
+        [SwaggerResponse(400, "Bad request.")]
+        public async Task<ActionResult<CreateItemLinkResult>> SetCategoryCoverPhoto([FromForm] SetCoverPhotoRequest request,
+            CancellationToken cancellationToken)
+        {
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(c => c.Id == request.CategoryId, cancellationToken);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            
+            category.CoverPhotoFileName =
+                ImageHelper.SaveImage(new ImageModel
+                {
+                    ContentType = request.File.ContentType,
+                    ImageStream = request.File.OpenReadStream(),
+                    FileExtension = Path.GetExtension(request.File.FileName)
+                }, _webHostEnvironment, MEDIA_SUBFOLDER);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return new CreateItemLinkResult
+            {
+                ImageLink = $"/media/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}"
+            };
         }
 
         //PUT api/dashboard/menu/categories
@@ -226,14 +248,6 @@ namespace CaffeMenuBot.AppHost.Controllers
 
             if (category == null)
                 return NotFound("category you are trying to edit was not found, check Id that you are passing");
-
-            if (updateCategoryRequest.CoverPhoto != null)
-            {
-                string categoryCoverFileName =
-                    ImageHelper.SaveImage(updateCategoryRequest.CoverPhoto, _webHostEnvironment, MEDIA_SUBFOLDER);
-
-                category.CoverPhotoFileName = categoryCoverFileName;
-            }
 
             category.CategoryName = updateCategoryRequest.CategoryName;
 

@@ -10,7 +10,6 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
     {
         public string Id { get; init; } = null!;
         public string? UserName { get; init; } = null;
-        public ImageModel? ProfilePhoto { get; init; } = null;
     }
 
     public sealed class UserUpdateRequestSchema : ISchemaFilter
@@ -20,12 +19,12 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
             schema.Example = new OpenApiObject
             {
                 ["id"] = new OpenApiString("a18be9c0-aa65-4af8-bd17-00bd9344e575"),
-                ["userName"] = new OpenApiString("admin"),
+                ["userName"] = new OpenApiString("admin")/*,
                 ["profilePhoto"] = new OpenApiObject()
                 {
                     ["contentType"] = new OpenApiString(".gif"),
                     ["base64EncodedImage"] = new OpenApiString("R0lGODlhAQABAIAAAAAAAAAAACH5BAAAAAAALAAAAAABAAEAAAICTAEAOw==")
-                }
+                }*/
             };
         }
     }

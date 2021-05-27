@@ -1,9 +1,11 @@
-﻿
+﻿using System.IO;
+
 namespace CaffeMenuBot.AppHost.Models.DTO.Requests
 {
-    public class ImageModel
+    public sealed record ImageModel
     {
         public string ContentType { get; init; } = null!;
-        public string Base64EncodedImage { get; init; } = null!;
+        public string FileExtension { get; init; } = null!;
+        public Stream ImageStream { get; init; } = null!;
     }
 }
