@@ -63,9 +63,6 @@ namespace CaffeMenuBot.AppHost.Controllers
                 .Where(d => d.CategoryId == category_id)
                 .ToListAsync(cancellationToken);
 
-            if (dishes.Count == 0)
-                return NotFound();
-
             return Ok(dishes);
         }
 
