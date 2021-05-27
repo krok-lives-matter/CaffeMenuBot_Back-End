@@ -212,7 +212,8 @@ namespace CaffeMenuBot.AppHost.Controllers
             Tags = new[] {"Authentication"})]
         [SwaggerResponse(200, "Successfully registered a new user.", typeof(AuthResponse))]
         [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
-        [SwaggerResponse(401, "Unauthorized.")]
+        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(403, "Role not allowed.")]
         [SwaggerResponse(403, "User with the specified email already exists.", typeof(ErrorResponse))]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
         public async Task<ActionResult> Register([FromBody] UserRegisterRequest user)
