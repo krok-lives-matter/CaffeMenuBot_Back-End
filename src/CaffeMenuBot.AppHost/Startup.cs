@@ -22,6 +22,7 @@ using CaffeMenuBot.AppHost.Services;
 using CaffeMenuBot.AppHost.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using Web.Middlewares;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -211,6 +212,11 @@ namespace CaffeMenuBot.AppHost
                 app.UseExceptionHandler("/error");
             }
 
+            app.UseOptions();
+
+            app.UseCors(publicCorsPolicyName);
+            
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -218,8 +224,6 @@ namespace CaffeMenuBot.AppHost
             });
 
             app.UseStaticFiles();
-
-            app.UseCors(publicCorsPolicyName);
 
             app.UseRouting();
 

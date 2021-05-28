@@ -62,8 +62,7 @@ namespace CaffeMenuBot.AppHost.Configuration
                 var rootAdmin = new DashboardUser
                 {
                     UserName = "root",
-                    Email = "root@caffemenubot.com",
-                    ProfilePhotoFileName = "blank.jpg"
+                    Email = "root@caffemenubot.com"
                 };
                 var result = await userManager.CreateAsync(rootAdmin, "_Change$ThisPlease3");
                 await userManager.AddToRoleAsync(rootAdmin, rootRole.Name);
@@ -205,7 +204,7 @@ namespace CaffeMenuBot.AppHost.Configuration
                     {
                         new()
                         {
-                            DishName = "Chiken King",
+                            DishName = "Chicken King",
                             Description = "Great start of a day",
                             Price = 5m,
                             Serving = "200gr."
