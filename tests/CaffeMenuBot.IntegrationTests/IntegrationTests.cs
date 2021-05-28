@@ -72,7 +72,7 @@ namespace CaffeMenuBot.IntegrationTests
         [Fact]
         public async Task Login_Ok()
         {
-            const string email = "admin@caffemenubot.com";
+            const string email = "root@caffemenubot.com";
             const string password = "_Change$ThisPlease3";
 
             using StringContent content =
@@ -87,7 +87,7 @@ namespace CaffeMenuBot.IntegrationTests
         #region MenuApiTests
         private async Task<string> GetTokenAsync()
         {
-            const string email = "admin@caffemenubot.com";
+            const string email = "root@caffemenubot.com";
             const string password = "_Change$ThisPlease3";
 
             using StringContent content =
