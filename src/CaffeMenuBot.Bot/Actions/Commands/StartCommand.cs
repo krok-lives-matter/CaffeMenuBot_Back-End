@@ -17,7 +17,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
 
         private const string COMMAND_NAME = "/start";
         private const string ALT_COMMAND_NAME = "/restart";
-        private const string MESSAGE_TITLE = "Натисніть на кнопки меню нижче для отримання необхідної інформації";
+        private const string MESSAGE_TITLE = "Use buttons below to get information needed";
 
         public StartCommand(ITelegramBotClient client)
         {

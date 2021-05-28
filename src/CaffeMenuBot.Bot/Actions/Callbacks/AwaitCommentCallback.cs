@@ -19,7 +19,7 @@ namespace CaffeMenuBot.Bot.Actions.Callbacks
         
         // Contains uses this identifier instead of COMMAND_NAME
         private const string CALLBACK_ID = "CCC";
-        private const string MESSAGE_TITLE = "Надішліть ваш відгук використовуючи поле для вводу повідомлення";
+        private const string MESSAGE_TITLE = "Send your comment by utilizing text input of telegram below";
 
         public AwaitCommentCallback(CaffeMenuBotContext context, ITelegramBotClient client)
         {

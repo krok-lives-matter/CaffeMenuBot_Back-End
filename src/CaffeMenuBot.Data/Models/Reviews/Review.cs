@@ -16,7 +16,10 @@ namespace CaffeMenuBot.Data.Models.Reviews
         [Column("review_comment", TypeName = "text")]
         public string ReviewComment { get; set; } = null!;
 
-        [Required, Column("bot_user")]
-        public BotUser User {get;init;} = null!;
+        [Column("bot_user")]
+        public BotUser? User {get;init;}
+
+        [Required, Column("bot_user_id")]
+        public long UserId {get;init;}
     }
 }

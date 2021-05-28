@@ -12,19 +12,19 @@ namespace CaffeMenuBot.Bot.Keyboards.Reply
             {
                 new[]
                 {
-                    new KeyboardButton("Меню"),
+                    new KeyboardButton("Menu"),
                 },
                 new[]
                 {
-                    new KeyboardButton("Графік роботи")
+                    new KeyboardButton("Schedule")
                 },
                 new[]
                 {
-                    new KeyboardButton("Відгуки")
+                    new KeyboardButton("Reviews")
                 },
                 new[]
                 {
-                    new KeyboardButton("Оцінити роботу")
+                    new KeyboardButton("Rate")
                 }
             })
         { ResizeKeyboard = true };

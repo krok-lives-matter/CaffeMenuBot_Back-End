@@ -18,7 +18,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
         private readonly CaffeMenuBotContext _context;
         private readonly ITelegramBotClient _client;
 
-        private const string COMMAND_NAME = "Меню";
+        private const string COMMAND_NAME = "Menu";
 
         public MenuCommand(ITelegramBotClient client, CaffeMenuBotContext context)
         {
@@ -38,7 +38,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
 
             await _client.SendTextMessageAsync(
                 update.Message.From.Id,
-                "Натисніть на кнопку категорії щоб отримати меню",
+                "Press category button to get menu",
                 replyMarkup: MenuCategoriesKeyboard.GetCategoriesMenu(categories),
                 cancellationToken: ct);
         }

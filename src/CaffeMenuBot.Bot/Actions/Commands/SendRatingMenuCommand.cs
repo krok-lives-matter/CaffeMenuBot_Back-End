@@ -14,8 +14,8 @@ namespace CaffeMenuBot.Bot.Actions.Commands
     public class SendRatingMenuCommand : IChatAction
     {
         private readonly ITelegramBotClient _client;
-        private const string MESSAGE_TITLE = "<b>УВАГА!</b> При натисканні будь якої опції оцінки ваш відгук буде відправлено";
-        private const string COMMAND_NAME = "Оцінити роботу";
+        private const string MESSAGE_TITLE = "<b>Attention!</b> By pressing any of rating emoji buttons your review will be sent";
+        private const string COMMAND_NAME = "Rate";
 
         public SendRatingMenuCommand(ITelegramBotClient client)
         {

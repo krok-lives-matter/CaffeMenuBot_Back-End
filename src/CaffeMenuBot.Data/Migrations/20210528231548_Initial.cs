@@ -61,7 +61,7 @@ namespace CaffeMenuBot.Data.Migrations
                 schema: "public",
                 columns: table => new
                 {
-                    user_id = table.Column<int>(type: "integer", nullable: false)
+                    user_id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     user_chat_state = table.Column<ChatState>(type: "chat_state", nullable: false)
                 },
@@ -225,18 +225,18 @@ namespace CaffeMenuBot.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     rating = table.Column<Rating>(type: "rating", nullable: false),
                     review_comment = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: true)
+                    bot_user_id = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_reviews", x => x.review_id);
                     table.ForeignKey(
-                        name: "FK_reviews_bot_users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_reviews_bot_users_bot_user_id",
+                        column: x => x.bot_user_id,
                         principalSchema: "public",
                         principalTable: "bot_users",
                         principalColumn: "user_id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -313,10 +313,10 @@ namespace CaffeMenuBot.Data.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_reviews_UserId",
+                name: "IX_reviews_bot_user_id",
                 schema: "public",
                 table: "reviews",
-                column: "UserId");
+                column: "bot_user_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

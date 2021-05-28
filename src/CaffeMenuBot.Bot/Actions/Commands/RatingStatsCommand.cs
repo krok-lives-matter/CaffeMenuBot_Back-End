@@ -18,8 +18,8 @@ namespace CaffeMenuBot.Bot.Actions.Commands
     {
         private readonly CaffeMenuBotContext _context;
         private readonly ITelegramBotClient _client;
-        private const string MESSAGE_TITLE = "5 Останніх відгуків";
-        private const string COMMAND_NAME = "Відгуки";
+        private const string MESSAGE_TITLE = "<b>5 Latest Reviews</b>\n";
+        private const string COMMAND_NAME = "Reviews";
 
         public RatingStatsCommand(CaffeMenuBotContext context, ITelegramBotClient client)
         {
@@ -44,8 +44,8 @@ namespace CaffeMenuBot.Bot.Actions.Commands
             {
                 reviewsMessage.Append
                 (
-                    $"<b>Коментар:</b> <i>{review.ReviewComment}</i>\n" +
-                    $"<b>Оцінка:</b> {this.ConvertRatingToEmoji(review.Rating)}\n\n"
+                    $"<b>Comment:</b> <i>{review.ReviewComment}</i>\n" +
+                    $"<b>Rating:</b> {this.ConvertRatingToEmoji(review.Rating)}\n\n"
                 );
             }
         

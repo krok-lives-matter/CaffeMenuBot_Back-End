@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CaffeMenuBot.Data.Migrations
 {
     [DbContext(typeof(CaffeMenuBotContext))]
-    [Migration("20210528215441_Initial")]
+    [Migration("20210528231548_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,9 +26,9 @@ namespace CaffeMenuBot.Data.Migrations
 
             modelBuilder.Entity("CaffeMenuBot.Data.Models.Bot.BotUser", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("bigint")
                         .HasColumnName("user_id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
@@ -210,8 +210,9 @@ namespace CaffeMenuBot.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("review_comment");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("bot_user_id");
 
                     b.HasKey("Id");
 
@@ -405,7 +406,9 @@ namespace CaffeMenuBot.Data.Migrations
                 {
                     b.HasOne("CaffeMenuBot.Data.Models.Bot.BotUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

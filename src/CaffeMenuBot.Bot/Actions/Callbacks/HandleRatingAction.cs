@@ -18,7 +18,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
         
         // Contains uses this identifier instead of COMMAND_NAME
         private const string CALLBACK_ID = "RRR";
-        private const string MESSAGE_TITLE = "Дякую за ваш відгук!";
+        private const string MESSAGE_TITLE = "Thanks for your time!";
 
         public HandleRatingAction(CaffeMenuBotContext context, ITelegramBotClient client)
         {
@@ -36,15 +36,16 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
         {
             Rating userRating = ParseRating(update);
 
-            var review = await Context.Reviews.FirstOrDefaultAsync(r => r.User.Id == user.Id);
+            var review = await Context.Reviews.FirstOrDefaultAsync(r => r.UserId == user.Id);
 
             // updates existing or created new review with rating applied
             if (review == null)
             {
                 review = new Review()
                 {
-                    User = user,
-                    Rating = userRating
+                    UserId = user.Id,
+                    Rating = userRating,
+                    ReviewComment = ""
                 };
                 Context.Reviews.Add(review);
             }

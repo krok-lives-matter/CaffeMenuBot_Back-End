@@ -13,7 +13,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
         
         // Contains uses this identifier instead of COMMAND_NAME
         private const string CALLBACK_ID = "CAT";
-        private const string MESSAGE_TITLE = "Натисніть щоб відкрити файл";
+        private const string MESSAGE_TITLE = "Press to open file";
 
         public HandleMenuRequestAction(ITelegramBotClient client)
         {

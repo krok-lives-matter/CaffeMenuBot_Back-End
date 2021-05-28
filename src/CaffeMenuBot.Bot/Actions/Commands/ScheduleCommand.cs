@@ -18,8 +18,8 @@ namespace CaffeMenuBot.Bot.Actions.Commands
     {
         private readonly CaffeMenuBotContext _context;
         private readonly ITelegramBotClient _client;
-        private const string MESSAGE_TITLE = "Завітайте до нас!";
-        private const string COMMAND_NAME = "Графік роботи";
+        private const string MESSAGE_TITLE = "<b>Come visit us!</b>\n";
+        private const string COMMAND_NAME = "Schedule";
 
         public ScheduleCommand(CaffeMenuBotContext context, ITelegramBotClient client)
         {

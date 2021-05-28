@@ -21,7 +21,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
 
         // Contains uses this instead of COMMAND_NAME
         private const ChatState STATE_TYPE = ChatState.pending_comment;
-        private const string MESSAGE_TITLE = "Дякую за ваш відгук! Натисніть на будь-яку з опцій оцінювання для завершення операції";
+        private const string MESSAGE_TITLE = "Thanks for your time! Press any of emoji buttons to finish and send review";
 
         public HandleCommentState(CaffeMenuBotContext context, ITelegramBotClient client)
         {
@@ -43,7 +43,7 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
             {
                 review = new Review()
                 {
-                    User = user,
+                    UserId = user.Id,
                     ReviewComment = update.Message.Text
                 };
                 Context.Reviews.Add(review);
