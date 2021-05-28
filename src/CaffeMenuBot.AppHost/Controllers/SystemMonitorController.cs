@@ -1,45 +1,41 @@
+using System.Collections;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Threading;
-using CaffeMenuBot.AppHost.Models.DTO.Responses;
+using CaffeMenuBot.AppHost.Services;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
     [Route("api/system")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,manager")]
     [ApiController]
     public class SystemMonitorController : ControllerBase
     {
+        private readonly LoadAvgBackgroundService _loadService;
+        public SystemMonitorController(LoadAvgBackgroundService loadService)
+        {
+            _loadService = loadService;
+        }
         [HttpGet]
         [Route("loadavg")]
         [SwaggerOperation("Load average figures giving the number of jobs in the run queue (state R) or waiting for disk I/O (state D) averaged over 1, 5, and 15 minutes.",
             Tags = new[] { "System Monitor, Administration rights are required." })]
         [SwaggerResponse(401, "User unathorized.")]
         [SwaggerResponse(403, "Role not allowed.")]
-        [SwaggerResponse(200, "Successfully got system load info", typeof(LoadAvgResponse))]
+        [SwaggerResponse(200, "Successfully got system load info", typeof(Queue))]
+        [SwaggerResponse(200, "Statistics not collected yet, empty array", typeof(Queue))]
         [SwaggerResponse(500, "Internal server error.")]
-        public ActionResult GetLoadInfo(CancellationToken ct)
+        public ActionResult<Queue> GetLoadInfo(CancellationToken ct)
         {
             try
             {
-                // run shell command and split by space char
-                string[] totalInfo = "cat /proc/loadavg".Bash().Split();
-
-                // get loadavg 1, 5, 15 min and map to 0-100 range
-                double oneMin = double.Parse(totalInfo[0]) * 100;
-                double fiveMin = double.Parse(totalInfo[1]) * 100;
-                double fiveTeenMin = double.Parse(totalInfo[2]) * 100;
-
-                var loadAvgResponse = new LoadAvgResponse()
-                {
-                    LoadAvg1Min = oneMin,
-                    LoadAvg5Min = fiveMin,
-                    LoadAvg15Min = fiveTeenMin,
-                };
-
-                return Ok(loadAvgResponse);
+                Queue? loadAvgInfo = _loadService.GetLoadAvg();
+                if(loadAvgInfo == null)
+                    return Ok(new Queue());
+                
+                return Ok(loadAvgInfo);
             }
             catch(Exception ex)
             {

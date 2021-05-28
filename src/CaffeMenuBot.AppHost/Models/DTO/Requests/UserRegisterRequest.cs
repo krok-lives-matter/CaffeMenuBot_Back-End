@@ -17,6 +17,7 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
         public string? NormalizedEmail { get; init; }
         [Required(AllowEmptyStrings = false)]
         public string UserName { get; init; } = null!;
+        public string? Roles {get;init;} = null!;
     }
 
     public sealed class UserRegisterRequestSchema : ISchemaFilter
@@ -29,6 +30,7 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
                 ["password"] = new OpenApiString("password here"),
                 ["normalizedEmail"] = new OpenApiString("admin@ca...com"),
                 ["userName"] = new OpenApiString("admin"),
+                ["roles"] = new OpenApiString("admin,manager"),
             };
         }
     }

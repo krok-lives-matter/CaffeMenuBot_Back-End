@@ -1,16 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using CaffeMenuBot.AppHost.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using CaffeMenuBot.AppHost.Options;
 using CaffeMenuBot.AppHost.Models.DTO.Requests;
 using CaffeMenuBot.AppHost.Models.DTO.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -30,7 +24,9 @@ namespace CaffeMenuBot.AppHost.Controllers
         private readonly CaffeMenuBotContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<DashboardUser> _userManager;
-        private readonly JwtOptions _jwtConfig;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly JwtHelper _jwtHelper;
+        
 
         // used to save profile photos of user while adding new user or updating him
         private const string MEDIA_SUBFOLDER = "profile_photos";
@@ -40,18 +36,20 @@ namespace CaffeMenuBot.AppHost.Controllers
             CaffeMenuBotContext context,
             IWebHostEnvironment webHostEnvironment,
             UserManager<DashboardUser> userManager,
-            IOptionsMonitor<JwtOptions> optionsMonitor
+            RoleManager<IdentityRole> roleManager,
+            JwtHelper jwtHelper
             )
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
-            _jwtConfig = optionsMonitor.CurrentValue;
+            _roleManager = roleManager;
+            _jwtHelper = jwtHelper;
         }
         
         [HttpGet]
         [Route("me")]
-        [Authorize]
+        [Authorize(Roles = "admin,manager")]
         [SwaggerOperation("gets authenticated user object",
             Tags = new[] { "Authentication" })]
         [SwaggerResponse(200, "Successfully authorized user to get it's object", typeof(UserResponse))]
@@ -73,7 +71,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName,
-                Roles = this.ConvertRolesToJwtFormat(user.Roles),
+                Roles = _jwtHelper.ConvertRolesToJwtFormat(user.Roles),
                 ProfilePhotoUrl = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
             };
 
@@ -133,7 +131,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 UserName = user.UserName,
-                Roles = this.ConvertRolesToJwtFormat(user.Roles),
+                Roles = _jwtHelper.ConvertRolesToJwtFormat(user.Roles),
                 ProfilePhotoUrl = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
             };
 
@@ -176,7 +174,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                 // add roles
                 _context.UserRoles.Include(r => r.Role).FirstOrDefault(r => r.UserId == existingUser.Id);
 
-                var jwtToken = GenerateJwtToken(existingUser);
+                var jwtToken = _jwtHelper.GenerateJwtToken(existingUser);
 
                 return Ok(new AuthResponse
                 {
@@ -185,7 +183,7 @@ namespace CaffeMenuBot.AppHost.Controllers
                         Id = existingUser.Id,
                         Email = existingUser.Email,
                         UserName = existingUser.UserName,
-                        Roles = this.ConvertRolesToJwtFormat(existingUser.Roles),
+                        Roles = _jwtHelper.ConvertRolesToJwtFormat(existingUser.Roles),
                         ProfilePhotoUrl = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{existingUser.ProfilePhotoFileName}"
                     },
                     Result = true,
@@ -233,17 +231,25 @@ namespace CaffeMenuBot.AppHost.Controllers
                     }
                 });
             }
-
+     
             var newUser = new DashboardUser
             {
                 Email = user.Email,
                 NormalizedEmail = user.NormalizedEmail ?? user.Email,
                 UserName = user.UserName
             };
+
             var isCreated = await _userManager.CreateAsync(newUser, user.Password);
+
+            if(user.Roles != null)
+            {
+                var roles = _jwtHelper.ConvertJwtRolesToIdentity(user.Roles);
+                await _jwtHelper.AssignRolesAsync(newUser, roles);
+            }
+            
             if (isCreated.Succeeded)
             {
-                var jwtToken = GenerateJwtToken(newUser);
+                var jwtToken = _jwtHelper.GenerateJwtToken(newUser);
 
                 return Ok(new AuthResponse
                 {
@@ -263,71 +269,6 @@ namespace CaffeMenuBot.AppHost.Controllers
                 Result = false,
                 Errors = isCreated.Errors.Select(x => x.Description).ToList()
             }) {StatusCode = 500};
-        }
-
-        private string GenerateJwtToken(DashboardUser user)
-        {
-            // Now its time to define the jwt token which will be responsible of creating our tokens
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-
-            // We get our secret from the appsettings
-            var key = Encoding.ASCII.GetBytes(_jwtConfig.SecretKey);
-
-            // we define our token descriptor
-            // We need to utilise claims which are properties in our token which gives information about the token
-            // which belong to the specific user who it belongs to
-            // so it could contain their id, name, email the good part is that these information
-            // are generated by our server and identity framework which is valid and trusted
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim("Id", user.Id),
-                    new Claim("Username", user.UserName),
-                    new Claim("Email", user.Email),
-                    // the JTI is used for our refresh token which we will be converting in the next video
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())             
-                }),
-                // the life span of the token needs to be shorter and utilise refresh token to keep the user signedin
-                // but since this is a demo app we can extend it to fit our current need
-                Expires = DateTime.Now.AddHours(3),
-                // here we are adding the encryption algorithm information which will be used to decrypt our token
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
-            };
-
-            // add roles
-            _context.UserRoles.Include(r => r.Role).FirstOrDefault(r => r.UserId == user.Id);
-
-            string? roles = this.ConvertRolesToJwtFormat(user.Roles);
-
-            if(roles != null)
-            {
-                var claim = new Claim("Roles", roles);
-                tokenDescriptor.Subject.AddClaim(claim);
-            }
-            
-            var token = jwtTokenHandler.CreateToken(tokenDescriptor);
-
-            var jwtToken = jwtTokenHandler.WriteToken(token);
-
-            return jwtToken;
-        }
-
-        private string? ConvertRolesToJwtFormat(ICollection<DashboardUserRole> userRoles)
-        {
-            if(userRoles.Count == 0)
-                return null;
-            
-            string roles = "";
-
-                foreach (var role in userRoles)
-                    roles += role.Role.Name + ",";
-
-                // remove comma in the end
-                roles = roles.Remove(roles.Length - 1, 1);
-            
-            return roles;
-        }
+        }   
     }
-
 }

@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using CaffeMenuBot.Bot.Actions.Interface;
 using CaffeMenuBot.Data.Models.Dashboard;
+using CaffeMenuBot.AppHost.Services;
+using CaffeMenuBot.AppHost.Helpers;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -68,8 +70,10 @@ namespace CaffeMenuBot.AppHost
                            .MigrationsHistoryTable("__MigrationHistory", CaffeMenuBotContext.SchemaName)));
 
             services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
+            services.AddScoped<JwtHelper>();
 
             ConfigureBot(services);
+            ConfigureLoadAvgMonitor(services);
 
             // within this section we are configuring the authentication and setting the default scheme
             services
@@ -140,6 +144,12 @@ namespace CaffeMenuBot.AppHost
                 c.SupportNonNullableReferenceTypes();
                 c.DescribeAllParametersInCamelCase();
             });
+        }
+
+        private void ConfigureLoadAvgMonitor(IServiceCollection services)
+        {
+            services.AddSingleton<LoadAvgBackgroundService>();
+            services.AddHostedService(sp => sp.GetRequiredService<LoadAvgBackgroundService>());
         }
 
         private void ConfigureBot(IServiceCollection services)

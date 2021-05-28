@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace CaffeMenuBot.AppHost.Controllers
 {
     [Route("api/bot")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,manager")]
     [ApiController]
     public class BotController : ControllerBase
     {
