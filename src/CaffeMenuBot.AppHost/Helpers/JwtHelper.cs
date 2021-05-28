@@ -89,11 +89,13 @@ namespace CaffeMenuBot.AppHost.Helpers
 
         public async Task AssignRolesAsync(DashboardUser user, List<IdentityRole> roles)
         {
+            await this.CreateNeededRoles(roles);
+
             foreach(var role in roles)
                 await _userManager.AddToRoleAsync(user, role.Name);
         }
 
-        public async Task CreateNeededRoles(List<IdentityRole> roles)
+        private async Task CreateNeededRoles(List<IdentityRole> roles)
         {
             foreach(var role in roles)
             {

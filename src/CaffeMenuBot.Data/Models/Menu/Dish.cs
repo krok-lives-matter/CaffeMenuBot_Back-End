@@ -19,7 +19,7 @@ namespace CaffeMenuBot.Data.Models.Menu
         [Required, Column("serving", TypeName = "text")]
         public string Serving { get; set; } = null!;
 
-        [Required, Column("price", TypeName = "decimal(6, 2)")]
+        [Required, Range(1, 9999), Column("price", TypeName = "decimal(6, 2)")]
         public decimal Price { get; set; }    
 
         public int CategoryId { get; set; }

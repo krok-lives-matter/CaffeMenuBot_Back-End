@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CaffeMenuBot.Data.Migrations
 {
     [DbContext(typeof(CaffeMenuBotContext))]
-    [Migration("20210527125355_CoverPhotoNullable")]
-    partial class CoverPhotoNullable
+    [Migration("20210528215441_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -144,7 +144,6 @@ namespace CaffeMenuBot.Data.Migrations
                         .HasColumnName("category_name");
 
                     b.Property<string>("CoverPhotoFileName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("cover_photo_filename");
 
@@ -179,7 +178,7 @@ namespace CaffeMenuBot.Data.Migrations
                         .HasColumnName("dish_name");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("numeric(5,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasColumnName("price");
 
                     b.Property<string>("Serving")

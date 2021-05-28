@@ -86,11 +86,15 @@ namespace CaffeMenuBot.AppHost.Controllers
         public async Task<ActionResult<CreatedItemResult>> Post([FromBody] Schedule schedule,
             CancellationToken cancellationToken)
         {
-            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-            _context.Schedule.Add(schedule);
-            await _context.SaveChangesAsync(cancellationToken);
+            if(ModelState.IsValid)
+            {
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                _context.Schedule.Add(schedule);
+                await _context.SaveChangesAsync(cancellationToken);
 
-            return Ok(schedule);
+                return Ok(schedule);
+            }
+            return BadRequest(ModelState);
         }
 
         //PUT api/dashboard/schedule/
@@ -101,11 +105,15 @@ namespace CaffeMenuBot.AppHost.Controllers
         public async Task<ActionResult<CreatedItemResult>> Put([FromBody] Schedule schedule,
             CancellationToken cancellationToken)
         {
-            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-            _context.Schedule.Update(schedule);
-            await _context.SaveChangesAsync(cancellationToken);
+            if(ModelState.IsValid)
+            {
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                _context.Schedule.Update(schedule);
+                await _context.SaveChangesAsync(cancellationToken);
 
-            return Ok(schedule);
+                return Ok(schedule);
+            }
+            return BadRequest(ModelState);
         }
 
     }

@@ -20,6 +20,8 @@ using CaffeMenuBot.Bot.Actions.Interface;
 using CaffeMenuBot.Data.Models.Dashboard;
 using CaffeMenuBot.AppHost.Services;
 using CaffeMenuBot.AppHost.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -48,7 +50,18 @@ namespace CaffeMenuBot.AppHost
                     });
             });
 
-            services.AddControllers();
+            services.AddControllers().ConfigureApiBehaviorOptions(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var result = new BadRequestObjectResult(context.ModelState);
+
+                    result.ContentTypes.Add(MediaTypeNames.Application.Json);
+                    result.ContentTypes.Add(MediaTypeNames.Application.Xml);
+        
+                    return result;
+                };
+            });
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -191,6 +204,11 @@ namespace CaffeMenuBot.AppHost
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/error-local-development");
+            }
+            else
+            {
+                app.UseExceptionHandler("/error");
             }
 
             app.UseSwagger();

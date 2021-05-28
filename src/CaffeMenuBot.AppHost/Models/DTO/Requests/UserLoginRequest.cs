@@ -21,7 +21,7 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
         {
             schema.Example = new OpenApiObject
             {
-                ["email"] = new OpenApiString("admin@caffemenubot.com"),
+                ["email"] = new OpenApiString("root@caffemenubot.com"),
                 ["password"] = new OpenApiString("password here")
             };
         }

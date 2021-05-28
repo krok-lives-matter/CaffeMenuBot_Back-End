@@ -26,11 +26,11 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
         {
             schema.Example = new OpenApiObject
             {
-                ["email"] = new OpenApiString("admin@caffemenubot.com"),
+                ["email"] = new OpenApiString("root@caffemenubot.com"),
                 ["password"] = new OpenApiString("password here"),
-                ["normalizedEmail"] = new OpenApiString("admin@ca...com"),
-                ["userName"] = new OpenApiString("admin"),
-                ["roles"] = new OpenApiString("admin,manager"),
+                ["normalizedEmail"] = new OpenApiString("root@ca...com"),
+                ["userName"] = new OpenApiString("root"),
+                ["roles"] = new OpenApiString("root,admin"),
             };
         }
     }

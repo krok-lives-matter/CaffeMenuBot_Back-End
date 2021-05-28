@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using CaffeMenuBot.AppHost.Models.DTO.Requests;
 using CaffeMenuBot.AppHost.Helpers;
 using System.Linq;
+using System.Net;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -95,11 +96,15 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(402, "Bad request, bad data was specified")]
         public async Task<ActionResult<CreatedItemResult>> PostDish([FromBody] Dish dish, CancellationToken cancellationToken)
         {
-            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-            _context.Dishes.Add(dish);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return Ok(dish);
+            if (ModelState.IsValid)
+            {
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                _context.Dishes.Add(dish);
+                await _context.SaveChangesAsync(cancellationToken);
+    
+                return Ok(dish);
+            }
+            return BadRequest(ModelState);        
         }
 
         //Put api/dashboard/menu/dishes
@@ -109,10 +114,13 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(402, "Bad request, bad data was specified")]
         public async Task<ActionResult<CreatedItemResult>> PutDish([FromBody] Dish dish, CancellationToken cancellationToken)
         {
-            _context.Dishes.Update(dish);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return Ok(dish);
+            if(ModelState.IsValid)
+            {
+                _context.Dishes.Update(dish);
+                await _context.SaveChangesAsync(cancellationToken);
+                return Ok(dish);
+            }
+            return BadRequest(ModelState);          
         }
 
         //GET api/dashboard/menu/categories
@@ -190,17 +198,21 @@ namespace CaffeMenuBot.AppHost.Controllers
         public async Task<ActionResult<CreatedItemResult>> PostCategory(CategoryRequest addCategoryRequest,
             CancellationToken cancellationToken)
         {
-            var category = new Category()
+            if(ModelState.IsValid)
             {
-                CategoryName = addCategoryRequest.CategoryName,
-                IsVisible = addCategoryRequest.IsVisible
-            };
-                                
-            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync(cancellationToken);
+                var category = new Category()
+                {
+                    CategoryName = addCategoryRequest.CategoryName,
+                    IsVisible = addCategoryRequest.IsVisible
+                };
 
-            return Ok(category);
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                _context.Categories.Add(category);
+                await _context.SaveChangesAsync(cancellationToken);
+
+                return Ok(category);
+            }
+            return BadRequest(ModelState);
         }
 
         [HttpPost("categories/setCoverPhoto")]
@@ -210,26 +222,30 @@ namespace CaffeMenuBot.AppHost.Controllers
         public async Task<ActionResult<CreateItemLinkResult>> SetCategoryCoverPhoto([FromForm] SetCoverPhotoRequest request,
             CancellationToken cancellationToken)
         {
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(c => c.Id == request.CategoryId, cancellationToken);
-            if (category == null)
+            if(ModelState.IsValid)
             {
-                return NotFound();
-            }
-            
-            category.CoverPhotoFileName =
-                ImageHelper.SaveImage(new ImageModel
+                var category = await _context.Categories
+                    .FirstOrDefaultAsync(c => c.Id == request.CategoryId, cancellationToken);
+                if (category == null)
                 {
-                    ContentType = request.File.ContentType,
-                    ImageStream = request.File.OpenReadStream(),
-                    FileExtension = Path.GetExtension(request.File.FileName)
-                }, _webHostEnvironment, MEDIA_SUBFOLDER);
-            await _context.SaveChangesAsync(cancellationToken);
+                    return NotFound();
+                }
 
-            return new CreateItemLinkResult
-            {
-                ImageLink = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}"
-            };
+                category.CoverPhotoFileName =
+                    ImageHelper.SaveImage(new ImageModel
+                    {
+                        ContentType = request.File.ContentType,
+                        ImageStream = request.File.OpenReadStream(),
+                        FileExtension = Path.GetExtension(request.File.FileName)
+                    }, _webHostEnvironment, MEDIA_SUBFOLDER);
+                await _context.SaveChangesAsync(cancellationToken);
+
+                return new CreateItemLinkResult
+                {
+                    ImageLink = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{category.CoverPhotoFileName}"
+                };
+            }
+            return BadRequest(ModelState);
         }
 
         //PUT api/dashboard/menu/categories
@@ -241,20 +257,24 @@ namespace CaffeMenuBot.AppHost.Controllers
         public async Task<ActionResult<CreatedItemResult>> PutCategory(CategoryRequest updateCategoryRequest,
             CancellationToken cancellationToken)
         {
-            var category = await _context.Categories.FindAsync(updateCategoryRequest.Id);
+            if(ModelState.IsValid)
+            {
+                var category = await _context.Categories.FindAsync(updateCategoryRequest.Id);
 
-            if (category == null)
-                return NotFound("category you are trying to edit was not found, check Id that you are passing");
+                if (category == null)
+                    return NotFound("category you are trying to edit was not found, check Id that you are passing");
 
-            category.CategoryName = updateCategoryRequest.CategoryName;
+                category.CategoryName = updateCategoryRequest.CategoryName;
 
-            category.IsVisible = updateCategoryRequest.IsVisible;
+                category.IsVisible = updateCategoryRequest.IsVisible;
 
-            _context.Entry(category).State = EntityState.Modified;
+                _context.Entry(category).State = EntityState.Modified;
 
-            await _context.SaveChangesAsync(cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
 
-            return Ok(category);
+                return Ok(category);
+            }
+            return BadRequest(ModelState);
         }
     }
 }

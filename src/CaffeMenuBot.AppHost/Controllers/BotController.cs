@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace CaffeMenuBot.AppHost.Controllers
 {
     [Route("api/bot")]
-    [Authorize(Roles = "admin,manager")]
+    [Authorize(Roles = "root,admin")]
     [ApiController]
     public class BotController : ControllerBase
     {
@@ -21,8 +21,8 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         [HttpGet]
         [Route("status")]
-        [SwaggerOperation("Gets bot status",
-            Tags = new[] { "Bot, Administration rights are required." })]
+        [SwaggerOperation("Gets bot status (root or admin required)",
+            Tags = new[] { "Bot"})]
         [SwaggerResponse(401, "User unathorized.")]
         [SwaggerResponse(403,"Role not allowed.")]
         [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]
@@ -34,8 +34,8 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         [HttpGet]
         [Route("stop")]
-        [SwaggerOperation("Restarts the bot service",
-            Tags = new[] { "Bot, Administration rights are required." })]
+        [SwaggerOperation("Restarts the bot service (root or admin required)",
+            Tags = new[] { "Bot" })]
         [SwaggerResponse(401, "User unathorized.")]
         [SwaggerResponse(403, "Role not allowed.")]
         [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]
@@ -59,8 +59,8 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         [HttpGet]
         [Route("start")]
-        [SwaggerOperation("Starts the bot service",
-            Tags = new[] { "Bot, Administration rights are required." })]
+        [SwaggerOperation("Starts the bot service (root or admin required)",
+            Tags = new[] { "Bot" })]
         [SwaggerResponse(401, "User unathorized.")]
         [SwaggerResponse(403, "Role not allowed.")]
         [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]
@@ -85,8 +85,8 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         [HttpGet]
         [Route("restart")]
-        [SwaggerOperation("Restarts the bot service",
-            Tags = new[] { "Bot, Administration rights are required." })]
+        [SwaggerOperation("Restarts the bot service (root or admin required)",
+            Tags = new[] { "Bot" })]
         [SwaggerResponse(401, "User unathorized.")]
         [SwaggerResponse(403, "Role not allowed.")]
         [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]

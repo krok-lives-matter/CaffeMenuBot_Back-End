@@ -87,11 +87,15 @@ namespace CaffeMenuBot.AppHost.Controllers
         public async Task<ActionResult<CreatedItemResult>> Post([FromBody] Review review,
             CancellationToken cancellationToken)
         {
-            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync(cancellationToken);
+            if(ModelState.IsValid)
+            {
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                _context.Reviews.Add(review);
+                await _context.SaveChangesAsync(cancellationToken);
 
-            return Ok(review);
+                return Ok(review);
+                }
+            return BadRequest(ModelState);
         }
 
         //PUT api/dashboard/reviews/
@@ -102,11 +106,15 @@ namespace CaffeMenuBot.AppHost.Controllers
         public async Task<ActionResult<CreatedItemResult>> Put([FromBody] Review review,
             CancellationToken cancellationToken)
         {
-            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-            _context.Reviews.Update(review);
-            await _context.SaveChangesAsync(cancellationToken);
+            if(ModelState.IsValid)
+            {
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                _context.Reviews.Update(review);
+                await _context.SaveChangesAsync(cancellationToken);
 
-            return Ok(review);
+                return Ok(review);
+            }
+            return BadRequest(ModelState);
         }
 
     }

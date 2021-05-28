@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Linq;
 using CaffeMenuBot.Data;
 using CaffeMenuBot.Data.Models.Menu;
@@ -11,37 +12,86 @@ namespace CaffeMenuBot.AppHost.Configuration
 {
     internal static class DatabaseSeeder
     {
+        /// <summary>
+        /// Seeds database with basic data and creates root admin user
+        /// </summary>
+        /// <param name="context">database context</param>
+        /// <param name="userManager">user manager</param>
+        /// <param name="roleManager">role manager</param>
+        /// <param name="interactiveAdminCreation">default is false, set to true to create admin with shell interaction</param>
         internal static async Task SeedDatabaseAsync(CaffeMenuBotContext context,
             UserManager<DashboardUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            bool interactiveAdminCreation = false)
         {
-            await SeedAdminUserAsync(context, userManager, roleManager);
+            await CreateManagingRoles(context, userManager, roleManager);
+            await SeedAdminUserAsync(context, userManager, roleManager, interactiveAdminCreation);
             await SeedDashboardDataAsync(context);
             await SeedScheduleDataAsync(context);
         }
 
-        private static async Task SeedAdminUserAsync(
+        private static async Task SeedAdminUserAsync
+        (
            CaffeMenuBotContext context,
            UserManager<DashboardUser> userManager,
-           RoleManager<IdentityRole> roleManager)
+           RoleManager<IdentityRole> roleManager,
+           bool interactiveAdminCreation)
+        {
+            if(interactiveAdminCreation)
+                await CreateRootAdminInteractiveAsync(context, userManager, roleManager);
+            else
+                await CreateRootAdminAutoAsync(context, userManager, roleManager);
+        }
+
+        private static async Task CreateRootAdminAutoAsync
+        (
+            CaffeMenuBotContext context,
+            UserManager<DashboardUser> userManager,
+            RoleManager<IdentityRole> roleManager
+        )
+        {
+            var rootRole = new IdentityRole("root");
+
+            if (!context.Roles.Any(r => r.Name == "root"))
+            {
+                await roleManager.CreateAsync(rootRole);
+            }
+
+            if (!context.Users.Any(u => u.UserName == "root"))
+            {
+                var rootAdmin = new DashboardUser
+                {
+                    UserName = "root",
+                    Email = "root@caffemenubot.com",
+                    ProfilePhotoFileName = "blank.jpg"
+                };
+                var result = await userManager.CreateAsync(rootAdmin, "_Change$ThisPlease3");
+                await userManager.AddToRoleAsync(rootAdmin, rootRole.Name);
+            }
+        }
+
+        private static async Task CreateRootAdminInteractiveAsync
+        (
+            CaffeMenuBotContext context,
+            UserManager<DashboardUser> userManager,
+            RoleManager<IdentityRole> roleManager
+        )
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task CreateManagingRoles
+        (
+            CaffeMenuBotContext context,
+            UserManager<DashboardUser> userManager,
+            RoleManager<IdentityRole> roleManager
+        )
         {
             var adminRole = new IdentityRole("admin");
 
             if (!context.Roles.Any(r => r.Name == "admin"))
             {
                 await roleManager.CreateAsync(adminRole);
-            }
-
-            if (!context.Users.Any(u => u.UserName == "admin"))
-            {
-                var adminUser = new DashboardUser
-                {
-                    UserName = "admin",
-                    Email = "admin@caffemenubot.com",
-                    ProfilePhotoFileName = "blank.jpg"
-                };
-                var result = await userManager.CreateAsync(adminUser, "_Change$ThisPlease3");
-                await userManager.AddToRoleAsync(adminUser, adminRole.Name);
             }
         }
 
@@ -53,49 +103,49 @@ namespace CaffeMenuBot.AppHost.Configuration
             context.Schedule.AddRange(
                 new Schedule
                 {
-                    WeekdayName = "Понеділок",
+                    WeekdayName = "Monday",
                     OpenTime = "8:00",
                     CloseTime = "20:00",
                     OrderIndex = 1
                 },
                 new Schedule
                 {
-                    WeekdayName = "Вівторок",
+                    WeekdayName = "Tuesday",
                     OpenTime = "8:00",
                     CloseTime = "20:00",
                     OrderIndex = 2
                 },
                 new Schedule
                 {
-                    WeekdayName = "Середа",
+                    WeekdayName = "Wednesday",
                     OpenTime = "8:00",
                     CloseTime = "20:00",
                     OrderIndex = 3
                 },
                 new Schedule
                 {
-                    WeekdayName = "Четвер",
+                    WeekdayName = "Thursday",
                     OpenTime = "8:00",
                     CloseTime = "20:00",
                     OrderIndex = 4
                 },
                 new Schedule
                 {
-                    WeekdayName = "П'ятниця",
+                    WeekdayName = "Friday",
                     OpenTime = "10:00",
                     CloseTime = "22:00",
                     OrderIndex = 5
                 },
                 new Schedule
                 {
-                    WeekdayName = "Субота",
+                    WeekdayName = "Saturday",
                     OpenTime = "10:00",
                     CloseTime = "22:00",
                     OrderIndex = 6
                 },
                 new Schedule
                 {
-                    WeekdayName = "Неділя",
+                    WeekdayName = "Sunday",
                     OpenTime = "9:00",
                     CloseTime = "19:00",
                     OrderIndex = 7
@@ -112,38 +162,53 @@ namespace CaffeMenuBot.AppHost.Configuration
             context.Categories.AddRange(
                 new Category
                 {
-                    CategoryName = "Десерти",
+                    CategoryName = "Coffee",
                     IsVisible = true,
                     Dishes = new List<Dish>
                     {
                         new()
                         {
-                            DishName = "Львівські Пляцки",
-                            Description = "Дуже смачно",
-                            Price = 100.5m,
-                            Serving = "200гр."
+                            DishName = "Late",
+                            Description = "",
+                            Price = 5m,
+                            Serving = "300ml"
                         },
                         new()
                         {
-                            DishName = "Пляцки Пляцки",
-                            Description = "Дуже Дуже",
-                            Price = 150.5m,
-                            Serving = "200гр."
+                            DishName = "Americano",
+                            Description = "",
+                            Price = 6.5m,
+                            Serving = "100ml."
                         }
                     }
                 },
                 new Category
                 {
-                    CategoryName = "М'ясо",
+                    CategoryName = "Salads",
                     IsVisible = true,
                     Dishes = new List<Dish>
                     {
                         new()
                         {
-                            DishName = "Шашлик машлик",
-                            Description = "мясо",
-                            Price = 350.5m,
-                            Serving = "250гр."
+                            DishName = "Greek Salad",
+                            Description = "Fresh and tasty",
+                            Price = 20m,
+                            Serving = "300gr."
+                        }
+                    }
+                },
+                new Category
+                {
+                    CategoryName = "Burgers",
+                    IsVisible = true,
+                    Dishes = new List<Dish>
+                    {
+                        new()
+                        {
+                            DishName = "Chiken King",
+                            Description = "Great start of a day",
+                            Price = 5m,
+                            Serving = "200gr."
                         }
                     }
                 });

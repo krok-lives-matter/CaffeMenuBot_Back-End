@@ -35,8 +35,7 @@ namespace CaffeMenuBot.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    Discriminator = table.Column<string>(type: "text", nullable: false),
-                    ProfilePhotoFileName = table.Column<string>(type: "text", nullable: true),
+                    profile_photo_filename = table.Column<string>(type: "text", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -79,18 +78,12 @@ namespace CaffeMenuBot.Data.Migrations
                     category_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     category_name = table.Column<string>(type: "text", nullable: false),
-                    ParentCategoryId = table.Column<int>(type: "integer", nullable: true)
+                    cover_photo_filename = table.Column<string>(type: "text", nullable: true),
+                    is_visible = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_categories", x => x.category_id);
-                    table.ForeignKey(
-                        name: "FK_categories_categories_ParentCategoryId",
-                        column: x => x.ParentCategoryId,
-                        principalSchema: "public",
-                        principalTable: "categories",
-                        principalColumn: "category_id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -177,7 +170,8 @@ namespace CaffeMenuBot.Data.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "text", nullable: false),
-                    RoleId = table.Column<string>(type: "text", nullable: false)
+                    RoleId = table.Column<string>(type: "text", nullable: false),
+                    UserId1 = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -194,6 +188,12 @@ namespace CaffeMenuBot.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -249,8 +249,7 @@ namespace CaffeMenuBot.Data.Migrations
                     dish_name = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
                     serving = table.Column<string>(type: "text", nullable: false),
-                    price = table.Column<decimal>(type: "numeric(5,2)", nullable: false),
-                    photo_url = table.Column<string>(type: "text", nullable: false),
+                    price = table.Column<decimal>(type: "numeric(6,2)", nullable: false),
                     CategoryId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -264,21 +263,6 @@ namespace CaffeMenuBot.Data.Migrations
                         principalColumn: "category_id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "b8b9cca2-b6b0-4f78-9984-dbec49a2ac79", "admin", "ADMIN" });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "ProfilePhotoFileName", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", 0, "727a549f-3d4a-4cae-b7f4-52805d086c88", "DashboardUser", "admin@caffemenubot.com", true, false, null, "ADMIN@CAFFEMENUBOT.COM", "ADMIN", "AQAAAAEAACcQAAAAEBYUIdVzZ+2v/8OjLY5beMvTwHlU1QRtRLZvII+Cb1O3VMBw4BP2u1CE6+Zw9GLhnA==", null, false, "blank.jpg", "", false, "admin" });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "a18be9c0-aa65-4af8-bd17-00bd9344e575" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -307,6 +291,11 @@ namespace CaffeMenuBot.Data.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_UserId1",
+                table: "AspNetUserRoles",
+                column: "UserId1");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -316,12 +305,6 @@ namespace CaffeMenuBot.Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_categories_ParentCategoryId",
-                schema: "public",
-                table: "categories",
-                column: "ParentCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_dishes_CategoryId",

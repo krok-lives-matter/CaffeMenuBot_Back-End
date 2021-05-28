@@ -20,9 +20,9 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Responses
         public IOpenApiAny SchemaExample => new OpenApiObject
         {
             ["id"] = new OpenApiString("141c164d-7dcf-4145-95e5-aff46266cac9"),
-            ["email"] = new OpenApiString("admin@ca...com"),
-            ["userName"] = new OpenApiString("admin"),
-            ["roles"] = new OpenApiString("admin,manager"),
+            ["email"] = new OpenApiString("root@ca...com"),
+            ["userName"] = new OpenApiString("root"),
+            ["roles"] = new OpenApiString("root,admin"),
             ["profilePhotoUrl"] = new OpenApiString("/media/profile_photos/blank.jpg")
         };
         

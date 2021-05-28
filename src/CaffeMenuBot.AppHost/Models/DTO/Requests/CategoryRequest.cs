@@ -1,4 +1,5 @@
-﻿using CaffeMenuBot.Data.Models.Menu;
+﻿using System.ComponentModel.DataAnnotations;
+using CaffeMenuBot.Data.Models.Menu;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
@@ -12,6 +13,7 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
     {
         public int Id { get; init; } = 0;
 
+        [Required]
         public string CategoryName { get; init; } = null!;
 
         public bool IsVisible { get; init; } = true;
@@ -46,12 +48,7 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
                         ["price"] = new OpenApiFloat(500.7f),
                         ["serving"] = new OpenApiString("150гр."),
                     },
-                }/*,
-                ["coverPhoto"] = new OpenApiObject()
-                {
-                    ["contentType"] = new OpenApiString(".jpg"),
-                    ["base64EncodedImage"] = new OpenApiString("R0lGODlhAQABAIAAAAAAAAAAACH5BAAAAAAALAAAAAABAAEAAAICTAEAOw==")
-                }*/
+                }
             };
         }
     }
