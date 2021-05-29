@@ -5,6 +5,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CaffeMenuBot.AppHost.Models.DTO.Responses;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -23,25 +24,28 @@ namespace CaffeMenuBot.AppHost.Controllers
         [Route("status")]
         [SwaggerOperation("Gets bot status (root or admin required)",
             Tags = new[] { "Bot"})]
-        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(401, "User unauthorized.")]
         [SwaggerResponse(403,"Role not allowed.")]
-        [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]
+        [SwaggerResponse(200, "Status of bot.", typeof(StatusResponse))]
         [SwaggerResponse(500, "Internal server error.")]
-        public ActionResult<Boolean> Status(CancellationToken ct)
+        public ActionResult<StatusResponse> Status()
         {
-            return Ok(_botService.IsBotRunning());
+            return new StatusResponse
+            {
+                 IsRunning = _botService.IsBotRunning()
+            };
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("stop")]
         [SwaggerOperation("Restarts the bot service (root or admin required)",
             Tags = new[] { "Bot" })]
-        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(401, "User unauthorized.")]
         [SwaggerResponse(403, "Role not allowed.")]
-        [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]
+        [SwaggerResponse(200, "Successfully stopped the bot.")]
         [SwaggerResponse(400, "Bot already stopped.")]
         [SwaggerResponse(500, "Internal server error.")]
-        public async Task<ActionResult<Boolean>> Stop(CancellationToken ct)
+        public async Task<ActionResult> Stop(CancellationToken ct)
         {
             try
             {
@@ -54,19 +58,19 @@ namespace CaffeMenuBot.AppHost.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            return Ok(_botService.IsBotRunning());
+            return Ok();
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("start")]
         [SwaggerOperation("Starts the bot service (root or admin required)",
             Tags = new[] { "Bot" })]
-        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(401, "User unauthorized.")]
         [SwaggerResponse(403, "Role not allowed.")]
-        [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]
+        [SwaggerResponse(200, "Successfully started the bot.")]
         [SwaggerResponse(400, "Bot already started.")]
         [SwaggerResponse(500, "Internal server error.")]
-        public async Task<ActionResult<Boolean>> Start(CancellationToken ct)
+        public async Task<ActionResult> Start(CancellationToken ct)
         {
             var user = HttpContext.User;
             try
@@ -80,18 +84,18 @@ namespace CaffeMenuBot.AppHost.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            return Ok(_botService.IsBotRunning());
+            return Ok();
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("restart")]
         [SwaggerOperation("Restarts the bot service (root or admin required)",
             Tags = new[] { "Bot" })]
-        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(401, "User unauthorized.")]
         [SwaggerResponse(403, "Role not allowed.")]
-        [SwaggerResponse(200, "Status of bot (is bot receiving)", typeof(bool))]
+        [SwaggerResponse(200, "Successfully restarted.")]
         [SwaggerResponse(500, "Internal server error.")]
-        public async Task<ActionResult<Boolean>> Restart(CancellationToken ct)
+        public async Task<ActionResult> Restart(CancellationToken ct)
         {
             try
             {
@@ -104,7 +108,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            return Ok(_botService.IsBotRunning());
+            return Ok();
         }
 
     }
