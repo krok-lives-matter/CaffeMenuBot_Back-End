@@ -9,7 +9,7 @@ using CaffeMenuBot.AppHost.Services;
 namespace CaffeMenuBot.AppHost.Controllers
 {
     [Route("api/system")]
-    [Authorize(Roles = "admin,manager")]
+    [Authorize(Roles = "root,admin")]
     [ApiController]
     public class SystemMonitorController : ControllerBase
     {
@@ -32,7 +32,7 @@ namespace CaffeMenuBot.AppHost.Controllers
             try
             {
                 Queue? loadAvgInfo = _loadService.GetLoadAvg();
-                if(loadAvgInfo == null)
+                if(loadAvgInfoeyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImExOGJlOWMwLWFhNjUtNGFmOC1iZDE3LTAwYmQ5MzQ0ZTU3NSIsIlVzZXJuYW1lIjoiYWRtaW4iLCJFbWFpbCI6ImFkbWluQGNhZmZlbWVudWJvdC5jb20iLCJqdGkiOiIzYTQwMGRkMC0xNmE3LTRkMGQtYjgzMy05MTgwMTdhMjE1YTgiLCJSb2xlcyI6ImFkbWluIiwibmJmIjoxNjIyMjE2NTg2LCJleHAiOjE2MjIyMjczODYsImlhdCI6MTYyMjIxNjU4Nn0.yBUKWGWYQj6nBGFLiWPhJ4Fl-4XBYqbCZ0jBWtQaD8_uVsZ_J5BzjtqaJos05ZrR0ijFNQwH36IJmbDhBYWmVA == null)
                     return Ok(new Queue());
                 
                 return Ok(loadAvgInfo);
