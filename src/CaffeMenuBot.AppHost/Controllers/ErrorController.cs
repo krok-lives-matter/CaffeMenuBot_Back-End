@@ -9,6 +9,7 @@ namespace CaffeMenuBot.AppHost.Controllers
     public class ErrorController : ControllerBase
     {
         [Route("/error-local-development")]
+        [HttpGet]
         public IActionResult ErrorLocalDevelopment(
             [FromServices] IWebHostEnvironment webHostEnvironment)
         {
@@ -26,6 +27,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         }
 
         [Route("/error")]
+        [HttpGet]
         public IActionResult Error() => Problem();
     }
 }
