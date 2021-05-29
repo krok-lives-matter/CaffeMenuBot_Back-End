@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,7 +49,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [HttpPost]
         [Route("register")]
         [Authorize(Roles = "root")]
-        [SwaggerOperation("Registers a new user (root admin required)",
+        [SwaggerOperation("Registers a new user (root required)",
             Tags = new[] {"Authentication"})]
         [SwaggerResponse(200, "Successfully registered a new user.", typeof(AuthResponse))]
         [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
@@ -211,72 +210,5 @@ namespace CaffeMenuBot.AppHost.Controllers
 
             return Ok(response);
         }
-
-        [HttpPut]
-        [Route("me")]
-        [Authorize(Roles = "root")]
-        [SwaggerOperation("updates user (root admin required)",
-            Tags = new[] { "Authentication" })]
-        [SwaggerResponse(200, "Successfully authorized user to update it's object", typeof(UserResponse))]
-        [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
-        [SwaggerResponse(401, "User unathorized.")]
-        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
-        public async Task<ActionResult> Me([FromBody] UserUpdateRequest updatedUser)
-        {
-            var user = await _userManager.FindByIdAsync(updatedUser.Id);
-
-            if(user == null)
-            {
-                return BadRequest(new ErrorResponse
-                {
-                    Result = false,
-                    Errors = new List<string>
-                    {
-                        "User to update was not found, check user id that you are passing"
-                    }
-                });
-            }
-
-            // include roles in user object
-            _context.UserRoles.Include(r => r.Role).FirstOrDefault(r => r.UserId == user.Id);
-
-            if(updatedUser == null)
-            {
-                return BadRequest(new ErrorResponse
-                {
-                    Result = false,
-                    Errors = new List<string>
-                    {
-                        "Information to update user was not provided"
-                    }
-                });
-            }
-
-            if(!String.IsNullOrEmpty(updatedUser.UserName))
-            {
-                user.UserName = updatedUser.UserName;
-            }
-
-            if(!String.IsNullOrEmpty(updatedUser.Roles))
-            {
-                var roles = _jwtHelper.ConvertJwtRolesToIdentity(updatedUser.Roles);
-                await _jwtHelper.AssignRolesAsync(user, roles);
-            }
-
-            _context.Entry(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            UserResponse response = new UserResponse()
-            {
-                Id = user.Id,
-                Email = user.Email,
-                UserName = user.UserName,
-                Roles = _jwtHelper.ConvertRolesToJwtFormat(user.Roles),
-                ProfilePhotoUrl = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{user.ProfilePhotoFileName}"
-            };
-
-            return Ok(response);
-        } 
     }
 }
