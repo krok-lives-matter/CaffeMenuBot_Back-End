@@ -168,14 +168,14 @@ namespace CaffeMenuBot.AppHost.Configuration
                         new()
                         {
                             DishName = "Late",
-                            Description = "",
+                            Description = "Fresh",
                             Price = 5m,
                             Serving = "300ml"
                         },
                         new()
                         {
                             DishName = "Americano",
-                            Description = "",
+                            Description = "Fresh",
                             Price = 6.5m,
                             Serving = "100ml."
                         }

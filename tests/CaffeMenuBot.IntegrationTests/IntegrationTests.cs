@@ -133,10 +133,13 @@ namespace CaffeMenuBot.IntegrationTests
         {
             HttpResponseMessage result = await _authorizedClient.GetAsync($"api/dashboard/menu/dishes?category_id=1");
             List<Dish> dishesResultEncapsulated = await result.Content.ReadFromJsonAsync<List<Dish>>();
+            Assert.NotNull(dishesResultEncapsulated);
             dishesResultEncapsulated[0].DishName = name;
 
-            using StringContent dishUpdateContent = new(JsonSerializer.Serialize(dishesResultEncapsulated[0]), Encoding.UTF8, "application/json");
+            string json = JsonSerializer.Serialize(dishesResultEncapsulated[0]);
+            using StringContent dishUpdateContent = new(json, Encoding.UTF8, "application/json");
             HttpResponseMessage dishUpdateResult = await _authorizedClient.PutAsync($"api/dashboard/menu/dishes", dishUpdateContent);
+            Assert.True(dishUpdateResult.IsSuccessStatusCode);
             Dish dishResultEncapsulated = await dishUpdateResult.Content.ReadFromJsonAsync<Dish>();
 
             Assert.Equal(dishResultEncapsulated.DishName, name);
