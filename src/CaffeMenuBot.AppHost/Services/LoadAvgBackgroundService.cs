@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -10,7 +10,7 @@ namespace CaffeMenuBot.AppHost.Services
     public class LoadAvgBackgroundService : BackgroundService
     {
         private readonly ILogger _logger;
-        private Queue _loadAvg5MinInterval = new Queue();
+        private readonly Queue<double> _loadAvg5MinInterval = new();
         private Timer? _timer;
 
         public LoadAvgBackgroundService(ILogger<LoadAvgBackgroundService> logger)
@@ -18,7 +18,7 @@ namespace CaffeMenuBot.AppHost.Services
             _logger = logger;
         }
 
-        public Queue? GetLoadAvg()
+        public Queue<double>? GetLoadAvg()
         {
             if(_loadAvg5MinInterval.Count < 5)
                 return null;

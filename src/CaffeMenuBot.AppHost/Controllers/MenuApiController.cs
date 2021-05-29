@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Hosting;
 using CaffeMenuBot.AppHost.Models.DTO.Requests;
 using CaffeMenuBot.AppHost.Helpers;
 using System.Linq;
-using System.Net;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
