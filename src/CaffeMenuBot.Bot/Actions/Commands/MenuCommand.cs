@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CaffeMenuBot.Bot.Actions.Interface;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace CaffeMenuBot.Bot.Actions.Сommands
+namespace CaffeMenuBot.Bot.Actions.Commands
 {
     /// <summary>
     /// Handles menu button press in main menu keyboard
@@ -34,7 +35,10 @@ namespace CaffeMenuBot.Bot.Actions.Сommands
 
         public async Task ExecuteAsync(BotUser user, Update update, CancellationToken ct)
         {
-            var categories = await _context.Categories.ToListAsync();
+            var categories = await _context.Categories
+                .AsNoTracking()
+                .Where(c => c.IsVisible)
+                .ToListAsync(ct);
 
             await _client.SendTextMessageAsync(
                 update.Message.From.Id,

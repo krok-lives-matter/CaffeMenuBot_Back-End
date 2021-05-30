@@ -185,6 +185,8 @@ namespace CaffeMenuBot.AppHost
             services.AddSingleton<BotHandlerService>();
             services.AddHostedService(sp => sp.GetRequiredService<BotHandlerService>());
 
+            services.AddTransient<IPdfGeneratorService, PdfGeneratorService>();
+
             var baseType = typeof(IChatAction);
             
             foreach (var commandType in baseType.Assembly.GetTypes().Where(t => baseType.IsAssignableFrom(t) && t.IsClass && t.IsPublic && !t.IsAbstract))

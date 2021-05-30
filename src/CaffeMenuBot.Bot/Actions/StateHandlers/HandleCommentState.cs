@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace CaffeMenuBot.Bot.Actions.Сommands
+namespace CaffeMenuBot.Bot.Actions.StateHandlers
 {
     /// <summary>
     /// Handles state when bot is waiting for user to comment in rating action

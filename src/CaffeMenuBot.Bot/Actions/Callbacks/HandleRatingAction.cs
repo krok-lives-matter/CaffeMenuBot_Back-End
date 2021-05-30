@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace CaffeMenuBot.Bot.Actions.Сommands
+namespace CaffeMenuBot.Bot.Actions.Callbacks
 {
     public sealed class HandleRatingAction : IChatAction
     {

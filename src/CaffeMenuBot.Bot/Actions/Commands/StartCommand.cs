@@ -6,7 +6,7 @@ using CaffeMenuBot.Data.Models.Bot;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace CaffeMenuBot.Bot.Actions.Сommands
+namespace CaffeMenuBot.Bot.Actions.Commands
 {
     /// <summary>
     /// Handles start or restart command in bot
