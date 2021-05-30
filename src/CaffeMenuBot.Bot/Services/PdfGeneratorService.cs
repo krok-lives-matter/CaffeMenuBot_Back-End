@@ -52,7 +52,7 @@ namespace CaffeMenuBot.Bot.Services
         {
             document.Add(new Paragraph(category.CategoryName)
                 .SetMargins(40f, 40f, 0f, 40f)
-                .SetFontFamily("Segoe UI")
+                //.SetFontFamily("Segoe UI")
                 .SetFontSize(40f)); // 30f
 
             foreach (var dish in category.Dishes)
@@ -63,7 +63,7 @@ namespace CaffeMenuBot.Bot.Services
                     UnitValue.CreatePercentValue(23f),
                     UnitValue.CreatePercentValue(23f)
                 });
-                dishTable.SetFontFamily("Roboto");
+                //dishTable.SetFontFamily("Roboto");
                 dishTable.SetMargins(40f, 40f, 0f, 40f)
                     .UseAllAvailableWidth()
                     .SetKeepWithNext(true)
@@ -75,7 +75,7 @@ namespace CaffeMenuBot.Bot.Services
 
                 var dishDescription = new Paragraph(dish.Description)
                     .SetMargins(10f, 40f, 0f, 40f)
-                    .SetFontFamily("Roboto")
+                    //.SetFontFamily("Roboto")
                     .SetFontColor(new DeviceRgb(125, 125, 125))
                     .SetFontSize(16f); // 12f
                 document.Add(dishDescription);
