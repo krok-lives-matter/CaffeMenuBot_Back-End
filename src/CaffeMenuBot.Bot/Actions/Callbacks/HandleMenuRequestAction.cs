@@ -49,7 +49,10 @@ namespace CaffeMenuBot.Bot.Actions.Callbacks
                 return;
             }
 
-            var category = await _context.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == categoryId, ct);
+            var category = await _context.Categories
+                .AsNoTracking()
+                .Include(c => c.Dishes)
+                .FirstOrDefaultAsync(c => c.Id == categoryId, ct);
             if (category == null)
             {
                 await _client.AnswerCallbackQueryAsync(update.CallbackQuery.Id, "Не удалось найти выбранную категорию",

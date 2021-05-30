@@ -4,10 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using CaffeMenuBot.Data.Models.Menu;
 using iText.IO.Image;
+using iText.Kernel.Colors;
+using iText.Kernel.Font;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
+using iText.Layout.Properties;
 using Path = System.IO.Path;
 
 namespace CaffeMenuBot.Bot.Services
@@ -27,9 +30,10 @@ namespace CaffeMenuBot.Bot.Services
             pdfDocument.SetDefaultPageSize(PageSize.A4);
             var document = new Document(pdfDocument);
             
-            document.SetMargins(0f, 0f, 0f, 0f);
+            document.SetMargins(0f, 0f, 40f, 0f);
             
             AddHeaderImage(document);
+            AddMenuData(document, category);
             
             document.Close();
             return new ValueTask<Stream>(new MemoryStream(memoryStream.ToArray()));
@@ -42,6 +46,40 @@ namespace CaffeMenuBot.Bot.Services
             string fullPathToHeaderImage = Path.Combine(currentDir!, "Content", "images", headerImageFileName);
             
             document.Add(new Image(ImageDataFactory.Create(fullPathToHeaderImage)));
+        }
+
+        private static void AddMenuData(Document document, Category category)
+        {
+            document.Add(new Paragraph(category.CategoryName)
+                .SetMargins(40f, 40f, 0f, 40f)
+                .SetFontFamily("Segoe UI")
+                .SetFontSize(40f)); // 30f
+
+            foreach (var dish in category.Dishes)
+            {
+                var dishTable = new Table(new[]
+                {
+                    UnitValue.CreatePercentValue(54f),
+                    UnitValue.CreatePercentValue(23f),
+                    UnitValue.CreatePercentValue(23f)
+                });
+                dishTable.SetFontFamily("Roboto");
+                dishTable.SetMargins(40f, 40f, 0f, 40f)
+                    .UseAllAvailableWidth()
+                    .SetKeepWithNext(true)
+                    .SetFontColor(new DeviceRgb(17, 17, 17));
+                dishTable.AddCell(dish.DishName).SetFontSize(18f); // 13.5f
+                dishTable.AddCell(dish.Serving);
+                dishTable.AddCell(dish.Price + "₴").SetHorizontalAlignment(HorizontalAlignment.RIGHT);
+                document.Add(dishTable);
+
+                var dishDescription = new Paragraph(dish.Description)
+                    .SetMargins(10f, 40f, 0f, 40f)
+                    .SetFontFamily("Roboto")
+                    .SetFontColor(new DeviceRgb(125, 125, 125))
+                    .SetFontSize(16f); // 12f
+                document.Add(dishDescription);
+            }
         }
     }
 }
