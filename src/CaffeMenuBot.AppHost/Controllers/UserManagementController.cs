@@ -16,6 +16,7 @@ using CaffeMenuBot.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.IO;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -49,6 +50,39 @@ namespace CaffeMenuBot.AppHost.Controllers
             _roleManager = roleManager;
             _jwtHelper = jwtHelper;
         }
+
+        [HttpPost]
+        [Route("resetOtherUserPassword")]
+        [SwaggerOperation("resets other user password (root required), password should contain an uppercase character, lowercase character, a digit, and a non-alphanumeric character. Password must be at least six characters long.",
+            Tags = new[] {"User Management"})]
+        [SwaggerResponse(200, "Successfully reset user's password")]
+        [SwaggerResponse(404, "Specified user was not found")]
+        [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
+        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
+        public async Task<ActionResult>  ResetOtherUserPassword([FromBody] PasswordResetRequest request)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(request.UserId);
+                
+                if(user == null)
+                    return NotFound();
+
+                // include roles in user object
+                _context.UserRoles.Include(r => r.Role).FirstOrDefault(r => r.UserId == user.Id);
+
+                // reset user password to new
+                UserStore<DashboardUser> store = new UserStore<DashboardUser>(_context);
+                string hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, request.NewPassword);                    
+                await store.SetPasswordHashAsync(user, hashedNewPassword);
+                await store.UpdateAsync(user);
+
+                return Ok();
+            }
+            return BadRequest(ModelState);
+        }
+
 
         [HttpPut]
         [Route("updateOtherUser")]

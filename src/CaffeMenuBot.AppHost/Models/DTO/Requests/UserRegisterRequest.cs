@@ -11,7 +11,15 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
     {
         [Required, EmailAddress]
         public string Email { get; init; } = null!;
-        [Required, StringLength(32, MinimumLength = 8)]
+        // validation fro default identity policy
+        [
+            Required,
+            RegularExpression
+                (
+                    @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$",
+                    ErrorMessage = "password should contain an uppercase character, lowercase character, a digit, and a non-alphanumeric character. Password must be at least six characters long."
+                )
+        ]
         public string Password { get; init; } = null!;
         [EmailAddress]
         public string? NormalizedEmail { get; init; }

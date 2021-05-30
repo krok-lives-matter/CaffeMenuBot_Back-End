@@ -49,7 +49,7 @@ namespace CaffeMenuBot.AppHost.Controllers
         [HttpPost]
         [Route("register")]
         [Authorize(Roles = "root")]
-        [SwaggerOperation("Registers a new user (root required)",
+        [SwaggerOperation("Registers a new user (root required), password should contain an uppercase character, lowercase character, a digit, and a non-alphanumeric character. Password must be at least six characters long.",
             Tags = new[] {"Authentication"})]
         [SwaggerResponse(200, "Successfully registered a new user.", typeof(AuthResponse))]
         [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
