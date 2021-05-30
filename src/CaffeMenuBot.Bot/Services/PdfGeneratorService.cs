@@ -31,8 +31,8 @@ namespace CaffeMenuBot.Bot.Services
             
             AddHeaderImage(document);
             
-            memoryStream.Position = 0L;
-            return new ValueTask<Stream>(memoryStream);
+            document.Close();
+            return new ValueTask<Stream>(new MemoryStream(memoryStream.ToArray()));
         }
 
         private static void AddHeaderImage(Document document)
