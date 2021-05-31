@@ -54,7 +54,7 @@ namespace CaffeMenuBot.Bot.Services
             document.Add(new Paragraph(category.CategoryName)
                 .SetMargins(40f, 40f, 0f, 40f)
                 //.SetFontFamily("Segoe UI")
-                .SetFontSize(40f)); // 30f
+                .SetFontSize(30f)); // 40px
 
             foreach (var dish in category.Dishes)
             {
@@ -69,16 +69,22 @@ namespace CaffeMenuBot.Bot.Services
                     .UseAllAvailableWidth()
                     .SetKeepWithNext(true)
                     .SetFontColor(new DeviceRgb(17, 17, 17));
-                dishTable.AddCell(dish.DishName).SetFontSize(18f).SetBorder(Border.NO_BORDER); // 13.5f
-                dishTable.AddCell(dish.Serving).SetBorder(Border.NO_BORDER);
-                dishTable.AddCell(dish.Price + "₴").SetTextAlignment(TextAlignment.RIGHT).SetBorder(Border.NO_BORDER);
+                var dishNameCell = new Cell().Add(new Paragraph(dish.DishName)).SetBorder(Border.NO_BORDER)
+                    .SetFontSize(13.5f); // 18px
+                var dishServingCell = new Cell().Add(new Paragraph(dish.Serving)).SetBorder(Border.NO_BORDER)
+                    .SetFontSize(12f); // 16px
+                var dishPriceCell = new Cell().Add(new Paragraph($"{dish.Price} UAH")).SetBorder(Border.NO_BORDER)
+                    .SetTextAlignment(TextAlignment.RIGHT).SetFontSize(12f); // 16px
+                dishTable.AddCell(dishNameCell);
+                dishTable.AddCell(dishServingCell);
+                dishTable.AddCell(dishPriceCell);
                 document.Add(dishTable);
 
                 var dishDescription = new Paragraph(dish.Description)
                     .SetMargins(10f, 40f, 0f, 40f)
                     //.SetFontFamily("Roboto")
                     .SetFontColor(new DeviceRgb(125, 125, 125))
-                    .SetFontSize(16f); // 12f
+                    .SetFontSize(12f); // 16f
                 document.Add(dishDescription);
             }
         }
