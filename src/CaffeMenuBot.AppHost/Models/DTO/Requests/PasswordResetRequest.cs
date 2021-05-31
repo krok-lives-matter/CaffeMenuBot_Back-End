@@ -30,8 +30,8 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
         {
             schema.Example = new OpenApiObject
             {
-                ["UserId"] = new OpenApiString("a18be9c0-aa65-4af8-bd17-00bd9344e575"),
-                ["Password"] = new OpenApiString("MyN3wP@ssw0rd")
+                ["userId"] = new OpenApiString("a18be9c0-aa65-4af8-bd17-00bd9344e575"),
+                ["newPassword"] = new OpenApiString("MyN3wP@ssw0rd")
             };
         }
     }

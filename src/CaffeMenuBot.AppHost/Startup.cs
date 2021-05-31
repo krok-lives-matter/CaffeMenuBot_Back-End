@@ -23,6 +23,7 @@ using CaffeMenuBot.AppHost.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using Web.Middlewares;
+using CaffeMenuBot.AppHost.Configuration;
 
 namespace CaffeMenuBot.AppHost
 {
@@ -160,6 +161,24 @@ namespace CaffeMenuBot.AppHost
             });
         }
 
+        private void ConfigureQRCode(IWebHostEnvironment environment)
+        {
+            try
+            {
+                string link = _configuration["BOT_LINK"];
+                // if valid link
+                if(link.StartsWith("https"))
+                    QRCodeConfigurator.GenerateQRCodeForBot(environment, link);
+                else
+                    Console.WriteLine("Skipped qr-code generation - invalid link");
+            }
+            // for tests to run without libgdiplus
+            catch(Exception)
+            {
+                Console.WriteLine("Skipped qr-code generation - libgdiplus missing");
+            }
+        }
+
         private void ConfigureLoadAvgMonitor(IServiceCollection services)
         {
             services.AddSingleton<LoadAvgBackgroundService>();
@@ -236,6 +255,8 @@ namespace CaffeMenuBot.AppHost
             {
                 endpoints.MapControllers();
             });
+
+            ConfigureQRCode(env);
         }
     }
 }
