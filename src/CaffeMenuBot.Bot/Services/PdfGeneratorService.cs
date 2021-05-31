@@ -9,6 +9,7 @@ using iText.Kernel.Font;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Layout;
+using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using Path = System.IO.Path;
@@ -67,10 +68,11 @@ namespace CaffeMenuBot.Bot.Services
                 dishTable.SetMargins(40f, 40f, 0f, 40f)
                     .UseAllAvailableWidth()
                     .SetKeepWithNext(true)
-                    .SetFontColor(new DeviceRgb(17, 17, 17));
+                    .SetFontColor(new DeviceRgb(17, 17, 17))
+                    .SetBorder(Border.NO_BORDER);
                 dishTable.AddCell(dish.DishName).SetFontSize(18f); // 13.5f
                 dishTable.AddCell(dish.Serving);
-                dishTable.AddCell(dish.Price + "₴").SetHorizontalAlignment(HorizontalAlignment.RIGHT);
+                dishTable.AddCell(dish.Price + "₴").SetTextAlignment(TextAlignment.RIGHT);
                 document.Add(dishTable);
 
                 var dishDescription = new Paragraph(dish.Description)
