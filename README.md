@@ -23,7 +23,7 @@ This project is powered by ASP.NET Core 5.
 4. Install the [Docker for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows/) on your PC (by pressing the _Get Docker_ button).
 5. Ensure that `SVM mode` / `hypervisor` is enabled in your motherboard's BIOS.
 6. Make sure you set bot token in botsettings.json. If you won't do this - bot initialization will be skipped and bot will not run.
-7. Make sure you set bot link in bot link in botsettings.json. If you won't do this - qr code for bot will not be generated.
+7. Make sure you set bot link in botsettings.json. If you won't do this - qr code for bot will not be generated.
 8. To debug project in Visual Studio make docker-compose.dcproj as startup project
 9. If you've worked on a project before and got old database schema - you can drop your database container volume by using `docker volume rm caffe_menu_bot_postgres_volume`
 
