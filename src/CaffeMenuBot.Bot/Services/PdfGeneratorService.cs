@@ -68,11 +68,10 @@ namespace CaffeMenuBot.Bot.Services
                 dishTable.SetMargins(40f, 40f, 0f, 40f)
                     .UseAllAvailableWidth()
                     .SetKeepWithNext(true)
-                    .SetFontColor(new DeviceRgb(17, 17, 17))
-                    .SetBorder(Border.NO_BORDER);
-                dishTable.AddCell(dish.DishName).SetFontSize(18f); // 13.5f
-                dishTable.AddCell(dish.Serving);
-                dishTable.AddCell(dish.Price + "₴").SetTextAlignment(TextAlignment.RIGHT);
+                    .SetFontColor(new DeviceRgb(17, 17, 17));
+                dishTable.AddCell(dish.DishName).SetFontSize(18f).SetBorder(Border.NO_BORDER); // 13.5f
+                dishTable.AddCell(dish.Serving).SetBorder(Border.NO_BORDER);
+                dishTable.AddCell(dish.Price + "₴").SetTextAlignment(TextAlignment.RIGHT).SetBorder(Border.NO_BORDER);
                 document.Add(dishTable);
 
                 var dishDescription = new Paragraph(dish.Description)
