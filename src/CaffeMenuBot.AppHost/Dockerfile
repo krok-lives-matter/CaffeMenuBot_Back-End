@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal AS base
+RUN apt-get -y update && apt-get -y install apt-utils && apt-get -y install libgdiplus
 FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
+
 
 WORKDIR /src
 COPY CaffeMenuBot.AppHost/CaffeMenuBot.AppHost.csproj CaffeMenuBot.AppHost/
