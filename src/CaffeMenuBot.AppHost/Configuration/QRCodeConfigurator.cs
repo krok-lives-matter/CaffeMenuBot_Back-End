@@ -12,7 +12,7 @@ namespace CaffeMenuBot.AppHost.Configuration
     {
         private static string LOGO_NAME = "logo.png";
         private static string QR_NAME = "qr.png";
-        private static string SAVE_FOLDER = "media";
+        private static string SAVE_FOLDER = "images";
 
         /// <summary>
         /// Generates QR Code image with bot telegram bot link and logo
@@ -23,6 +23,7 @@ namespace CaffeMenuBot.AppHost.Configuration
         {
             string savePath = Path.Combine(webHostEnvironment.WebRootPath, SAVE_FOLDER);
             Directory.CreateDirectory(savePath);
+            Console.WriteLine("Qr Save path is: " + savePath);
 
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(botLink, QRCodeGenerator.ECCLevel.Q);
