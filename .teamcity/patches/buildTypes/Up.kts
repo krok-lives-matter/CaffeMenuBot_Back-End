@@ -115,7 +115,8 @@ changeBuildType(RelativeId("Up")) {
                 param("system.dest.file", "%teamcity.build.checkoutDir%/src/CaffeMenuBot.AppHost/botsettings.Production.json")
                 param("content", """
                     {
-                        "BOT_TOKEN": "%env.BOT_TOKEN%"
+                        "BOT_TOKEN": "%env.BOT_TOKEN%",
+                        "BOT_LINK": "https://telegram.me/caffemenubot"
                     }
                 """.trimIndent())
             }
