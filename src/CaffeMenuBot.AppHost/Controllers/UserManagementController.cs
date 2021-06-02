@@ -51,6 +51,76 @@ namespace CaffeMenuBot.AppHost.Controllers
             _jwtHelper = jwtHelper;
         }
 
+        [HttpDelete]
+        [Route("users/{id}")]
+        [SwaggerOperation("deletes user by provided id (root required)"
+        , Tags = new[] {"User Management"})]
+        [SwaggerResponse(204, "Successfully deleted dashboard user")]
+        [SwaggerResponse(404, "User has not been found by provided id")]
+        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
+        public async Task<ActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if(user == null)
+                return NotFound();
+
+            await _userManager.DeleteAsync(user);
+
+            return NoContent();
+        }
+        
+        [HttpGet]
+        [Route("users")]
+        [SwaggerOperation("gets all dashboard users (root required)",
+         Tags = new[] {"User Management"})]
+        [SwaggerResponse(200, "Successfully got all dashboard users")]
+        [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
+        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
+        public async Task<ActionResult<IEnumerable<DashboardUser>>> GetDashboardUsers()
+        {
+            _context.UserRoles.Include(r => r.Role);
+            var users = await _context.Users.Include(u => u.Roles).ToListAsync();
+
+            return Ok(users);
+        }
+
+        [HttpDelete]
+        [Route("roles/{id}")]
+        [SwaggerOperation("deletes roles by provided id (root required)"
+        , Tags = new[] {"User Management"})]
+        [SwaggerResponse(204, "Successfully deleted dashboard role")]
+        [SwaggerResponse(404, "Role has not been found by provided id")]
+        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
+        public async Task<ActionResult> DeleteRole(string id)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
+
+            if(role == null)
+                return NotFound();
+
+            await _roleManager.DeleteAsync(role);
+
+            return NoContent();
+        }
+
+        [HttpGet]
+        [Route("roles")]
+        [SwaggerOperation("gets all dashboard roles (root required)"
+        , Tags = new[] {"User Management"})]
+        [SwaggerResponse(200, "Successfully got all dashboard roles")]
+        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
+        public async Task<ActionResult<IEnumerable<IdentityRole>>> GetDashboardRoles()
+        {
+            var roles = await _context.Roles.ToListAsync();
+
+            return Ok(roles);
+        }
+
         [HttpPost]
         [Route("resetOtherUserPassword")]
         [SwaggerOperation("resets other user password (root required), password should contain an uppercase character, lowercase character, a digit, and a non-alphanumeric character. Password must be at least six characters long.",
@@ -82,6 +152,76 @@ namespace CaffeMenuBot.AppHost.Controllers
             }
             return BadRequest(ModelState);
         }
+
+
+        [HttpPost]
+        [Route("create")]
+        [Authorize(Roles = "root")]
+        [SwaggerOperation("Creates new user (root required), password should contain an uppercase character, lowercase character, a digit, and a non-alphanumeric character. Password must be at least six characters long.",
+            Tags = new[] {"User Management"})]
+        [SwaggerResponse(200, "Successfully registered a new user.", typeof(AuthResponse))]
+        [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
+        [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(403, "Role not allowed.")]
+        [SwaggerResponse(403, "User with the specified email already exists.", typeof(ErrorResponse))]
+        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
+        public async Task<ActionResult> CreateUser([FromBody] UserRegisterRequest user)
+        {
+            // check if the user with the same email exist
+            var existingUser = await _userManager.FindByEmailAsync(user.Email) ??
+                               await _userManager.FindByNameAsync(user.UserName);
+
+            if (existingUser != null)
+            {
+                return BadRequest(new AuthResponse
+                {
+                    Result = false,
+                    Errors = new List<string>
+                    {
+                        "User with the specified email or username already exists."
+                    }
+                });
+            }
+     
+            var newUser = new DashboardUser
+            {
+                Email = user.Email,
+                NormalizedEmail = user.NormalizedEmail ?? user.Email,
+                UserName = user.UserName
+            };
+
+            var isCreated = await _userManager.CreateAsync(newUser, user.Password);
+
+            if(user.Roles != null)
+            {
+                var roles = _jwtHelper.ConvertJwtRolesToIdentity(user.Roles);
+                await _jwtHelper.AssignRolesAsync(newUser, roles);
+            }
+            
+            if (isCreated.Succeeded)
+            {
+                var jwtToken = _jwtHelper.GenerateJwtToken(newUser);
+
+                return Ok(new AuthResponse
+                {
+                    User = new UserResponse
+                    {
+                        Id = newUser.Id,
+                        Email = newUser.Email,
+                        UserName = newUser.UserName,
+                        Roles = _jwtHelper.ConvertRolesToJwtFormat(newUser.Roles)
+                    },
+                    Result = true,
+                    Token = jwtToken
+                });
+            }
+            
+            return new JsonResult(new AuthResponse
+            {
+                Result = false,
+                Errors = isCreated.Errors.Select(x => x.Description).ToList()
+            }) {StatusCode = 500};
+        }  
 
 
         [HttpPut]
