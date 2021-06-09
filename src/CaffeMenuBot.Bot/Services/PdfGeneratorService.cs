@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using System.Reflection;
+using Microsoft.AspNetCore.Hosting;
 using System.Threading;
 using System.Threading.Tasks;
 using CaffeMenuBot.Data.Models.Menu;
@@ -18,12 +18,12 @@ namespace CaffeMenuBot.Bot.Services
 {
     public interface IPdfGeneratorService
     {
-        ValueTask<Stream> GenerateMenuForCategoryAsync(Category category, CancellationToken cancellationToken);
+        ValueTask<Stream> GenerateMenuForCategoryAsync(Category category, IWebHostEnvironment webHostEnvironment, CancellationToken cancellationToken);
     }
     
     public sealed class PdfGeneratorService : IPdfGeneratorService
     {
-        public ValueTask<Stream> GenerateMenuForCategoryAsync(Category category, CancellationToken cancellationToken)
+        public ValueTask<Stream> GenerateMenuForCategoryAsync(Category category, IWebHostEnvironment webHostEnvironment, CancellationToken cancellationToken)
         {
             var memoryStream = new MemoryStream();
             var pdfWriter = new PdfWriter(memoryStream);
@@ -33,19 +33,23 @@ namespace CaffeMenuBot.Bot.Services
             
             document.SetMargins(0f, 0f, 40f, 0f);
             
-            AddHeaderImage(document);
+            string coverPhotoFileName = category.CoverPhotoFileName == null ? "blank.jpg" : category.CoverPhotoFileName;
+            AddHeaderImage(document, coverPhotoFileName, webHostEnvironment);
             AddMenuData(document, category);
             
             document.Close();
             return new ValueTask<Stream>(new MemoryStream(memoryStream.ToArray()));
         }
 
-        private static void AddHeaderImage(Document document)
+        private static void AddHeaderImage(Document document, string headerImageFileName, IWebHostEnvironment webHostEnvironment)
         {
-            const string headerImageFileName = "header.png";
-            var currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string fullPathToHeaderImage = Path.Combine(currentDir!, "Content", "images", headerImageFileName);
-            
+            string fullPathToHeaderImage = Path.Combine
+                                           (
+                                               webHostEnvironment.WebRootPath,
+                                               "media",
+                                               "category_covers",
+                                               headerImageFileName
+                                           );
             document.Add(new Image(ImageDataFactory.Create(fullPathToHeaderImage)));
         }
 

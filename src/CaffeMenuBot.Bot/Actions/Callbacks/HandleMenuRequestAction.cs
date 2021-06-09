@@ -10,11 +10,13 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InputFiles;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CaffeMenuBot.Bot.Actions.Callbacks
 {
     public sealed class HandleMenuRequestAction : IChatAction
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IPdfGeneratorService _pdfGeneratorService;
         private readonly CaffeMenuBotContext _context;
         private readonly ITelegramBotClient _client;
@@ -24,8 +26,9 @@ namespace CaffeMenuBot.Bot.Actions.Callbacks
         private const string MESSAGE_TITLE = "Press to open file";
 
         public HandleMenuRequestAction(ITelegramBotClient client, IPdfGeneratorService pdfGeneratorService,
-            CaffeMenuBotContext context)
+            CaffeMenuBotContext context, IWebHostEnvironment webHostEnvironment)
         {
+            _webHostEnvironment = webHostEnvironment;
             _pdfGeneratorService = pdfGeneratorService;
             _context = context;
             _client = client;
@@ -60,7 +63,7 @@ namespace CaffeMenuBot.Bot.Actions.Callbacks
                 return;
             }
 
-            await using var pdfFileStream = await _pdfGeneratorService.GenerateMenuForCategoryAsync(category, ct);
+            await using var pdfFileStream = await _pdfGeneratorService.GenerateMenuForCategoryAsync(category, _webHostEnvironment, ct);
             await _client.SendDocumentAsync(update.CallbackQuery.Message.Chat,
                 new InputOnlineFile(pdfFileStream, $"Меню_{category.CategoryName}.pdf"),
                 $"Меню категорії \"{category.CategoryName}\"",
