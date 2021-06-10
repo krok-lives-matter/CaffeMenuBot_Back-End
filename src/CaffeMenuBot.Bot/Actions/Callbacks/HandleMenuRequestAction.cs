@@ -23,7 +23,6 @@ namespace CaffeMenuBot.Bot.Actions.Callbacks
         
         // Contains uses this identifier instead of COMMAND_NAME
         private const string CALLBACK_ID = "CAT";
-        private const string MESSAGE_TITLE = "Press to open file";
 
         public HandleMenuRequestAction(ITelegramBotClient client, IPdfGeneratorService pdfGeneratorService,
             CaffeMenuBotContext context, IWebHostEnvironment webHostEnvironment)
@@ -47,7 +46,7 @@ namespace CaffeMenuBot.Bot.Actions.Callbacks
             var catId = update.CallbackQuery.Data.Split(' ', 2)[^1];
             if (!int.TryParse(catId, out int categoryId))
             {
-                await _client.AnswerCallbackQueryAsync(update.CallbackQuery.Id, "Ошибка!", true,
+                await _client.AnswerCallbackQueryAsync(update.CallbackQuery.Id, "Error!", true,
                     cancellationToken: ct);
                 return;
             }
@@ -58,15 +57,15 @@ namespace CaffeMenuBot.Bot.Actions.Callbacks
                 .FirstOrDefaultAsync(c => c.Id == categoryId, ct);
             if (category == null)
             {
-                await _client.AnswerCallbackQueryAsync(update.CallbackQuery.Id, "Не удалось найти выбранную категорию",
+                await _client.AnswerCallbackQueryAsync(update.CallbackQuery.Id, "Couldn't find selected category",
                     true, cancellationToken: ct);
                 return;
             }
 
             await using var pdfFileStream = await _pdfGeneratorService.GenerateMenuForCategoryAsync(category, _webHostEnvironment, ct);
             await _client.SendDocumentAsync(update.CallbackQuery.Message.Chat,
-                new InputOnlineFile(pdfFileStream, $"Меню_{category.CategoryName}.pdf"),
-                $"Меню категорії \"{category.CategoryName}\"",
+                new InputOnlineFile(pdfFileStream, $"Menu_{category.CategoryName}.pdf"),
+                $"Menu of category \"{category.CategoryName}\"",
                 cancellationToken: ct);
 
             try
