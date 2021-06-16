@@ -52,12 +52,13 @@ namespace CaffeMenuBot.AppHost.Controllers
         }
 
         [HttpDelete]
-        [Route("users/{id}")]
+        [Route("users/{id:required}")]
         [SwaggerOperation("deletes user by provided id (root required)"
         , Tags = new[] {"User Management"})]
-        [SwaggerResponse(204, "Successfully deleted dashboard user")]
+        [SwaggerResponse(200, "Successfully deleted dashboard user")]
         [SwaggerResponse(404, "User has not been found by provided id")]
         [SwaggerResponse(401, "User unathorized.")]
+        [SwaggerResponse(403, "You're trying to delete the ROOT user. Action forbidden.")]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
         public async Task<ActionResult> DeleteUser(string id)
         {
@@ -66,59 +67,55 @@ namespace CaffeMenuBot.AppHost.Controllers
             if(user == null)
                 return NotFound();
 
+            if (user.Roles.Any(r => r.Role.Name.Equals("root", StringComparison.OrdinalIgnoreCase)))
+            {
+                return StatusCode(403);
+            }
+
             await _userManager.DeleteAsync(user);
 
-            return NoContent();
+            return Ok();
         }
         
         [HttpGet]
         [Route("users")]
         [SwaggerOperation("gets all dashboard users (root required)",
          Tags = new[] {"User Management"})]
-        [SwaggerResponse(200, "Successfully got all dashboard users")]
-        [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
+        [SwaggerResponse(200, "Successfully got all dashboard users", typeof(List<UserResponse>))]
         [SwaggerResponse(401, "User unathorized.")]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
-        public async Task<ActionResult<IEnumerable<DashboardUser>>> GetDashboardUsers()
+        public async Task<ActionResult<IEnumerable<UserResponse>>> GetDashboardUsers()
         {
-            _context.UserRoles.Include(r => r.Role);
-            var users = await _context.Users.Include(u => u.Roles).ToListAsync();
+            var users = await _context.Users
+                .AsNoTracking()
+                .Include(u => u.Roles)
+                .ToListAsync();
 
-            return Ok(users);
-        }
-
-        [HttpDelete]
-        [Route("roles/{id}")]
-        [SwaggerOperation("deletes roles by provided id (root required)"
-        , Tags = new[] {"User Management"})]
-        [SwaggerResponse(204, "Successfully deleted dashboard role")]
-        [SwaggerResponse(404, "Role has not been found by provided id")]
-        [SwaggerResponse(401, "User unathorized.")]
-        [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
-        public async Task<ActionResult> DeleteRole(string id)
-        {
-            var role = await _roleManager.FindByIdAsync(id);
-
-            if(role == null)
-                return NotFound();
-
-            await _roleManager.DeleteAsync(role);
-
-            return NoContent();
+            return Ok(users.Select(u => new UserResponse
+            {
+                Email = u.Email,
+                Id = u.Id,
+                Roles = _jwtHelper.ConvertRolesToJwtFormat(u.Roles),
+                UserName = u.UserName,
+                ProfilePhotoUrl = $"{Startup.BaseImageUrl}/{MEDIA_SUBFOLDER}/{u.ProfilePhotoFileName}"
+            }));
         }
 
         [HttpGet]
         [Route("roles")]
         [SwaggerOperation("gets all dashboard roles (root required)"
         , Tags = new[] {"User Management"})]
-        [SwaggerResponse(200, "Successfully got all dashboard roles")]
+        [SwaggerResponse(200, "Successfully got all dashboard roles", typeof(RoleResponse))]
         [SwaggerResponse(401, "User unathorized.")]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
-        public async Task<ActionResult<IEnumerable<IdentityRole>>> GetDashboardRoles()
+        public async Task<ActionResult<RoleResponse>> GetDashboardRoles()
         {
-            var roles = await _context.Roles.ToListAsync();
+            var roles = await _context.Roles.AsNoTracking().ToListAsync();
 
-            return Ok(roles);
+            return new RoleResponse
+            {
+                Roles = roles.Select(r => r.Name).ToList()
+            };
         }
 
         [HttpPost]
@@ -132,25 +129,21 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
         public async Task<ActionResult>  ResetOtherUserPassword([FromBody] PasswordResetRequest request)
         {
-            if(ModelState.IsValid)
-            {
-                var user = await _userManager.FindByIdAsync(request.UserId);
-                
-                if(user == null)
-                    return NotFound();
+            var user = await _userManager.FindByIdAsync(request.UserId);
+            
+            if(user == null)
+                return NotFound();
 
-                // include roles in user object
-                _context.UserRoles.Include(r => r.Role).FirstOrDefault(r => r.UserId == user.Id);
+            // include roles in user object
+            _context.UserRoles.Include(r => r.Role).FirstOrDefault(r => r.UserId == user.Id);
 
-                // reset user password to new
-                UserStore<DashboardUser> store = new UserStore<DashboardUser>(_context);
-                string hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, request.NewPassword);                    
-                await store.SetPasswordHashAsync(user, hashedNewPassword);
-                await store.UpdateAsync(user);
+            // reset user password to new
+            UserStore<DashboardUser> store = new(_context);
+            string hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, request.NewPassword);                    
+            await store.SetPasswordHashAsync(user, hashedNewPassword);
+            await store.UpdateAsync(user);
 
-                return Ok();
-            }
-            return BadRequest(ModelState);
+            return Ok();
         }
 
 
