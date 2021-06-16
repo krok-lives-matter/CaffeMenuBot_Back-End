@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Annotations;
@@ -10,17 +9,10 @@ namespace CaffeMenuBot.AppHost.Models.DTO.Requests
     [SwaggerSchemaFilter(typeof(PasswordResetRequestSchema))]
     public sealed record PasswordResetRequest
     {
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string UserId { get; init; } = null!;
         // validation fro default identity policy
-        [
-            Required,
-            RegularExpression
-                (
-                    @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$",
-                    ErrorMessage = "password should contain an uppercase character, lowercase character, a digit, and a non-alphanumeric character. Password must be at least six characters long."
-                )
-        ]
+        [Required, StringLength(64, MinimumLength = 4)]
         public string NewPassword { get; init; } = null!;
     }
 
