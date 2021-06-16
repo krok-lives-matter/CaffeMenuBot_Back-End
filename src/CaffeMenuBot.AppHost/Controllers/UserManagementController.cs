@@ -152,11 +152,10 @@ namespace CaffeMenuBot.AppHost.Controllers
         [Authorize(Roles = "root")]
         [SwaggerOperation("Creates new user (root required), password should contain an uppercase character, lowercase character, a digit, and a non-alphanumeric character. Password must be at least six characters long.",
             Tags = new[] {"User Management"})]
-        [SwaggerResponse(200, "Successfully registered a new user.", typeof(AuthResponse))]
+        [SwaggerResponse(200, "Successfully registered a new user.", typeof(CreatedItemStringResult))]
         [SwaggerResponse(400, "Bad request data, read the response body for more information.", typeof(ErrorResponse))]
         [SwaggerResponse(401, "User unathorized.")]
-        [SwaggerResponse(403, "Role not allowed.")]
-        [SwaggerResponse(403, "User with the specified email already exists.", typeof(ErrorResponse))]
+        [SwaggerResponse(400, "User with the specified email already exists.", typeof(AuthResponse))]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
         public async Task<ActionResult> CreateUser([FromBody] UserRegisterRequest user)
         {
@@ -179,7 +178,6 @@ namespace CaffeMenuBot.AppHost.Controllers
             var newUser = new DashboardUser
             {
                 Email = user.Email,
-                NormalizedEmail = user.NormalizedEmail ?? user.Email,
                 UserName = user.UserName
             };
 
@@ -193,19 +191,9 @@ namespace CaffeMenuBot.AppHost.Controllers
             
             if (isCreated.Succeeded)
             {
-                var jwtToken = _jwtHelper.GenerateJwtToken(newUser);
-
-                return Ok(new AuthResponse
+                return Ok(new CreatedItemStringResult
                 {
-                    User = new UserResponse
-                    {
-                        Id = newUser.Id,
-                        Email = newUser.Email,
-                        UserName = newUser.UserName,
-                        Roles = _jwtHelper.ConvertRolesToJwtFormat(newUser.Roles)
-                    },
-                    Result = true,
-                    Token = jwtToken
+                    CreatedItemId = newUser.Id
                 });
             }
             
