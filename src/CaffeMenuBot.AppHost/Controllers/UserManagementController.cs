@@ -86,18 +86,13 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(200, "Successfully got all dashboard users", typeof(List<UserResponse>))]
         [SwaggerResponse(401, "User unathorized.")]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
-        public async Task<ActionResult<IEnumerable<UserResponse>>> GetDashboardUsers(
-            [FromServices] ILogger<UserManagementController> logger)
+        public async Task<ActionResult<IEnumerable<UserResponse>>> GetDashboardUsers()
         {
             var users = await _context.Users
                 .AsNoTracking()
                 .Include(u => u.Roles)
+                .ThenInclude(r => r.Role)
                 .ToListAsync();
-
-            logger.LogInformation(JsonSerializer.Serialize(users, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            }));
             
             return Ok(users.Select(u => new UserResponse
             {
