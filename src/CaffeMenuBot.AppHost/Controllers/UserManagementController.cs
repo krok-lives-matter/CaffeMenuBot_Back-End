@@ -16,7 +16,9 @@ using CaffeMenuBot.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.IO;
+using System.Text.Json;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CaffeMenuBot.AppHost.Controllers
 {
@@ -84,13 +86,19 @@ namespace CaffeMenuBot.AppHost.Controllers
         [SwaggerResponse(200, "Successfully got all dashboard users", typeof(List<UserResponse>))]
         [SwaggerResponse(401, "User unathorized.")]
         [SwaggerResponse(500, "Internal server error.", typeof(ErrorResponse))]
-        public async Task<ActionResult<IEnumerable<UserResponse>>> GetDashboardUsers()
+        public async Task<ActionResult<IEnumerable<UserResponse>>> GetDashboardUsers(
+            [FromServices] ILogger<UserManagementController> logger)
         {
             var users = await _context.Users
                 .AsNoTracking()
                 .Include(u => u.Roles)
                 .ToListAsync();
 
+            logger.LogInformation(JsonSerializer.Serialize(users, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            }));
+            
             return Ok(users.Select(u => new UserResponse
             {
                 Email = u.Email,
