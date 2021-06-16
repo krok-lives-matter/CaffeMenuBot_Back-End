@@ -18,7 +18,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 [CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
 [TeamCity(
-    Version = "2020.2",
+    Version = "2021.1",
     VcsTriggeredTargets = new[] {nameof(Up), nameof(Test)},
     NonEntryTargets = new[] {nameof(Restore)},
     ExcludedTargets = new[] {nameof(Clean)})]
