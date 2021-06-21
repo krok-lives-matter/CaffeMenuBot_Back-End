@@ -8,6 +8,7 @@ using CaffeMenuBot.Data.Models.Schedule;
 using Microsoft.EntityFrameworkCore;
 using CaffeMenuBot.AppHost.Models;
 using System.Linq;
+using CaffeMenuBot.AppHost.Models.DTO.Requests;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace CaffeMenuBot.AppHost.Controllers
@@ -15,7 +16,7 @@ namespace CaffeMenuBot.AppHost.Controllers
     [ApiController]
     [Route("api/dashboard/schedule")]
     [Authorize]
-    public class ScheduleApiController : ControllerBase
+    public sealed class ScheduleApiController : ControllerBase
     {
         private readonly CaffeMenuBotContext _context;
         
@@ -26,45 +27,45 @@ namespace CaffeMenuBot.AppHost.Controllers
 
         //GET api/dashboard/schedule/
         [HttpGet]
-        [SwaggerOperation("Gets all schedule", Tags = new[] { "Schedule" })]
-        [SwaggerResponse(200, "Successfully find any schedule", typeof(IEnumerable<Schedule>))]
-        public async Task<ActionResult<IEnumerable<Schedule>>> Get(CancellationToken cancellationToken)
+        [SwaggerOperation("Gets all schedules ordered by order index ascending", Tags = new[] { "Schedule" })]
+        [SwaggerResponse(200, "Successfully fund schedule by specified id", typeof(List<Schedule>))]
+        [SwaggerResponse(500, "Internal server error")]
+        public async Task<ActionResult<List<Schedule>>> Get(CancellationToken cancellationToken)
         {
-            var schedule = await _context
-                .Schedule
+            var schedules = await _context.Schedule
                 .AsNoTracking()
                 .OrderBy(s => s.OrderIndex)
                 .ToListAsync(cancellationToken);
-            return Ok(schedule);
+            return schedules;
         }
 
         //GET api/dashboard/schedule/{id}
         [HttpGet("{id:int:min(1)}")]
         [SwaggerOperation("Gets review by id", Tags = new[] { "Schedule" })]
-        [SwaggerResponse(200, "Successfully found scheduke by specified id", typeof(Schedule))]
+        [SwaggerResponse(200, "Successfully found schedule by specified id", typeof(Schedule))]
         [SwaggerResponse(404, "Schedule was not found by specified id")]
+        [SwaggerResponse(500, "Internal server error")]
         public async Task<ActionResult<Schedule>> Get(int id, CancellationToken cancellationToken)
         {
-            var schedule = await _context
-                .Schedule
+            var schedule = await _context.Schedule
                 .AsNoTracking()
                 .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
 
             if (schedule == null)
                 return NotFound();
 
-            return Ok(schedule);
+            return schedule;
         }
 
         //DELETE api/dashboard/schedule/{id}
         [HttpDelete("{id:int:min(1)}")]
         [SwaggerOperation("Deletes schedule by id", Tags = new[] { "Schedule" })]
-        [SwaggerResponse(204, "Successfully schedule dish by specified id")]
+        [SwaggerResponse(204, "Successfully deleted schedule by specified id")]
         [SwaggerResponse(404, "Schedule was not found by specified id")]
+        [SwaggerResponse(500, "Internal server error")]
         public async Task<ActionResult<Schedule>> Delete(int id, CancellationToken cancellationToken)
         {
-            var scheduleToDelete = await _context
-                .Schedule
+            var scheduleToDelete = await _context.Schedule
                 .AsNoTracking()
                 .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
 
@@ -73,7 +74,7 @@ namespace CaffeMenuBot.AppHost.Controllers
 
             _context.Remove(scheduleToDelete);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return NoContent();
         }
@@ -81,40 +82,54 @@ namespace CaffeMenuBot.AppHost.Controllers
         //POST api/dashboard/schedule/
         [HttpPost]
         [SwaggerOperation("Creates schedule", Tags = new[] { "Schedule" })]
-        [SwaggerResponse(200, "Successfully created schedule with result of id of created schedule", typeof(Schedule))]
-        [SwaggerResponse(402, "Bad request, bad data was specified")]
-        public async Task<ActionResult<CreatedItemResult>> Post([FromBody] Schedule schedule,
+        [SwaggerResponse(200, "Successfully created schedule",
+            typeof(CreatedItemResult))]
+        [SwaggerResponse(400, "Bad request, bad data was specified")]
+        [SwaggerResponse(500, "Internal server error")]
+        public async Task<ActionResult<CreatedItemResult>> Post([FromBody] SchedulePostModel schedule,
             CancellationToken cancellationToken)
         {
-            if(ModelState.IsValid)
+            var addedEntry = _context.Schedule.Add(new Schedule
             {
-                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                _context.Schedule.Add(schedule);
-                await _context.SaveChangesAsync(cancellationToken);
+                CloseTime = schedule.CloseTime,
+                OpenTime = schedule.OpenTime,
+                OrderIndex = schedule.OrderIndex,
+                WeekdayName = schedule.WeekdayName
+            });
+            await _context.SaveChangesAsync(cancellationToken);
 
-                return Ok(schedule);
-            }
-            return BadRequest(ModelState);
+            return Ok(new CreatedItemResult
+            {
+                CreatedItemId = addedEntry.Entity.Id
+            });
         }
 
         //PUT api/dashboard/schedule/
         [HttpPut]
         [SwaggerOperation("Updates schedule", Tags = new[] { "Schedule" })]
-        [SwaggerResponse(200, "Successfully updated schedule with result of id of updated schedule", typeof(Schedule))]
-        [SwaggerResponse(402, "Bad request, bad data was specified")]
-        public async Task<ActionResult<CreatedItemResult>> Put([FromBody] Schedule schedule,
+        [SwaggerResponse(200, "Successfully updated schedule with result of id of updated schedule")]
+        [SwaggerResponse(400, "Bad request, bad data was specified")]
+        [SwaggerResponse(500, "Internal server error")]
+        public async Task<ActionResult> Put([FromBody] SchedulePutModel schedule,
             CancellationToken cancellationToken)
         {
-            if(ModelState.IsValid)
+            if (!await _context.Schedule.AnyAsync(s => s.Id == schedule.Id, cancellationToken))
             {
-                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                _context.Schedule.Update(schedule);
-                await _context.SaveChangesAsync(cancellationToken);
-
-                return Ok(schedule);
+                ModelState.AddModelError(nameof(schedule.Id), "Schedule with specified id was not found");
+                return BadRequest(ModelState);
             }
-            return BadRequest(ModelState);
-        }
+            
+            _context.Schedule.Update(new Schedule
+            {
+                Id = schedule.Id,
+                CloseTime = schedule.CloseTime,
+                OpenTime = schedule.OpenTime,
+                OrderIndex = schedule.OrderIndex,
+                WeekdayName = schedule.WeekdayName
+            });
+            await _context.SaveChangesAsync(cancellationToken);
 
+            return Ok();
+        }
     }
 }

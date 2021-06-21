@@ -251,7 +251,7 @@ namespace CaffeMenuBot.IntegrationTests
         {
             HttpResponseMessage result = await _authorizedClient.GetAsync($"api/dashboard/schedule/");
             List<Schedule> schedulesResultEncapsulated = await result.Content.ReadFromJsonAsync<List<Schedule>>();
-            schedulesResultEncapsulated[0].WeekdayName = wdName;
+            schedulesResultEncapsulated![0] = schedulesResultEncapsulated[0] with {WeekdayName = wdName};
 
             using StringContent scheduleUpdateContent = new(JsonSerializer.Serialize(schedulesResultEncapsulated[0]), Encoding.UTF8, "application/json");
             HttpResponseMessage scheduleUpdateResult = await _authorizedClient.PutAsync($"api/dashboard/schedule/", scheduleUpdateContent);
