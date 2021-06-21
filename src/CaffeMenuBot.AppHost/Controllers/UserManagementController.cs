@@ -185,15 +185,15 @@ namespace CaffeMenuBot.AppHost.Controllers
             };
 
             var isCreated = await _userManager.CreateAsync(newUser, user.Password);
-
-            if(user.Roles != null)
-            {
-                var roles = _jwtHelper.ConvertJwtRolesToIdentity(user.Roles);
-                await _jwtHelper.AssignRolesAsync(newUser, roles);
-            }
             
             if (isCreated.Succeeded)
             {
+                if (user.Roles != null)
+                {
+                    var roles = _jwtHelper.ConvertJwtRolesToIdentity(user.Roles);
+                    await _jwtHelper.AssignRolesAsync(newUser, roles);
+                }
+
                 return Ok(new CreatedItemStringResult
                 {
                     CreatedItemId = newUser.Id
