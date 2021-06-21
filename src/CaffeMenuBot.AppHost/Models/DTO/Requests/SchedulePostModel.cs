@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace CaffeMenuBot.AppHost.Models.DTO.Requests
 {
+    [SwaggerSchemaFilter(typeof(SchedulePostModelSchema))]
     public sealed record SchedulePostModel
     {
         [Required]
